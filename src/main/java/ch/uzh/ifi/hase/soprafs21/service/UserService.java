@@ -63,6 +63,11 @@ public class UserService {
         return newUser;
     }
 
+    public User checkUserAuthentication(User loginUser) {
+        authenticateUserNamePassword(loginUser);
+        return loginUser;
+    }
+
     public User updateUser(Long userid,User requestUser) {
         Optional<User> user =this.userRepository.findById(userid);
 
@@ -109,6 +114,16 @@ public class UserService {
         String baseErrorMessage = "added user  failed because %s already exists";
         if (userByUsername != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage,userToBeCreated.getUsername()));
+        }
+
+    }
+    private void authenticateUserNamePassword(User userToBeCreated) {
+        User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
+        User userByPassword = userRepository.findByUsername(userToBeCreated.getUsername());
+
+        String baseErrorMessage = "Invalid username/ password";
+        if (userByUsername == null || userByPassword==null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(baseErrorMessage));
         }
 
     }
