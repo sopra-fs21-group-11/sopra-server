@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -37,10 +39,20 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
+    public User getUser(Long userid) {
+        Optional<User> user =this.userRepository.findById(userid);
+
+        String baseErrorMessage="user with %s was not found ";
+        if (user.isEmpty() ) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage,userid.toString()));
+        }
+        return user.get() ;
+    }
+
     public User createUser(User newUser) {
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.OFFLINE);
-
+        newUser.setActionDate(LocalDateTime.now());
         checkIfUserExists(newUser);
 
         // saves the given entity but data is only persisted in the database once flush() is called
@@ -49,6 +61,38 @@ public class UserService {
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
+    }
+
+    public User updateUser(Long userid,User requestUser) {
+        Optional<User> user =this.userRepository.findById(userid);
+
+        String baseErrorMessage="user with %s was not found ";
+        if (user.isEmpty() ) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage,userid.toString()));
+        }
+        User updateuser=user.get();
+        if(requestUser.getName()!=null)
+            updateuser.setName(requestUser.getName());
+
+        if(requestUser.getStatus()!=null)
+            updateuser.setStatus(requestUser.getStatus());
+
+        if(requestUser.getDateOfBirth()!=null)
+            updateuser.setDateOfBirth(requestUser.getDateOfBirth());
+
+        if(requestUser.getUsername()!=null)
+            updateuser.setUsername(requestUser.getUsername());
+
+        if(requestUser.getPassword()!=null)
+            updateuser.setPassword(requestUser.getPassword());
+
+        // saves the given entity but data is only persisted in the database once flush() is called
+        updateuser = userRepository.save(updateuser);
+
+        userRepository.flush();
+
+        log.debug("Updated Information for User: {}", updateuser);
+        return updateuser;
     }
 
     /**
@@ -61,17 +105,11 @@ public class UserService {
      */
     private void checkIfUserExists(User userToBeCreated) {
         User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-        User userByName = userRepository.findByName(userToBeCreated.getName());
 
-        String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-        if (userByUsername != null && userByName != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username and the name", "are"));
+        String baseErrorMessage = "added user  failed because %s already exists";
+        if (userByUsername != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage,userToBeCreated.getUsername()));
         }
-        else if (userByUsername != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
-        }
-        else if (userByName != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
-        }
+
     }
 }
