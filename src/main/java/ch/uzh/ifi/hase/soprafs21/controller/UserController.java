@@ -44,7 +44,7 @@ public class UserController {
     @GetMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public UserGetDTO loginUser(@PathVariable long userId) {
+    public UserGetDTO getUserById(@PathVariable long userId) {
         // get the user by userid
         User user = userService.getUser(userId);
 
@@ -96,5 +96,18 @@ public class UserController {
 
         // convert internal representation of user back to API
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(updatedUser);
+    }
+
+    @GetMapping("/users/logout/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO logoutUser(@PathVariable long userId) {
+        // get the user by userid
+        User user = userService.logoutUser(userId);
+
+        // Convert user object type to DTO
+        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+
+        return userGetDTO;
     }
 }

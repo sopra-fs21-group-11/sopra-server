@@ -48,10 +48,21 @@ public class UserService {
         }
         return user.get() ;
     }
+    public User logoutUser(Long userid) {
+        Optional<User> user =this.userRepository.findById(userid);
+        if (user.isPresent() ) {
+            User  userUpdate= user.get();
+            userUpdate.setStatus(UserStatus.OFFLINE);
+            userUpdate = userRepository.save(userUpdate);
+            return userUpdate;
+        }
+        String baseErrorMessage="user with %s was not found ";
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage,userid.toString()));
+    }
 
     public User createUser(User newUser) {
         newUser.setToken(UUID.randomUUID().toString());
-        newUser.setStatus(UserStatus.OFFLINE);
+        newUser.setStatus(UserStatus.ONLINE);
         newUser.setActionDate(LocalDateTime.now());
         checkIfUserExists(newUser);
 
@@ -61,11 +72,6 @@ public class UserService {
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
-    }
-
-    public User checkUserAuthentication(User loginUser) {
-        authenticateUserNamePassword(loginUser);
-        return loginUser;
     }
 
     public User updateUser(Long userid,User requestUser) {
@@ -117,14 +123,18 @@ public class UserService {
         }
 
     }
-    private void authenticateUserNamePassword(User userToBeCreated) {
+    public User checkUserAuthentication(User userToBeCreated) {
         User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-        User userByPassword = userRepository.findByUsername(userToBeCreated.getUsername());
+
 
         String baseErrorMessage = "Invalid username/ password";
-        if (userByUsername == null || userByPassword==null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(baseErrorMessage));
+        if (userByUsername != null ) {
+            if(userByUsername.getPassword().equals(userToBeCreated.getPassword())) {
+                userByUsername.setStatus(UserStatus.ONLINE);
+                userByUsername = userRepository.save(userByUsername);
+                return userByUsername;
+            }
         }
-
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(baseErrorMessage));
     }
 }

@@ -56,8 +56,10 @@ public class UserPutDTO {
     }
 
     public void setDateOfBirth(String dateOfBirth) throws ParseException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.MM.yyyy");
-        this.dateOfBirth = LocalDate.parse(dateOfBirth, formatter);
+        if(dateOfBirth!=null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+            this.dateOfBirth = LocalDate.parse(dateOfBirth, formatter);
+        }
     }
 }
 
