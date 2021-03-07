@@ -126,7 +126,6 @@ public class UserService {
     public User checkUserAuthentication(User userToBeCreated) {
         User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
 
-
         String baseErrorMessage = "Invalid username/ password";
         if (userByUsername != null ) {
             if(userByUsername.getPassword().equals(userToBeCreated.getPassword())) {
