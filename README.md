@@ -3,7 +3,7 @@
 ## Getting started with Spring Boot
 
 -   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
--   Guides: http://spring.io/guides
+-   Guides: http://spring.io/guides  
     -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
     -   Building REST services with Spring: http://spring.io/guides/tutorials/bookmarks/
 
