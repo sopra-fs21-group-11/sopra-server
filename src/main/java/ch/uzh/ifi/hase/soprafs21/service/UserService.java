@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs21.rest.JWTAuthorizationFilter;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -80,6 +80,19 @@ public class UserService {
         return newUser;
     }
 
+    public User getUserByToken(String token){
+        //Could be refactored into userrepo.findbytoken(). This has not been tested and I had some troubles getting this correct.
+        token = token.replace("Bearer ", "");
+        List<User> users = this.getUsers();
+        for(User user : users){
+            if(user.getToken().equals(token)){
+                return user;
+            }
+        }
+
+        return null;
+    }
+
     private String getJWTToken(String username) {
         String secretKey = "mySecretKey";
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
@@ -94,11 +107,10 @@ public class UserService {
                                 .map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 600000))
+                .setExpiration(new Date(System.currentTimeMillis() + 600000000))
                 .signWith(SignatureAlgorithm.HS512,
                         secretKey.getBytes()).compact();
-
-        return "Bearer " + token;
+        return token;
     }
 
 
@@ -158,6 +170,7 @@ public class UserService {
         if (userByUsername != null ) {
             if(userByUsername.getPassword().equals(userToBeCreated.getPassword())) {
                 userByUsername.setStatus(UserStatus.ONLINE);
+                userByUsername.setToken(getJWTToken(userByUsername.getUsername()));
                 userByUsername = userRepository.save(userByUsername);
                 return userByUsername;
             }
