@@ -23,6 +23,10 @@ public class GameLobby {
 
     }
 
+    public void removePlayer(User player){
+        this.players.remove(player);
+    }
+
     public String getName() {
         return name;
     }

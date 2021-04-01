@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.GameKickPutDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
@@ -79,6 +80,20 @@ public class GameController {
         }
         GameLobby joinedGame = gameService.joinGame(userService.getUserByToken(token), id);
         return GameMapper.ConvertEntityToGamePostDTO(joinedGame);
+
+    }
+
+    @PutMapping("/games/{id}/kick")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GamePostDTO kickPlayer(@PathVariable long id, @RequestHeader("Authorization") String token, @RequestBody GameKickPutDTO gameKickPutDTO) {
+        User hostUser = userService.getUserByToken(token);
+        User userToKick = userService.getUser(gameKickPutDTO.getKickPlayerId());
+        if(hostUser == null || userToKick == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host or user to kick couldn't be found.");
+        }
+        GameLobby kickedGame = gameService.kickPlayer(hostUser, userToKick, id);
+        return GameMapper.ConvertEntityToGamePostDTO(kickedGame);
 
     }
 }

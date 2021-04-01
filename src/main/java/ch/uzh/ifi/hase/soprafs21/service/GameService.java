@@ -37,13 +37,25 @@ public class GameService {
         return newGame;
     }
 
+    public GameLobby kickPlayer(User host, User userToKick, long gameId){
+        GameLobby game = this.getGameById(gameId);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldnt find game with id: "+gameId);
+        }
+        if(game.getHost() != host){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the host is allowed to kick players.");
+        }
+        game.removePlayer(userToKick);
+        return game;
+    }
+
     public GameLobby joinGame(User user, long gameId){
         GameLobby gameToJoin = getGameById(gameId);
         if(gameToJoin.getPlayers().size() >= gameToJoin.getSettings().getPlayersMax()){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. Game is full");
         }
         if(gameToJoin.getPlayers().contains(user)){
-            //TODO: multiple joinings are still possible. Needs fix...
+            //TODO: multiple joins are still possible. Needs fix...
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. User is already in the game");
         }
         gameToJoin.addPlayer(user);
