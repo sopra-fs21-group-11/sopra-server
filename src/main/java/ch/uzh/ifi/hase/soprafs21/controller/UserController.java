@@ -77,9 +77,10 @@ public class UserController {
 
         // create user
         User createdUser = userService.checkUserAuthentication(userInput);
-
+        UserGetDTO retUser = DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+        retUser.setToken(createdUser.getToken());
         // convert internal representation of user back to API
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+        return retUser;
     }
 
 
