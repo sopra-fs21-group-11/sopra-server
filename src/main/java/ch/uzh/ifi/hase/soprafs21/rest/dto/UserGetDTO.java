@@ -14,6 +14,7 @@ public class UserGetDTO {
     private LocalDateTime actionDate;
     private LocalDate dateOfBirth;
 
+
     public Long getId() {
         return id;
     }
