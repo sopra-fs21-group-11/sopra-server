@@ -1,11 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
+import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameKickPutDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
@@ -43,11 +43,42 @@ public class GameController {
         return allGamesDTO;
     }
 
+    @PostMapping("/games/{id}/start")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity startGame(@PathVariable long id, @RequestHeader("Authorization") String token) {
+        GameLobby gameToStart = gameService.getOpenGameById(id);
+
+        //check if host started the game else -> 403
+        User hostUser = userService.getUserByToken(token);
+        if(hostUser == null){
+            return ResponseEntity.status(404).body(null);
+        }
+        if(gameToStart.getHostId()!= hostUser.getId())
+        {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only hosts can start games.");
+        }
+
+        //check if minimum players is reached.
+        if(gameToStart.getSettings().getPlayersMin()>gameToStart.getPlayers().size()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot start the game. There have to be more players");
+        }
+        //start actual game
+        Game startedGame = gameService.startGame(gameToStart);
+
+        String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(startedGame.getId()).toString();
+        Map<String, String> location = new HashMap<String, String>();
+        location.put("location", url );
+
+        return ResponseEntity.status(200).body(location);
+    }
+
+
     @GetMapping("/games/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO getGameById(@PathVariable long id) {
-        GameLobby game = gameService.getGameById(id);
+        GameLobby game = gameService.getOpenGameById(id);
 
         return GameMapper.ConvertEntityToGameGetDTO(game);
     }
@@ -78,7 +109,7 @@ public class GameController {
         if(joiningUser == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Joining user couldnt be identified by token.");
         }
-        GameLobby joinedGame = gameService.joinGame(userService.getUserByToken(token), id);
+        GameLobby joinedGame = gameService.joinGameLobby(userService.getUserByToken(token), id);
         return GameMapper.ConvertEntityToGamePostDTO(joinedGame);
 
     }
