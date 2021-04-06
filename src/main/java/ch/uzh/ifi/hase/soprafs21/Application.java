@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -53,6 +54,8 @@ public class Application {
                     .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/users").permitAll()
                     .antMatchers(HttpMethod.POST, "/users/login").permitAll()
+                    .requestMatchers(CorsUtils::isCorsRequest).permitAll()
+                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     .anyRequest().authenticated();
         }
     }
