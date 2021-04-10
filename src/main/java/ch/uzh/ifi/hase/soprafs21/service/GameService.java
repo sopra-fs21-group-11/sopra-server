@@ -6,23 +6,29 @@ import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
 public class GameService {
 
-    private List<GameLobby> openGames;
-    private List<Game> runningGames;
+    private List<GameLobby> openGames = new ArrayList<>();
+    private List<Game> runningGames = new ArrayList<>();
+
+    private SimpMessagingTemplate template;
+
 
     @Autowired
-    public GameService() {
-        openGames = new ArrayList<GameLobby>();
+    public GameService(SimpMessagingTemplate template) {
+         this.template = template;
     }
 
 
@@ -74,6 +80,22 @@ public class GameService {
 
     }
 
+    public void test(long id){
+        try {
+            Game game = getRunningGameById(id);
+            for(var thing : game.getPlayers()){
+                Map<String, String> location = new HashMap<String, String>();
+                location.put("location", "test" );
+                template.convertAndSendToUser(thing.getValue(),"/topic/countdown", location);
+            }
+
+            String asd = "qwer";
+        } catch (Exception ex){
+            String exept = ex.getMessage();
+        }
+
+    }
+
     public Game joinRunningGame(User user, String sessionId, long gameId){
         Game gameToJoin = getRunningGameById(gameId);
         gameToJoin.joinGame(user, sessionId);
@@ -112,6 +134,7 @@ public class GameService {
      * @return the next free gameid.
      */
     private long getNextFreeId(){
+
         List<Long> gameIdList = new ArrayList<>();
         long retId = 1;
         for(GameLobby game : openGames){

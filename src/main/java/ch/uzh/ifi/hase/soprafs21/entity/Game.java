@@ -36,10 +36,23 @@ public class Game {
     }
 
     public boolean joinGame(User user, String sessionId){
-        if(!this.waitingForPlayers.contains(user)){
+        boolean waitingFor = false;
+        for(User waitingForUser : this.waitingForPlayers){
+            if(waitingForUser.getId() == user.getId()){
+                waitingFor = true;
+                break;
+            }
+        }
+        if(!waitingFor) {
             return false; //already joined or not in lobby
         }
-        this.waitingForPlayers.remove(user);
+
+        for(User waitingForUser : this.waitingForPlayers){
+            if(waitingForUser.getId() == user.getId()){
+                this.waitingForPlayers.remove(waitingForUser);
+                break;
+            }
+        }
         this.players.add(new AbstractMap.SimpleEntry<User, String>(user, sessionId));//add token/user-combo to our players queue.
         return true;
     }

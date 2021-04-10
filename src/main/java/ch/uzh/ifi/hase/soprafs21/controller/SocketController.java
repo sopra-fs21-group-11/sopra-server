@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
+import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.JoinGameDTO;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
@@ -29,29 +30,10 @@ public class SocketController {
 
     @MessageMapping("/game")
     public void joinGame(@Header("simpSessionId") String sessionId, JoinGameDTO joinGameDTO) throws Exception {
-        String test = "test";
         User joiningUser = userService.getUser(joinGameDTO.getId());
-        gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());
+        Game joinedGame = gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());
+
 
     }
 
-/*
-    @MessageMapping("/start")
-    public void startCountdown(TestMessage message){
-        try{
-        } catch (Exception ex){}
-        if(message.getStart()=="stop"){
-
-        }
-        if(!message.getStart().equals("start")){
-            return;
-        }
-        try {
-            this.startCountdown(message.getCd());
-        } catch (Exception ex){}
-
-    }
-
-
-    }*/
 }

@@ -19,13 +19,19 @@ public class Deck extends Stack {
         try (BufferedReader br = new BufferedReader(new FileReader("src/bunzendataset.csv"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
+
+                String[] values = line.split(";");
+                //skip title row
+                if(values[0].equals("Locationname")){
+                    continue;
+                }
+
                 SwissLocationCard newCard = new SwissLocationCard();
                 newCard.setLocationName(values[0]);
                 //split coordinates
-                String toFloat = values[1].split(" ")[0]+","+values[1].split(" ")[1];
+                String toFloat = values[1].split(" ")[0]+"."+values[1].split(" ")[1];
                 newCard.setNsCoordinates(Float.parseFloat(toFloat));
-                toFloat = values[2].split(" ")[0]+","+values[2].split(" ")[1];
+                toFloat = values[2].split(" ")[0]+"."+values[2].split(" ")[1];
                 newCard.setEwCoordinates(Float.parseFloat(toFloat));
                 if(values[3].length()==0){//Population
                     continue;
@@ -49,7 +55,10 @@ public class Deck extends Stack {
                 //9: flag for Mountain
                 locationCards.add(newCard);
             }
-        } catch (Exception ex){}
+        } catch (Exception ex){
+
+
+        }
         for(int i = 0;i<=30;i++){//hardcoded: A deck contains 30 cards. TODO: change this according to gamesettings.
             Random rand = new Random();
             cards.add(locationCards.get(rand.nextInt(locationCards.size()-1)));//pick a random card out of the dataset
