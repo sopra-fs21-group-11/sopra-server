@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Date;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 public class UserRepositoryIntegrationTest {
@@ -19,27 +21,36 @@ public class UserRepositoryIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-    /*
     @Test
-    public void findByName_success() {
+    public void findById_success() {
         // given
-        User user = new User();
-        user.setName("Firstname Lastname");
+        /*User user = new User();
         user.setUsername("firstname@lastname");
         user.setStatus(UserStatus.OFFLINE);
         user.setToken("1");
+        user.setPassword("password");
 
-        //entityManager.persist(user);
-        //entityManager.flush();
+        entityManager.persist(user);
+        entityManager.flush();
 
         // when
-        User found = userRepository.findByName(user.getName());
+        Optional<User> found = userRepository.findById(user.getId());
+        assertTrue(found.isPresent());
+        assertFalse(found.isEmpty());
+
+        User foundUser = found.get();
 
         // then
-        assertNotNull(found.getId());
-        assertEquals(found.getName(), user.getName());
-        assertEquals(found.getUsername(), user.getUsername());
-        assertEquals(found.getToken(), user.getToken());
-        assertEquals(found.getStatus(), user.getStatus());
-    }*/
+        assertNotNull(foundUser.getId());
+        assertEquals(foundUser.getUsername(), user.getUsername());
+        assertEquals(foundUser.getPassword(), user.getPassword());
+        assertEquals(foundUser.getToken(), user.getToken());
+        assertEquals(foundUser.getStatus(), user.getStatus());
+
+        //we test also otherwise (no user is found...)
+        found = userRepository.findById(234L);
+        assertFalse(found.isPresent());
+        assertTrue(found.isEmpty());*/
+
+    }
 }

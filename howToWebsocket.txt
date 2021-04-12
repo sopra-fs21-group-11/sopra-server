@@ -1,0 +1,43 @@
+For my tests, I used two packages:
+
+import SockJS from "sockjs-client";
+import * as Stomp from "@stomp/stompjs";
+
+Initializing the STOMP-Endpoint:
+	var stompClient; //I defined this outside of any method. Similar to a class variable in Java. Absolutely no clue if this is state of the art :).
+
+	const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+	stompClient = Stomp.Stomp.over(socket);
+
+Connect (do the handshake) with the server:
+	stompClient.connect({}, function (someArgument /* I didnt use it*/){ ... }
+
+Subscribing to a hardcoded (fixed) endpoint and do some stuff as a message from the server drops in: (Do this inside of the connect function brackets.)
+	stompClient.subscribe('/test', function(something){
+        	let anything = JSON.parse(something.body).content;
+
+        	self.setState({something:anything});
+      	})
+
+To access "this" inside of the functions, I came up with the following line before the subscription:
+	var self = this;
+
+Subscribing to an user-specific endpoint (the game state thing). This is nothing else than a custom endpoint that consist of the url and the sessionId that every client gets:
+Get the sessionid:
+	var url = stompClient.ws._transport.url;
+	url = url.replace("ws://localhost:8080/gs-guide-websocket/",  "");
+	url = url.replace("/websocket", "");
+	url = url.replace(/^[0-9]+\//, "");
+	self.setState({sessionId:url});
+
+Subscribe to endpoint: 
+	stompClient.subscribe('secured/game/queue/specific-game-game'+self.state.sessionId', function(test){ //
+        	alert(JSON.parse(test.body).content);
+	      })
+
+Send the "join game"-command -> registering for the information about the gamestate that gets sent during the game:
+	stompClient.send("/app/game", {}, JSON.stringify({'name':name, 'id':"1", 'gameId':"1"}));
+
+Disconnecting the session (cpt. obvious):
+	stompClient.disconnect();
+

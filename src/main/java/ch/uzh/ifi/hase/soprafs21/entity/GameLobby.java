@@ -23,6 +23,11 @@ public class GameLobby {
 
     }
 
+    public Game StartGame(){
+        Game newGame = new Game(this);
+        return newGame;
+    }
+
     public void removePlayer(User player){
         this.players.remove(player);
     }
