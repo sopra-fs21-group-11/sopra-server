@@ -1,9 +1,8 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
-import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.Boolean;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs21.rest.JWTAuthorizationFilter;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import io.jsonwebtoken.Jwts;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +56,7 @@ public class UserService {
         Optional<User> user =this.userRepository.findById(userid);
         if (user.isPresent() ) {
             User  userUpdate= user.get();
-            userUpdate.setStatus(UserStatus.OFFLINE);
+            userUpdate.setIsOnline(false);
             userUpdate = userRepository.save(userUpdate);
             return userUpdate;
         }
@@ -68,8 +66,7 @@ public class UserService {
 
     public User createUser(User newUser) {
         newUser.setToken(getJWTToken(newUser.getUsername()));
-        newUser.setStatus(UserStatus.ONLINE);
-        newUser.setActionDate(LocalDateTime.now());
+        newUser.setIsOnline(true);
         checkIfUserExists(newUser);
 
         // saves the given entity but data is only persisted in the database once flush() is called
@@ -81,7 +78,7 @@ public class UserService {
     }
 
     public User getUserByToken(String token){
-        //Could be refactored into userrepo.findbytoken(). This has not been tested and I had some troubles getting this correct.
+        //Could be refactored into user repo. findByToken(). This has not been tested and I had some troubles getting this correct.
         token = token.replace("Bearer ", "");
         List<User> users = this.getUsers();
         for(User user : users){
@@ -122,14 +119,6 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage,userid.toString()));
         }
         User updateuser=user.get();
-        if(requestUser.getName()!=null)
-            updateuser.setName(requestUser.getName());
-
-        if(requestUser.getStatus()!=null)
-            updateuser.setStatus(requestUser.getStatus());
-
-        if(requestUser.getDateOfBirth()!=null)
-            updateuser.setDateOfBirth(requestUser.getDateOfBirth());
 
         if(requestUser.getUsername()!=null)
             updateuser.setUsername(requestUser.getUsername());
@@ -169,7 +158,7 @@ public class UserService {
         String baseErrorMessage = "Invalid username/ password";
         if (userByUsername != null ) {
             if(userByUsername.getPassword().equals(userToBeCreated.getPassword())) {
-                userByUsername.setStatus(UserStatus.ONLINE);
+                userByUsername.setIsOnline(true);
                 userByUsername.setToken(getJWTToken(userByUsername.getUsername()));
                 userByUsername = userRepository.save(userByUsername);
                 return userByUsername;

@@ -1,30 +1,18 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
-import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs21.controller.GameController;
-import ch.uzh.ifi.hase.soprafs21.controller.UserController;
+import ch.uzh.ifi.hase.soprafs21.constant.Boolean;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Collections;
-import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -59,7 +47,7 @@ public class GameControllerTest {
         User user = new User();
         user.setId(2L);
         user.setUsername("HostUser");
-        user.setStatus(UserStatus.OFFLINE);
+        user.setIsOnline(false);
 
         GameLobby lobby = new GameLobby(user);
         lobby.setId(1L);
@@ -90,7 +78,7 @@ public class GameControllerTest {
         User user = new User();
         user.setId(2L);
         user.setUsername("HostUser");
-        user.setStatus(UserStatus.OFFLINE);
+        user.setIsOnline(false);
 
         GameLobby lobby = new GameLobby(user);
         lobby.setId(1L);

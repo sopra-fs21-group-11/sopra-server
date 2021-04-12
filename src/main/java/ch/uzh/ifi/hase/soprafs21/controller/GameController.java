@@ -107,7 +107,7 @@ public class GameController {
     public GamePostDTO joinGame(@PathVariable long id, @RequestHeader("Authorization") String token) {
         User joiningUser = userService.getUserByToken(token);
         if(joiningUser == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Joining user couldnt be identified by token.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Joining user could not be identified by token.");
         }
         GameLobby joinedGame = gameService.joinGameLobby(userService.getUserByToken(token), id);
         return GameMapper.ConvertEntityToGamePostDTO(joinedGame);

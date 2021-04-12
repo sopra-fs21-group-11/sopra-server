@@ -1,19 +1,18 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
-import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.Boolean;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Internal User Representation
  * This class composes the internal representation of the user and defines how the user is stored in the database.
  * Every variable will be mapped into a database field with the @Column annotation
  * - nullable = false -> this cannot be left empty
- * - unique = true -> this value must be unqiue across the database -> composes the primary key
+ * - unique = true -> this value must be unique across the database -> composes the primary key
  */
 @Entity
 @Table(name = "USER")
@@ -25,66 +24,54 @@ public class User extends UserGetDTO implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @Column
-    private String name;
-
     @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false, unique = true)
     private String token;
 
     @Column(nullable = false)
-    private UserStatus status;
+    private Long totalWins = 0L;
 
     @Column(nullable = false)
-    private String password;
+    private Long totalDefeats = 0L;
 
     @Column(nullable = false)
-    private LocalDateTime actionDate;
+    private Date creationDate = new Date();
 
-    private LocalDate dateOfBirth;
+    @Column(nullable = false)
+    private Long totalTokens = 0L;
 
+    @Column(nullable = false)
+    private Long playTime = 0L;
 
+    @Column(nullable = false)
+    private boolean isPlaying = false;
 
+    @Column(nullable = false)
+    private boolean isOnline = true;
+
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    @Override
     public String getUsername() {
         return username;
     }
 
+    @Override
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public UserStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(UserStatus status) {
-        this.status = status;
     }
 
     public String getPassword() {
@@ -95,20 +82,59 @@ public class User extends UserGetDTO implements Serializable {
         this.password = password;
     }
 
-    public LocalDateTime getActionDate() {
-        return actionDate;
+    public String getToken() { return token; }
+
+    public void setToken(String token) { this.token = token; }
+
+    public Long getTotalWins() {
+        return totalWins;
     }
 
-    public void setActionDate(LocalDateTime actionDate) {
-        this.actionDate = actionDate;
+    public void setTotalWins(Long totalWins) {
+        this.totalWins = totalWins;
     }
 
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
+    public Long getTotalDefeats() {
+        return totalDefeats;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setTotalDefeats(Long totalDefeats) {
+        this.totalDefeats = totalDefeats;
     }
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Long getTotalTokens() {
+        return totalTokens;
+    }
+
+    public void setTotalTokens(Long totalTokens) {
+        this.totalTokens = totalTokens;
+    }
+
+    public Long getPlayTime() {
+        return playTime;
+    }
+
+    public void setPlayTime(Long playTime) {
+        this.playTime = playTime;
+    }
+
+    public boolean getIsPlaying() {
+        return isPlaying;
+    }
+
+    public void setIsPlaying(boolean isPlaying) {
+        this.isPlaying = isPlaying;
+    }
+
+    public boolean getIsOnline() { return isOnline; }
+
+    public void setIsOnline(boolean isOnline) { this.isOnline = isOnline; }
 }
