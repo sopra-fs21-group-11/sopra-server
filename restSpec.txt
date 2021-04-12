@@ -1,0 +1,253 @@
+Description: update user profile
+Endpoint: /users
+Request Type: POST
+Authorization: None
+Body:
+{
+    "username":"martin2",
+    "password":"testpw"
+}
+Response:
+{
+    "location": "http://localhost:8080/users/1",
+    "token": "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb3ByYWZzMjEiLCJzdWIiOiJtYXJ0aW4yIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTYxODI0MDMwMywiZXhwIjoxNjE4ODQwMzAzfQ._LCsZePo9gcTN9pR4uHf-PXnGe3CSzdeE24fcPYYQ4BWkub2YQepzk9llqvJ7x7DT2P4ekjzy1KXalgfYt9z5A"
+}
+
+Description: Get list of all users
+Endpoint: /users/
+Request Type: GET
+Authorization: Bearer Token
+Body:
+{}
+Response:
+[
+	{
+		"id": 1,
+		"username": "mb",
+		"totalWins": 0,
+		"totalDefeats": 0,
+		"creationDate": "2021-04-12T16:08:57.633+00:00",
+		"totalTokens": 0,
+		"playTime": 0,
+		"isPlaying": false,
+		"isOnline": true
+	},
+	{
+		"id": 2,
+		"username": "mb",
+		"totalWins": 0,
+		"totalDefeats": 0,
+		"creationDate": "2021-04-12T16:08:57.633+00:00",
+		"totalTokens": 0,
+		"playTime": 0,
+		"isPlaying": false,
+		"isOnline": true
+	}
+]
+
+Description: Retrieve user profile with userID
+Endpoint: /users/{id}
+Request Type: GET
+Authorization: Bearer Token
+Body:
+{}
+Response:
+{
+    "id": 1,
+    "username": "mb",
+    "totalWins": 0,
+    "totalDefeats": 0,
+    "creationDate": "2021-04-12T16:08:57.633+00:00",
+    "totalTokens": 0,
+    "playTime": 0,
+    "isPlaying": false,
+    "isOnline": true
+}
+
+Description: User logout
+Endpoint: /users/logout/{id}
+Request Type: GET
+Authorization: Bearer Token
+Body:
+{}
+Response:
+{
+    "id": 1,
+    "username": "mb",
+    "totalWins": 0,
+    "totalDefeats": 0,
+    "creationDate": "2021-04-12T16:08:57.633+00:00",
+    "totalTokens": 0,
+    "playTime": 0,
+    "isPlaying": false,
+    "isOnline": false
+}
+
+Description: user login
+Endpoint: /users/login
+Request Type: POST
+Authorization: None
+Body:
+{
+    "username":"martin2",
+    "password":"testpw"
+}
+Response:
+{
+    "location": "http://localhost:8080/users/1",
+    "token": "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb3ByYWZzMjEiLCJzdWIiOiJtYXJ0aW4yIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTYxODI0MDMwMywiZXhwIjoxNjE4ODQwMzAzfQ._LCsZePo9gcTN9pR4uHf-PXnGe3CSzdeE24fcPYYQ4BWkub2YQepzk9llqvJ7x7DT2P4ekjzy1KXalgfYt9z5A"
+}
+
+Description: Creates a new gamelobby with logged in user as host user.
+Endpoint: /games
+Request Type: POST
+Authorization: Bearer Token
+Body:
+{}
+Response:
+{
+    "location": "http://localhost:8080/games/1"
+}
+
+Description: Gets a list of all open Gamelobbies
+Endpoint: /games
+Request Type: GET
+Authorization: Bearer Token
+Body:
+{}
+Response:
+[
+    {
+        "id": 1,
+        "playersMin": 1,
+        "playersMax": 6,
+        "nrOfEvaluations": 2,
+        "doubtCountdown": 30,
+        "visibleAfterDoubtCountdown": 5,
+        "playerTurnCountdown": 30,
+        "tokenGainOnCorrectGuess": 2,
+        "tokenGainOnNearestGuess": 1,
+        "horizontalValueCategoryId": 1,
+        "verticalValueCategoryId": 2,
+        "name": "New Game",
+        "hostId": 2,
+        "players": [
+            2
+        ]
+    },
+	    {
+        "id": 2,
+        "playersMin": 1,
+        "playersMax": 6,
+        "nrOfEvaluations": 2,
+        "doubtCountdown": 30,
+        "visibleAfterDoubtCountdown": 5,
+        "playerTurnCountdown": 30,
+        "tokenGainOnCorrectGuess": 2,
+        "tokenGainOnNearestGuess": 1,
+        "horizontalValueCategoryId": 1,
+        "verticalValueCategoryId": 2,
+        "name": "New Game",
+        "hostId": 2,
+        "players": [
+            2
+        ]
+    }
+]
+
+Description: Gets the gamedetails of a specific gamelobby
+Endpoint: /games/{id}
+Request Type: GET
+Authorization: Bearer Token
+Body:
+{}
+Response:
+{
+    "id": 1,
+    "playersMin": 1,
+    "playersMax": 6,
+    "nrOfEvaluations": 2,
+    "doubtCountdown": 30,
+    "visibleAfterDoubtCountdown": 5,
+    "playerTurnCountdown": 30,
+    "tokenGainOnCorrectGuess": 2,
+    "tokenGainOnNearestGuess": 1,
+    "horizontalValueCategoryId": 1,
+    "verticalValueCategoryId": 2,
+    "name": "New Game",
+    "hostId": 2,
+    "players": [
+        2
+    ]
+}
+
+Description: The sending joins the game (Currently multiple joins possible I know...)
+Endpoint: /games/{id}
+Request Type: POST
+Authorization: Bearer Token
+Body:
+{}
+Response:
+{
+    "id": 1,
+    "playersMin": 1,
+    "playersMax": 6,
+    "nrOfEvaluations": 2,
+    "doubtCountdown": 30,
+    "visibleAfterDoubtCountdown": 5,
+    "playerTurnCountdown": 30,
+    "tokenGainOnCorrectGuess": 2,
+    "tokenGainOnNearestGuess": 1,
+    "horizontalValueCategoryId": 1,
+    "verticalValueCategoryId": 2,
+    "name": "New Game",
+    "hostId": 2,
+    "players": [
+        2,
+		2
+    ]
+}
+
+Description: Kicks a player (Only host is allowed. Identified by token.)
+Endpoint: /games/{id}/kick
+Request Type: PUT
+Authorization: Bearer Token
+Body:
+{
+    "kickPlayerId": "3"
+}
+Response:
+{
+    "id": 1,
+    "playersMin": 1,
+    "playersMax": 6,
+    "nrOfEvaluations": 2,
+    "doubtCountdown": 30,
+    "visibleAfterDoubtCountdown": 5,
+    "playerTurnCountdown": 30,
+    "tokenGainOnCorrectGuess": 2,
+    "tokenGainOnNearestGuess": 1,
+    "horizontalValueCategoryId": 1,
+    "verticalValueCategoryId": 2,
+    "name": "New Game",
+    "hostId": 2,
+    "players": [
+        2,
+    ]
+}
+
+Description: Starts a game (Backend ready for websocket connection)
+Endpoint: /games/{id}/start
+Request Type: POST
+Authorization: Bearer Token
+Body:
+{
+    "kickPlayerId": "3"
+}
+Response: (Might be edited because makes no sense...)
+{
+    "location": "http://localhost:8080/games/1/start/1"
+}
+
+
+
