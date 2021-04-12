@@ -80,22 +80,6 @@ public class GameService {
 
     }
 
-    public void test(long id){
-        try {
-            Game game = getRunningGameById(id);
-            for(var thing : game.getPlayers()){
-                Map<String, String> location = new HashMap<String, String>();
-                location.put("location", "test" );
-                template.convertAndSendToUser(thing.getValue(),"/topic/countdown", location);
-            }
-
-            String asd = "qwer";
-        } catch (Exception ex){
-            String exept = ex.getMessage();
-        }
-
-    }
-
     public Game joinRunningGame(User user, String sessionId, long gameId){
         Game gameToJoin = getRunningGameById(gameId);
         gameToJoin.joinGame(user, sessionId);
@@ -110,7 +94,6 @@ public class GameService {
             return true;
         }
     }
-
     public GameLobby getOpenGameById(long id){
         for(GameLobby game : this.getAllOpenGames()){
             if(game.getId() == id){
