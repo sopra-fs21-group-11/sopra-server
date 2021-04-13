@@ -1,18 +1,20 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.Boolean;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class UserGetDTO {
 
     private Long id;
-    private String name;
     private String username;
-    private UserStatus status;
-    private LocalDateTime actionDate;
-    private LocalDate dateOfBirth;
+    private Long totalWins;
+    private Long totalDefeats;
+    private Date creationDate;
+    private Long totalTokens;
+    private Long playTime;
+    private boolean isPlaying;
+    private boolean isOnline;
 
     public Long getId() {
         return id;
@@ -20,14 +22,6 @@ public class UserGetDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getUsername() {
@@ -38,26 +32,59 @@ public class UserGetDTO {
         this.username = username;
     }
 
-    public UserStatus getStatus() {
-        return status;
+    public Long getTotalWins() {
+        return totalWins;
     }
 
-    public void setStatus(UserStatus status) {
-        this.status = status;
-    }
-    public LocalDateTime getActionDate() {
-        return actionDate;
+    public void setTotalWins(Long totalWins) {
+        this.totalWins = totalWins;
     }
 
-    public void setActionDate(LocalDateTime actionDate) {
-        this.actionDate = actionDate;
+    public Long getTotalDefeats() {
+        return totalDefeats;
     }
 
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
+    public void setTotalDefeats(Long totalDefeats) {
+        this.totalDefeats = totalDefeats;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Long getTotalTokens() {
+        return totalTokens;
+    }
+
+    public void setTotalTokens(Long totalTokens) {
+        this.totalTokens = totalTokens;
+    }
+
+    public Long getPlayTime() {
+        return playTime;
+    }
+
+    public void setPlayTime(Long playTime) {
+        this.playTime = playTime;
+    }
+
+    public boolean getIsPlaying() {
+        return isPlaying;
+    }
+
+    public void setIsPlaying(boolean playing) {
+        isPlaying = playing;
+    }
+
+    public boolean getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(boolean isOnline) {
+        this.isOnline = isOnline;
     }
 }

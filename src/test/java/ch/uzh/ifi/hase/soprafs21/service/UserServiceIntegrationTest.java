@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
-import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,42 +33,65 @@ public class UserServiceIntegrationTest {
     }
 
     @Test
-    public void createUser_validInputs_success() {
-        // given
-        assertNull(userRepository.findByUsername("testUsername"));
+    public void GetUserByTokenAndIDAfterCreation() throws Exception {
 
         User testUser = new User();
-        testUser.setName("testName");
+        testUser.setPassword("testName");
         testUser.setUsername("testUsername");
 
-        // when
-        /*User createdUser = userService.createUser(testUser);
+        User createdUser = userService.createUser(testUser);
 
-        // then
-        assertEquals(testUser.getId(), createdUser.getId());
-        assertEquals(testUser.getName(), createdUser.getName());
-        assertEquals(testUser.getUsername(), createdUser.getUsername());
+        //generated values present?
         assertNotNull(createdUser.getToken());
-        assertEquals(UserStatus.OFFLINE, createdUser.getStatus());*/
+        assertNotNull(createdUser.getId());
+
+        User searchedUser = userService.getUserByToken(createdUser.getToken());
+        assertEquals(createdUser.getUsername(), searchedUser.getUsername());
+        assertEquals(createdUser.getPassword(), searchedUser.getPassword());
+
+        //same thing with id
+        searchedUser = userService.getUser(createdUser.getId());
+        assertEquals(createdUser.getUsername(), searchedUser.getUsername());
+        assertEquals(createdUser.getPassword(), searchedUser.getPassword());
     }
 
     @Test
-    public void createUser_duplicateUsername_throwsException() {
-        assertNull(userRepository.findByUsername("testUsername"));
-
+    public void UpdateUser() throws Exception {
         User testUser = new User();
-        testUser.setName("testName");
+        testUser.setPassword("testName");
         testUser.setUsername("testUsername");
-        /*User createdUser = userService.createUser(testUser);
 
-        // attempt to create second user with same username
-        User testUser2 = new User();
+        User createdUser = userService.createUser(testUser);
 
-        // change the name but forget about the username
-        testUser2.setName("testName2");
-        testUser2.setUsername("testUsername");
+        User updateUser = new User();
+        updateUser.setUsername("newUsername");
+        updateUser.setPassword("newPassword");
 
-        // check that an error is thrown
-        assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));*/
+        User updatedUser = userService.updateUser(createdUser.getId(), updateUser);
+
+        assertEquals(updatedUser.getUsername(), updateUser.getUsername());
+        assertEquals(updatedUser.getPassword(), updateUser.getPassword());
+        assertNotEquals(testUser.getUsername(), updatedUser.getUsername());
+
+        assertEquals(updatedUser.getId(), createdUser.getId());
     }
+
+    @Test
+    public void CheckAuthentication() throws Exception {
+        User testUser = new User();
+        testUser.setPassword("testName");
+        testUser.setUsername("testUsername");
+
+        User createdUser = userService.createUser(testUser);
+        User notAllowedUser = new User();
+        notAllowedUser.setPassword("qwe");
+        notAllowedUser.setUsername("qwwe");
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            userService.checkUserAuthentication(notAllowedUser);
+        });
+
+        //User authenticatedUser = userService.checkUserAuthentication(createdUser);
+    }
+
 }
