@@ -68,9 +68,9 @@ public class UserController {
         // create user
         User createdUser = userService.createUser(userInput);
 
-        String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdUser.getId()).toString();
+        //String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdUser.getId()).toString();
         Map<String, String> location = new HashMap<String, String>();
-        location.put("location", url );
+        location.put("id", Long.toString(createdUser.getId()) );
         location.put("token", createdUser.getToken());
         // convert internal representation of user back to API
         return ResponseEntity.status(201).body(location);
@@ -86,7 +86,7 @@ public class UserController {
         // create user
         String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dbUser.getId()).toString();
         Map<String, String> location = new HashMap<String, String>();
-        location.put("location", url );
+        location.put("id", Long.toString(dbUser.getId()) );
         location.put("token", dbUser.getToken());
         // convert internal representation of user back to API
         return  ResponseEntity.status(200).body(location);
