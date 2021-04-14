@@ -27,6 +27,7 @@ public class GameMapper {
         gameGetDTO.setTokenGainOnCorrectGuess(settings.getTokenGainOnCorrectGuess());
         gameGetDTO.setTokenGainOnNearestGuess(settings.getTokenGainOnNearestGuess());
         gameGetDTO.setVisibleAfterDoubtCountdown(settings.getVisibleAfterDoubtCountdown());
+        gameGetDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
 
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){
@@ -54,6 +55,7 @@ public class GameMapper {
         gamePostDTO.setTokenGainOnCorrectGuess(settings.getTokenGainOnCorrectGuess());
         gamePostDTO.setTokenGainOnNearestGuess(settings.getTokenGainOnNearestGuess());
         gamePostDTO.setVisibleAfterDoubtCountdown(settings.getVisibleAfterDoubtCountdown());
+        gamePostDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
 
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){

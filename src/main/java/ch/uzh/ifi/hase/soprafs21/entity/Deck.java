@@ -18,8 +18,10 @@ public class Deck extends Stack {
         List<Card> locationCards = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("src/bunzendataset.csv"))) {
             String line;
-            while ((line = br.readLine()) != null) {
 
+            int cardIdCounter = 0;
+            while ((line = br.readLine()) != null) {
+                cardIdCounter++;
                 String[] values = line.split(";");
                 //skip title row
                 if(values[0].equals("Locationname")){
@@ -27,6 +29,7 @@ public class Deck extends Stack {
                 }
 
                 SwissLocationCard newCard = new SwissLocationCard();
+                newCard.setCardId(cardIdCounter);
                 newCard.setLocationName(values[0]);
                 //split coordinates
                 String toFloat = values[1].split(" ")[0]+"."+values[1].split(" ")[1];

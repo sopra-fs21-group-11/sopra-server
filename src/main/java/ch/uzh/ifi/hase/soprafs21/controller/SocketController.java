@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class SocketController {
@@ -27,13 +31,20 @@ public class SocketController {
         this.gameService = gameService;
     }
 
-
     @MessageMapping("/game")
     public void joinGame(@Header("simpSessionId") String sessionId, JoinGameDTO joinGameDTO) throws Exception {
+
         User joiningUser = userService.getUser(joinGameDTO.getId());
         Game joinedGame = gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());
+        if(gameService.gameIsFull(joinGameDTO.getGameId())){
+            gameService.sendGameStateToUsers(joinedGame.getId());
+            Thread.sleep(10000);
+            joinedGame.performTurn(joinGameDTO.getId(), null);
+            gameService.sendGameStateToUsers(joinedGame.getId());
 
-
+        }
     }
+
+
 
 }

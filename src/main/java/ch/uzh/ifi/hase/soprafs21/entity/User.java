@@ -54,6 +54,17 @@ public class User extends UserGetDTO implements Serializable {
     @Column(nullable = false)
     private boolean isOnline = true;
 
+    @Column int currentToken;
+
+
+    public int getCurrentToken() {
+        return currentToken;
+    }
+
+    public void setCurrentToken(int currentToken) {
+        this.currentToken = currentToken;
+    }
+
     @Override
     public Long getId() {
         return id;

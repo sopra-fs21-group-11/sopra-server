@@ -4,6 +4,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -88,12 +89,20 @@ public class GameService {
 
     public boolean gameIsFull(long gameId){
         Game FullGame = getRunningGameById(gameId);
-        if(FullGame.getJoinedPlayer().size() != FullGame.getPlayers().size()){//TODO: lacks check if too many players joined
+
+        if(FullGame.getJoinedPlayer().size() != 0){
             return false;
         }else{
+            //the first time, the game is full, we share the starting tokens:
+            for(var user : FullGame.getPlayers()){
+                user.getKey().setCurrentToken(FullGame.getCurrentSettings().getNrOfStartingTokens());
+            }
             return true;
         }
     }
+
+
+
     public GameLobby getOpenGameById(long id){
         for(GameLobby game : this.getAllOpenGames()){
             if(game.getId() == id){
@@ -112,6 +121,16 @@ public class GameService {
         return null;
     }
 
+    public void sendGameStateToUsers(long id){
+        Game gameToSend = this.getRunningGameById(id);
+        for(var userToSend : gameToSend.getPlayers()){
+            String sessionId = userToSend.getValue();
+            GameStateDTO gameStateDTO = gameToSend.convertToDTO();
+            gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken()); //nr of token is userspecific
+            this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId,gameStateDTO);
+
+        }
+    }
     /**
      * Helper method for assigning the gameId
      * @return the next free gameid.
