@@ -9,7 +9,7 @@ Body:
 }
 Response:
 {
-    "location": "http://localhost:8080/users/1",
+    "id": "1",
     "token": "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb3ByYWZzMjEiLCJzdWIiOiJtYXJ0aW4yIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTYxODI0MDMwMywiZXhwIjoxNjE4ODQwMzAzfQ._LCsZePo9gcTN9pR4uHf-PXnGe3CSzdeE24fcPYYQ4BWkub2YQepzk9llqvJ7x7DT2P4ekjzy1KXalgfYt9z5A"
 }
 
@@ -251,7 +251,7 @@ Body:
 }
 Response: (Might be edited because makes no sense...)
 {
-    "location": "http://localhost:8080/games/1/start/1"
+    "id": "1"
 }
 
 

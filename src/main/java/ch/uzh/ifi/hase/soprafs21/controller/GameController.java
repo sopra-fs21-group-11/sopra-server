@@ -66,9 +66,9 @@ public class GameController {
         //start actual game
         Game startedGame = gameService.startGame(gameToStart);
 
-        String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(startedGame.getId()).toString();
+        //String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(startedGame.getId()).toString();
         Map<String, String> location = new HashMap<String, String>();
-        location.put("location", url );
+        location.put("id", Long.toString(startedGame.getId()) );
 
         return ResponseEntity.status(200).body(location);
     }
@@ -93,9 +93,9 @@ public class GameController {
         }
         GameLobby newGame = gameService.createNewGameLobby(hostUser);
 
-        String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newGame.getId()).toString();
+        //String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newGame.getId()).toString();
         Map<String, String> location = new HashMap<String, String>();
-        location.put("location", url );
+        location.put("id", Long.toString(newGame.getId()) );
         // convert internal representation of user back to API
         return ResponseEntity.status(201).body(location);
 
