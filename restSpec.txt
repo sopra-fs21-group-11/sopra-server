@@ -106,7 +106,7 @@ Body:
 {}
 Response:
 {
-    "id": "1"
+    "id":"1"
 }
 
 Description: Gets a list of all open Gamelobbies
@@ -127,6 +127,7 @@ Response:
         "playerTurnCountdown": 30,
         "tokenGainOnCorrectGuess": 2,
         "tokenGainOnNearestGuess": 1,
+	"nrOfStartingTokens": 4,
         "horizontalValueCategoryId": 1,
         "verticalValueCategoryId": 2,
         "name": "New Game",
@@ -145,6 +146,7 @@ Response:
         "playerTurnCountdown": 30,
         "tokenGainOnCorrectGuess": 2,
         "tokenGainOnNearestGuess": 1,
+	"nrOfStartingTokens": 4,
         "horizontalValueCategoryId": 1,
         "verticalValueCategoryId": 2,
         "name": "New Game",
@@ -172,6 +174,7 @@ Response:
     "playerTurnCountdown": 30,
     "tokenGainOnCorrectGuess": 2,
     "tokenGainOnNearestGuess": 1,
+    "nrOfStartingTokens": 4,
     "horizontalValueCategoryId": 1,
     "verticalValueCategoryId": 2,
     "name": "New Game",
@@ -198,6 +201,7 @@ Response:
     "playerTurnCountdown": 30,
     "tokenGainOnCorrectGuess": 2,
     "tokenGainOnNearestGuess": 1,
+    "nrOfStartingTokens": 4,
     "horizontalValueCategoryId": 1,
     "verticalValueCategoryId": 2,
     "name": "New Game",
@@ -227,6 +231,7 @@ Response:
     "playerTurnCountdown": 30,
     "tokenGainOnCorrectGuess": 2,
     "tokenGainOnNearestGuess": 1,
+    "nrOfStartingTokens": 4,
     "horizontalValueCategoryId": 1,
     "verticalValueCategoryId": 2,
     "name": "New Game",

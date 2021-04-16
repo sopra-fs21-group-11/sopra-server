@@ -11,7 +11,7 @@ public class GameSettings {
     private int tokenGainOnNearestGuess;
     private long horizontalValueCategoryId;
     private long verticalValueCategoryId;
-
+    private int nrOfStartingTokens;
 
     public GameSettings() {
         //default settings:
@@ -25,6 +25,7 @@ public class GameSettings {
         this.tokenGainOnNearestGuess = 1;
         this.horizontalValueCategoryId = 1;
         this.verticalValueCategoryId = 2;
+        this.nrOfStartingTokens = 4;
     }
 
     public int getTokenGainOnNearestGuess() {
@@ -73,6 +74,14 @@ public class GameSettings {
 
     public void setVisibleAfterDoubtCountdown(int visibleAfterDoubtCountdown) {
         this.visibleAfterDoubtCountdown = visibleAfterDoubtCountdown;
+    }
+
+    public int getNrOfStartingTokens() {
+        return nrOfStartingTokens;
+    }
+
+    public void setNrOfStartingTokens(int nrOfStartingTokens) {
+        this.nrOfStartingTokens = nrOfStartingTokens;
     }
 
     public int getPlayerTurnCountdown() {

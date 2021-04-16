@@ -20,11 +20,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "/queue/specific-game");
         config.setApplicationDestinationPrefixes("/app");
         //config.enableSimpleBroker("/");
-        config.enableSimpleBroker("/secured/game/queue/specific-game");
-        config.setUserDestinationPrefix("secured/game");
+        //config.enableSimpleBroker("/game/queue/specific-game");
+        config.setUserDestinationPrefix("/game");
     }
 
     @Override
