@@ -21,19 +21,21 @@ public class Board {
     }
 
    public void placeCard(Card cardToPlace, int index, String axis){
-        //horizontalAxis.
+        //horizontalAxis
        if(axis.toLowerCase(Locale.ROOT).contains("horizontal")){
-           int indexToInsert = index+startingCardIndexHorizontal+1;
+           int indexToInsert = index;
 
            if(indexToInsert == 0){//no left neighbour -> placed at the border
                horizontalAxis.get(0).setLeftNeighbour(cardToPlace);
                cardToPlace.setRightNeighbour(horizontalAxis.get(0));
                horizontalAxis.add(0, cardToPlace);
            }else if (indexToInsert == horizontalAxis.size()) {//index to insert is the same as length -> no right neighbour -> right border
+
                 horizontalAxis.get(indexToInsert-1).setRightNeighbour(cardToPlace);
                 cardToPlace.setLeftNeighbour(horizontalAxis.get(indexToInsert-1));
                 horizontalAxis.add(indexToInsert, cardToPlace);
            } else{
+
                horizontalAxis.get(indexToInsert-1).setRightNeighbour(cardToPlace);
                horizontalAxis.get(indexToInsert).setLeftNeighbour(cardToPlace);
                cardToPlace.setLeftNeighbour(horizontalAxis.get(indexToInsert-1));
@@ -44,7 +46,7 @@ public class Board {
 
        }else {
            //vertical
-           int indexToInsert = index + startingCardIndexVertical + 1;
+           int indexToInsert = index;
 
            if (indexToInsert == 0) {//no lower neighbour -> placed at the border
                verticalAxis.get(0).setLowerNeighbour(cardToPlace);

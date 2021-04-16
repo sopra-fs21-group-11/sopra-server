@@ -106,7 +106,7 @@ Body:
 {}
 Response:
 {
-    "location": "http://localhost:8080/games/1"
+    "id":"1"
 }
 
 Description: Gets a list of all open Gamelobbies

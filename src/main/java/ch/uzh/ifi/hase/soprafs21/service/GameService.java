@@ -102,6 +102,21 @@ public class GameService {
     }
 
 
+    public void incomingTurn(long gameId, String sessionId, int placementIndex, String axis){
+        Game game = getRunningGameById(gameId);
+        User turningUser = new User(); //need to assign. Else the condition turninguser.getid... doesnt work.
+        boolean userInGame = false;
+        for(var user : game.getPlayers()){
+            if(user.getValue().equals(sessionId)){
+                turningUser = user.getKey();
+                userInGame = true;
+            }
+        }
+        if(!userInGame){return;}
+        if(turningUser.getId().equals(game.getCurrentPlayer().getKey().getId())){// is it turningusers turn?
+            game.performTurn(turningUser.getId(), game.getNextCard(), placementIndex, axis);
+        }
+    }
 
     public GameLobby getOpenGameById(long id){
         for(GameLobby game : this.getAllOpenGames()){

@@ -19,6 +19,9 @@ public class Game {
     private Deck deckStack;
     private long hostPlayerId;
     private List<User> waitingForPlayers;
+    private Card nextCard;
+    private ValueCategory horizontalValueCategory;
+    private ValueCategory verticalValueCategory;
 
     private final GameSettings currentSettings;
 
@@ -36,8 +39,9 @@ public class Game {
 
         this.deckStack = new Deck();//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
 
-        //We set the starting-card right away:
+        //We set the starting-card and the nextCard right away:
         this.activeBoard = new Board(deckStack.pop());
+        this.nextCard = deckStack.pop();
 
         this.players = new LinkedList<>();
 
@@ -68,17 +72,17 @@ public class Game {
         return true;
     }
 
-    public void performTurn(long userid, Card cardToPlace){
+    public void performTurn(long userid, Card cardToPlace, int placementIndex, String axis){
         if(currentPlayer.getKey().getId() != userid){
             return;
         }
+        //set next player
         players.add(currentPlayer);
         currentPlayer = players.remove();
-        activeBoard.placeCard(deckStack.pop(), -1,"horizontal");
-        activeBoard.placeCard(deckStack.pop(), 1,"horizontal");
-        //activeBoard.placeCard(deckStack.pop(), -1,"horizontal");
-
-
+        //place card
+        activeBoard.placeCard(cardToPlace, placementIndex,axis);
+        //set next card
+        nextCard = deckStack.pop();
 
     }
 
@@ -133,10 +137,10 @@ public class Game {
 
 
         CardDTO nextCard = new CardDTO();
-        /*nextCard.setId(card.getCardId());
-        nextCard.setNcoord(card.getNsCoordinates());
-        nextCard.setEcoord(card.getEwCoordinates());
-        nextCard.setName(card.getLocationName());*/
+        nextCard.setId(this.nextCard.getCardId());
+        nextCard.setNcoord(this.nextCard.getNsCoordinates());
+        nextCard.setEcoord(this.nextCard.getEwCoordinates());
+        nextCard.setName(this.nextCard.getLocationName());
 
         gameStateDTO.setGamestate(this.activeState.toString());
         gameStateDTO.setPlayertokens(1);
@@ -156,6 +160,10 @@ public class Game {
         this.id = id;
     }
 
+    public Card getNextCard() {
+        return nextCard;
+    }
+
     public List<User> getJoinedPlayer() {
         return waitingForPlayers;
     }
@@ -164,6 +172,9 @@ public class Game {
         return players;
     }
 
+    public Map.Entry<User, String> getCurrentPlayer() {
+        return currentPlayer;
+    }
 
     public GameSettings getCurrentSettings() {
         return currentSettings;
