@@ -2,9 +2,9 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.GameState;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.CardDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.*;

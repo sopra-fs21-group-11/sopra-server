@@ -1,5 +1,10 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import org.hibernate.mapping.Value;
+
 public class GameSettings {
     private int playersMin;
     private int playersMax;
@@ -9,8 +14,8 @@ public class GameSettings {
     private int playerTurnCountdown;
     private int tokenGainOnCorrectGuess;
     private int tokenGainOnNearestGuess;
-    private long horizontalValueCategoryId;
-    private long verticalValueCategoryId;
+    private ValueCategory horizontalValueCategoryId;
+    private ValueCategory verticalValueCategoryId;
     private int nrOfStartingTokens;
 
     public GameSettings() {
@@ -23,8 +28,9 @@ public class GameSettings {
         this.playerTurnCountdown = 30;
         this.tokenGainOnCorrectGuess = 2;
         this.tokenGainOnNearestGuess = 1;
-        this.horizontalValueCategoryId = 1;
-        this.verticalValueCategoryId = 2;
+        //has to be set by id. id is hardcoded in ValueCategories. This is still standardsetup
+        this.horizontalValueCategoryId = new ECoordinateCategory();
+        this.verticalValueCategoryId = new NCoordinateCategory();
         this.nrOfStartingTokens = 4;
     }
 
@@ -100,19 +106,19 @@ public class GameSettings {
         this.tokenGainOnCorrectGuess = tokenGainOnCorrectGuess;
     }
 
-    public long getHorizontalValueCategoryId() {
+    public ValueCategory getHorizontalValueCategory() {
         return horizontalValueCategoryId;
     }
 
-    public void setHorizontalValueCategoryId(long horizontalValueCategoryId) {
+    public void setHorizontalValueCategory(ValueCategory horizontalValueCategoryId) {
         this.horizontalValueCategoryId = horizontalValueCategoryId;
     }
 
-    public long getVerticalValueCategoryId() {
+    public ValueCategory getVerticalValueCategory() {
         return verticalValueCategoryId;
     }
 
-    public void setVerticalValueCategoryId(long verticalValueCategoryId) {
+    public void setVerticalValueCategory(ValueCategory verticalValueCategoryId) {
         this.verticalValueCategoryId = verticalValueCategoryId;
     }
 

@@ -2,9 +2,9 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 

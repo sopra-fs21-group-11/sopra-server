@@ -20,8 +20,8 @@ public class GameMapper {
         gameGetDTO.setHostId(gameLobby.getHostId());
         gameGetDTO.setPlayersMax(settings.getPlayersMax());
         gameGetDTO.setPlayersMin(settings.getPlayersMin());
-        gameGetDTO.setHorizontalValueCategoryId(settings.getHorizontalValueCategoryId());
-        gameGetDTO.setVerticalValueCategoryId(settings.getVerticalValueCategoryId());
+        gameGetDTO.setHorizontalValueCategoryId(settings.getHorizontalValueCategory().getId());
+        gameGetDTO.setVerticalValueCategoryId(settings.getVerticalValueCategory().getId());
         gameGetDTO.setNrOfEvaluations(settings.getNrOfEvaluations());
         gameGetDTO.setPlayerTurnCountdown(settings.getPlayerTurnCountdown());
         gameGetDTO.setTokenGainOnCorrectGuess(settings.getTokenGainOnCorrectGuess());
@@ -48,8 +48,8 @@ public class GameMapper {
         gamePostDTO.setHostId(gameLobby.getHostId());
         gamePostDTO.setPlayersMax(settings.getPlayersMax());
         gamePostDTO.setPlayersMin(settings.getPlayersMin());
-        gamePostDTO.setHorizontalValueCategoryId(settings.getHorizontalValueCategoryId());
-        gamePostDTO.setVerticalValueCategoryId(settings.getVerticalValueCategoryId());
+        gamePostDTO.setHorizontalValueCategoryId(settings.getHorizontalValueCategory().getId());
+        gamePostDTO.setVerticalValueCategoryId(settings.getVerticalValueCategory().getId());
         gamePostDTO.setNrOfEvaluations(settings.getNrOfEvaluations());
         gamePostDTO.setPlayerTurnCountdown(settings.getPlayerTurnCountdown());
         gamePostDTO.setTokenGainOnCorrectGuess(settings.getTokenGainOnCorrectGuess());
