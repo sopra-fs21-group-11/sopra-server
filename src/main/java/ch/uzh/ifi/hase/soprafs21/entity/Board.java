@@ -1,8 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 public class Board {
@@ -19,8 +22,7 @@ public class Board {
         this.horizontalAxis.add(startingCard);
         this.verticalAxis.add(startingCard);
     }
-
-   public void placeCard(Card cardToPlace, int index, String axis){
+    public void placeCard(Card cardToPlace, int index, String axis){
         //horizontalAxis
        if(axis.toLowerCase(Locale.ROOT).contains("horizontal")){
            int indexToInsert = index;
@@ -71,6 +73,8 @@ public class Board {
        startingCardIndexHorizontal = horizontalAxis.indexOf(startingCard);
        startingCardIndexVertical = verticalAxis.indexOf(startingCard);
     }
+
+
 
     public LinkedList<Card> getHorizontalAxis() {
         return horizontalAxis;

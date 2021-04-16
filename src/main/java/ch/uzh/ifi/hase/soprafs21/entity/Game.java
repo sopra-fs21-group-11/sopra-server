@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 import ch.uzh.ifi.hase.soprafs21.constant.GameState;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.CardDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -90,32 +91,15 @@ public class Game {
         GameStateDTO gameStateDTO = new GameStateDTO();
         //add starting card first.
         Card startingCard = this.activeBoard.getStartingCard();
-        CardDTO startingCardDTO = new CardDTO();
-        startingCardDTO.setId(startingCard.getCardId());
-        startingCardDTO.setLowerNeighbour(((startingCard.getLowerNeighbour() != null) ? startingCard.getLowerNeighbour().getCardId() : 0));
-        startingCardDTO.setHigherNeighbour(((startingCard.getHigherNeighbour() != null) ? startingCard.getHigherNeighbour().getCardId() : 0));
-        startingCardDTO.setLeftNeighbour(((startingCard.getLeftNeighbour() != null) ? startingCard.getLeftNeighbour().getCardId() : 0));
-        startingCardDTO.setRightNeighbour(((startingCard.getRightNeighbour() != null) ? startingCard.getRightNeighbour().getCardId() : 0));
-        startingCardDTO.setNcoord(startingCard.getNsCoordinates());
-        startingCardDTO.setEcoord(startingCard.getEwCoordinates());
-        startingCardDTO.setName(startingCard.getLocationName());
-        /*startingCardDTO.setPopulation(0);
-        startingCardDTO.setArea(1.2f);
-        startingCardDTO.setCanton("ZH");
-        startingCardDTO.setHeight(2002);*/
+        CardDTO startingCardDTO = CardMapper.ConvertEntityToCardDTO(startingCard);
+
 
         gameStateDTO.addCard(startingCardDTO);
         for(Card card : this.activeBoard.getHorizontalAxis()){
             if(card.getCardId()==startingCard.getCardId()){
                 continue;
             }
-            CardDTO nextCardonHorizontalAxisDTO = new CardDTO();
-            nextCardonHorizontalAxisDTO.setId(card.getCardId());
-            nextCardonHorizontalAxisDTO.setLeftNeighbour(((card.getLeftNeighbour() != null) ? card.getLeftNeighbour().getCardId() : 0));
-            nextCardonHorizontalAxisDTO.setRightNeighbour(((card.getRightNeighbour() != null) ? card.getRightNeighbour().getCardId() : 0));
-            nextCardonHorizontalAxisDTO.setNcoord(card.getNsCoordinates());
-            nextCardonHorizontalAxisDTO.setEcoord(card.getEwCoordinates());
-            nextCardonHorizontalAxisDTO.setName(card.getLocationName());
+            CardDTO nextCardonHorizontalAxisDTO = CardMapper.ConvertEntityToCardDTO(card);
             gameStateDTO.addCard(nextCardonHorizontalAxisDTO);
 
         }
@@ -123,24 +107,12 @@ public class Game {
             if(card.getCardId()==startingCard.getCardId()){
                 continue;
             }
-            CardDTO nextCardonVerticalAxisDTO = new CardDTO();
-            nextCardonVerticalAxisDTO.setId(card.getCardId());
-            nextCardonVerticalAxisDTO.setLowerNeighbour(((card.getLowerNeighbour() != null) ? card.getLowerNeighbour().getCardId() : 0));
-            nextCardonVerticalAxisDTO.setHigherNeighbour(((card.getHigherNeighbour() != null) ? card.getHigherNeighbour().getCardId() : 0));
-            nextCardonVerticalAxisDTO.setNcoord(card.getNsCoordinates());
-            nextCardonVerticalAxisDTO.setEcoord(card.getEwCoordinates());
-            nextCardonVerticalAxisDTO.setName(card.getLocationName());
+            CardDTO nextCardonVerticalAxisDTO = CardMapper.ConvertEntityToCardDTO(card);
             gameStateDTO.addCard(nextCardonVerticalAxisDTO);
 
         }
 
-
-
-        CardDTO nextCard = new CardDTO();
-        nextCard.setId(this.nextCard.getCardId());
-        nextCard.setNcoord(this.nextCard.getNsCoordinates());
-        nextCard.setEcoord(this.nextCard.getEwCoordinates());
-        nextCard.setName(this.nextCard.getLocationName());
+        CardDTO nextCard = CardMapper.ConvertEntityToCardDTO(this.nextCard);
 
         gameStateDTO.setGamestate(this.activeState.toString());
         gameStateDTO.setPlayertokens(1);
@@ -150,6 +122,10 @@ public class Game {
 
         return gameStateDTO;
 
+    }
+
+    public GameStateDTO evaluate(){
+        //List<>
     }
 
     public long getId() {
