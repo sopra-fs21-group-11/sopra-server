@@ -5,6 +5,8 @@ import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.CardDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedGameStateDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
@@ -124,8 +126,65 @@ public class Game {
 
     }
 
-    public GameStateDTO evaluate(){
-        //List<>
+    public EvaluatedGameStateDTO evaluate(){
+        EvaluatedGameStateDTO evaluationState = new EvaluatedGameStateDTO();
+        List<EvaluatedCardDTO> evaluatedCards = new ArrayList<>();
+        ValueCategory verticalCategory = this.getCurrentSettings().getVerticalValueCategory();
+        ValueCategory horizontalCategory = this.getCurrentSettings().getHorizontalValueCategory();
+
+        Card loopCard = activeBoard.getStartingCard();//start with startingcard
+        //go up
+        while(loopCard.getHigherNeighbour()!= null){
+            try {
+                boolean correct = verticalCategory.isPlacementCorrect(loopCard, loopCard.getHigherNeighbour());
+                evaluatedCards.add(CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getHigherNeighbour(), correct));//add neighbour
+            } catch (Exception e){}
+            loopCard= loopCard.getHigherNeighbour();
+        }
+
+
+        loopCard = activeBoard.getStartingCard();//start with startingcard
+        //go down
+        while(loopCard.getLowerNeighbour()!= null){
+            try {
+                boolean correct = verticalCategory.isPlacementCorrect(loopCard, loopCard.getLowerNeighbour());
+                evaluatedCards.add(CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getLowerNeighbour(), correct));//add neighbour
+            }
+            catch (Exception e) {           }
+
+            loopCard= loopCard.getLowerNeighbour();
+        }
+        loopCard = activeBoard.getStartingCard();//start with startingcard
+
+
+
+        //go left
+        while(loopCard.getLeftNeighbour()!= null){
+            try {
+                boolean correct = horizontalCategory.isPlacementCorrect(loopCard, loopCard.getLeftNeighbour());
+                evaluatedCards.add(CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getLeftNeighbour(), correct));//add neighbour
+            }
+            catch (Exception e) {           }
+            loopCard= loopCard.getLeftNeighbour();
+        }
+        loopCard = activeBoard.getStartingCard();//start with startingcard
+
+
+        //go right
+        while(loopCard.getRightNeighbour()!= null){
+            try {
+                boolean correct = horizontalCategory.isPlacementCorrect(loopCard, loopCard.getRightNeighbour());
+                evaluatedCards.add(CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getRightNeighbour(), correct));//add neighbour
+            }
+            catch (Exception e) {           }
+            loopCard= loopCard.getRightNeighbour();
+        }
+
+        evaluationState.setCards(evaluatedCards);
+        evaluationState.setGamestate(this.activeState.toString());
+        evaluationState.setPlayersturn(this.currentPlayer.getKey().getId());
+        evaluationState.setNextCardOnStack(CardMapper.ConvertEntityToCardDTO(this.nextCard));
+        return evaluationState;
     }
 
     public long getId() {
