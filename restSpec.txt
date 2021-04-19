@@ -254,5 +254,56 @@ Response: (Might be edited because makes no sense...)
     "id": "1"
 }
 
+**********************************GameState****************************
+The messages received by the server via websocket look the following:
+
+{
+    "cards": [{
+            "id": 54,
+            "lowerNeighbour": 22,
+            "higherNeighbour": 0,
+            "rightNeighbour": 0,
+            "leftNeighbour": 0,
+            "ncoord": 46.11,
+            "ecoord": 6.06,
+            "name": "Onex",
+            "population": 0,
+            "area": 0.0,
+            "height": 0,
+            "canton": null
+        },
+{
+            "id": 22,
+            "lowerNeighbour": 0,
+            "higherNeighbour": 54,
+            "rightNeighbour": 0,
+            "leftNeighbour": 0,
+            "ncoord": 45.50,
+            "ecoord": 7.06,
+            "name": "Zürich",
+            "population": 0,
+            "area": 0.0,
+            "height": 0,
+            "canton": null
+        }
+    ],
+    "playertokens": 4,
+    "playersturn": 1,
+    "gamestate": "CARDPLACEMENT",
+    "nextCardOnStack": {
+        "id": 29,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 0,
+        "ncoord": 46.56,
+        "ecoord": 8.34,
+        "name": "Bauen",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null
+    }
+}
 
 

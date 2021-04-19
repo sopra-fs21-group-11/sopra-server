@@ -12,6 +12,7 @@ import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -89,7 +90,7 @@ public class GameController {
     public ResponseEntity createGame(@RequestHeader("Authorization") String token) {
         User hostUser = userService.getUserByToken(token);
         if(hostUser == null){
-            return ResponseEntity.status(404).body(null);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host user not found. Please reformat request.");
         }
         GameLobby newGame = gameService.createNewGameLobby(hostUser);
 
