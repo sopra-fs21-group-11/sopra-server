@@ -5,7 +5,10 @@ import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +16,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -47,7 +55,30 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
-    private String authToken;
+    private static String authToken;
+
+    @BeforeAll
+    public static void prepareToken() { //create new jwt token for authorization
+        String secretKey = "mySecretKey";
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+                .commaSeparatedStringToAuthorityList("ROLE_USER");
+
+        String token = Jwts
+                .builder()
+                .setId("soprafs21")
+                .setSubject("username")
+                .claim("authorities",
+                        grantedAuthorities.stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .collect(Collectors.toList()))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 600000000))
+                .signWith(SignatureAlgorithm.HS512,
+                        secretKey.getBytes()).compact();
+
+        authToken = token;
+    }
+
 
     @BeforeEach
     @Test
@@ -56,8 +87,9 @@ public class UserControllerTest {
         user.setUsername("martin");
         user.setPassword("password");
         user.setId(1L);
+        user.setToken(authToken);
         //Example bearer token
-        user.setToken("eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb3ByYWZzMjEiLCJzdWIiOiJtYXJ0aW4yIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTYxODA2NzAxMiwiZXhwIjoxNjE4NjY3MDEyfQ.rAYxnVk9Fwu4EJRpZ16zKw9_KkA2MwqwxNW6-qjMhONyrY8ss4xBWXf4b6LxJ-phx6gwi7HEUevKlETwVNZXQw");
+        //user.setToken("eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb3ByYWZzMjEiLCJzdWIiOiJtYXJ0aW4yIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTYxODA2NzAxMiwiZXhwIjoxNjE4NjY3MDEyfQ.rAYxnVk9Fwu4EJRpZ16zKw9_KkA2MwqwxNW6-qjMhONyrY8ss4xBWXf4b6LxJ-phx6gwi7HEUevKlETwVNZXQw");
         given(userService.createUser(any(User.class))).willReturn(user);
 
 
