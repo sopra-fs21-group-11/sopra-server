@@ -12,6 +12,7 @@ public class GameGetDTO {
     private int playerTurnCountdown;
     private int tokenGainOnCorrectGuess;
     private int tokenGainOnNearestGuess;
+    private int nrOfStartingTokens;
 
     private long horizontalValueCategoryId;
     private long verticalValueCategoryId;
@@ -129,5 +130,13 @@ public class GameGetDTO {
 
     public void setHostId(long hostId) {
         this.hostId = hostId;
+    }
+
+    public int getNrOfStartingTokens() {
+        return nrOfStartingTokens;
+    }
+
+    public void setNrOfStartingTokens(int nrOfStartingTokens) {
+        this.nrOfStartingTokens = nrOfStartingTokens;
     }
 }

@@ -2,15 +2,16 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 
 public class Deck extends Stack {
     //This is not the definitive implementation. I just add the cards of the csv to test functionalities.
     private Stack<Card> cards;
+    private List<ValueCategory> possibleComparisonStrategies;
 
 
     public Deck(){
@@ -18,8 +19,10 @@ public class Deck extends Stack {
         List<Card> locationCards = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("src/bunzendataset.csv"))) {
             String line;
-            while ((line = br.readLine()) != null) {
 
+            int cardIdCounter = 0;
+            while ((line = br.readLine()) != null) {
+                cardIdCounter++;
                 String[] values = line.split(";");
                 //skip title row
                 if(values[0].equals("Locationname")){
@@ -27,6 +30,7 @@ public class Deck extends Stack {
                 }
 
                 SwissLocationCard newCard = new SwissLocationCard();
+                newCard.setCardId(cardIdCounter);
                 newCard.setLocationName(values[0]);
                 //split coordinates
                 String toFloat = values[1].split(" ")[0]+"."+values[1].split(" ")[1];

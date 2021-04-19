@@ -4,13 +4,13 @@ import SockJS from "sockjs-client";
 import * as Stomp from "@stomp/stompjs";
 
 Initializing the STOMP-Endpoint:
-	var stompClient; //I defined this outside of any method. Similar to a class variable in Java. Absolutely no clue if this is state of the art :).
+	var stompClient; //I defined this outside the class. Similar to a class variable in Java. Absolutely no clue if this is state of the art :).
 
 	const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
 	stompClient = Stomp.Stomp.over(socket);
 
 Connect (do the handshake) with the server:
-	stompClient.connect({}, function (someArgument /* I didnt use it*/){ ... }
+	stompClient.connect({}, function (someArgument /* I didnt use it*/){ ... });
 
 Subscribing to a hardcoded (fixed) endpoint and do some stuff as a message from the server drops in: (Do this inside of the connect function brackets.)
 	stompClient.subscribe('/test', function(something){
