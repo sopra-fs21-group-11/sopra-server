@@ -144,17 +144,17 @@ public class GameServiceIntegrationTest {
         ValueCategory ew = new ECoordinateCategory();
         //joinedGame.
 
-        TestPlacementAndDoubting(joinedGame, createdUser);
+        TestPlacementAndDoubting(joinedGame, createdUser, joiningUser);
 
 
     }
 
-    private void TestPlacementAndDoubting(Game game, User user){
+    private void TestPlacementAndDoubting(Game game, User user, User user2){
         long id = game.getId();
         String session = "testSessID";
         Card nextCard = game.getNextCard();
         long startingCardId = game.convertToDTO().getStartingCard().getId();
-        //float startingCardNCoord = game.convertToDTO().getStartingCard().getNcoord(); //for testing reason, we gonna cheat a little :)
+        float startingCardNCoord = game.convertToDTO().getStartingCard().getNcoord(); //for testing reason, we gonna cheat a little :)
         float startingCardECoord = game.convertToDTO().getStartingCard().getEcoord();
         if(startingCardECoord <= nextCard.getEwCoordinates()){//we place it on the right for a correct placement
             game.performTurn(user.getId(), nextCard,1, "horizontal");
@@ -169,6 +169,21 @@ public class GameServiceIntegrationTest {
         int tokenAfterDoubt = user.getCurrentToken();
         assertTrue(currentToken+1==tokenAfterDoubt);
 
+        try{Thread.sleep(game.getCurrentSettings().getVisibleAfterDoubtCountdown()*1000+100);} catch (Exception ex){} //wait for the visible cd is finished add 100 for safety reason.
+
+        //do the same vertical and with wrong placement. and with other user
+        nextCard = game.getNextCard();
+        if(startingCardNCoord >= nextCard.getNsCoordinates()){//we place it on the top for a correct placement
+            game.performTurn(user.getId(), nextCard,1, "vertical");
+        }else {//we place it on the bottom for a correct placement
+            game.performTurn(user.getId(), nextCard,0, "vertical");
+        }
+
+        currentToken = user2.getCurrentToken();
+        //the countdown should be on now. lets doubt:
+        gameService.doubtAction(id,(int)nextCard.getCardId(), (int)startingCardId,"testSessID");
+        tokenAfterDoubt = user2.getCurrentToken();
+        assertTrue(currentToken-1==tokenAfterDoubt);
     }
 
 }

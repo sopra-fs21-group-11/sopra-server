@@ -27,7 +27,6 @@ public class Game {
     private Card nextCard;
     private ValueCategory horizontalValueCategory;
     private ValueCategory verticalValueCategory;
-    private boolean doubtCountdownRunning;
 
     private final GameSettings currentSettings;
 
@@ -153,14 +152,14 @@ public class Game {
         //doubt has occured and we have to start the visible countdown:
         visibleCountdown = new CountdownHelper(currentSettings.getVisibleAfterDoubtCountdown(), this);
         visibleCountdown.start();
-        doubtCountdownRunning = false;
     }
     public void startTurnCd(){
+        //start a new turn cd and send state
+        turnCountdown = new CountdownHelper(currentSettings.getPlayerTurnCountdown(), this);
+        gameService.sendGameStateToUsers(id);
         return;
     }
-    public void startVisibleCd(){
-        return;
-    }
+
 
     private boolean evaluateDoubt(int cardId, int questionableCardId){
         //horizontal check:
@@ -328,11 +327,4 @@ public class Game {
         this.gameService = gameService;
     }
 
-    public boolean isDoubtCountdownRunning() {
-        return doubtCountdownRunning;
-    }
-
-    public void setDoubtCountdownRunning(boolean doubtCountdownRunning) {
-        this.doubtCountdownRunning = doubtCountdownRunning;
-    }
 }

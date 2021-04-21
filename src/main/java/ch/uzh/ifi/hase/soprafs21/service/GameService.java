@@ -58,10 +58,10 @@ public class GameService {
 
     public Game doubtAction(long gameId, int placedCard, int doubtedCard, String sessionId){
         Game doubtGame = getRunningGameById(gameId);
+
         doubtGame.performDoubt(sessionId, placedCard, doubtedCard);
 
-        if(doubtGame.isDoubtCountdownRunning()){//we accept the doubt only if the doubtcountdown is running
-        }
+
         return doubtGame;
     }
 
