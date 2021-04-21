@@ -43,6 +43,7 @@ public class GameService {
 
     public Game startGame(GameLobby gameToStart){
         Game startedGame = gameToStart.StartGame();
+        startedGame.setGameService(this);
         runningGames.add(startedGame);
         openGames.remove(gameToStart);
         return startedGame;

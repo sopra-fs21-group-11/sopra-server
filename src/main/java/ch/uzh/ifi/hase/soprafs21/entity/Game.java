@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.CardDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedGameStateDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
+import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.*;
@@ -25,10 +26,13 @@ public class Game {
     private Card nextCard;
     private ValueCategory horizontalValueCategory;
     private ValueCategory verticalValueCategory;
+    private boolean countdownRunning;
 
     private final GameSettings currentSettings;
 
     private SimpMessagingTemplate template;
+
+    private GameService gameService;
 
 
     public Game(GameLobby lobby){
@@ -86,6 +90,14 @@ public class Game {
         activeBoard.placeCard(cardToPlace, placementIndex,axis);
         //set next card
         nextCard = deckStack.pop();
+        //start doubtingphase after a player placed a card:
+
+
+    }
+
+    private void doubtingPhase(){
+        long now = System.currentTimeMillis();
+        long countdown = now+currentSettings.getDoubtCountdown()*1000;
 
     }
 
@@ -213,5 +225,9 @@ public class Game {
 
     public GameSettings getCurrentSettings() {
         return currentSettings;
+    }
+
+    public void setGameService(GameService gameService) {
+        this.gameService = gameService;
     }
 }
