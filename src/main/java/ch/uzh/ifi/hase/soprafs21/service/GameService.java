@@ -56,6 +56,15 @@ public class GameService {
         return newGame;
     }
 
+    public Game doubtAction(long gameId, int placedCard, int doubtedCard, String sessionId){
+        Game doubtGame = getRunningGameById(gameId);
+        doubtGame.performDoubt(sessionId, placedCard, doubtedCard);
+
+        if(doubtGame.isDoubtCountdownRunning()){//we accept the doubt only if the doubtcountdown is running
+        }
+        return doubtGame;
+    }
+
     public GameLobby kickPlayer(User host, User userToKick, long gameId){
         GameLobby game = this.getOpenGameById(gameId);
         if(game == null){

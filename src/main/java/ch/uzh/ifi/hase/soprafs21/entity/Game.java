@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.CardDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedGameStateDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
+import ch.uzh.ifi.hase.soprafs21.service.CountdownHelper;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
@@ -26,13 +27,17 @@ public class Game {
     private Card nextCard;
     private ValueCategory horizontalValueCategory;
     private ValueCategory verticalValueCategory;
-    private boolean countdownRunning;
+    private boolean doubtCountdownRunning;
 
     private final GameSettings currentSettings;
 
     private SimpMessagingTemplate template;
 
     private GameService gameService;
+
+    private CountdownHelper doubtCountdown;
+    private Thread visibleCountdown;
+    private Thread turnCountdown;
 
 
     public Game(GameLobby lobby){
@@ -42,6 +47,9 @@ public class Game {
         this.hostPlayerId = lobby.getHostId();
         this.activeState = GameState.CARDPLACEMENT;
         this.id = lobby.getId();
+
+        this.verticalValueCategory = lobby.getSettings().getVerticalValueCategory();
+        this.horizontalValueCategory = lobby.getSettings().getHorizontalValueCategory();
 
 
         this.deckStack = new Deck();//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
@@ -91,22 +99,110 @@ public class Game {
         //set next card
         nextCard = deckStack.pop();
         //start doubtingphase after a player placed a card:
-
-
+        doubtingPhase();
     }
 
     private void doubtingPhase(){
-        long now = System.currentTimeMillis();
-        long countdown = now+currentSettings.getDoubtCountdown()*1000;
+        CountdownHelper countdown = new CountdownHelper(currentSettings.getDoubtCountdown(), this);
+        this.doubtCountdown = countdown;
+        countdown.start();
+        //doubt incoming because loop exit (anyone else has stopped this.countdownRunning):
+        //do nothing while visibleAfterDoubt
+
+        //continue with next turn.
+
 
     }
+
+    public void performDoubt(String sessionId, int placedCard, int doubtedCard){
+        if(!doubtCountdown.isAlive()){//countdown isnt running -> we dont accept.
+            return;
+        }
+        User doubtingUser = null;
+        for(var user : players){
+            if(user.getValue() == sessionId){
+                doubtingUser = user.getKey();
+            }
+        }
+        User doubtedUser = currentPlayer.getKey();
+        if(!evaluateDoubt(placedCard, doubtedCard)){
+            //doubt is rightous -> remove and handle tokens
+            //first get card obj from id (I know this could be refactored beautiful...
+            Card cardToRemove = null;
+            for(Card card : activeBoard.getVerticalAxis()){
+                if(card.getCardId() == doubtedCard){
+                    cardToRemove = card;
+                }
+            }
+            if(cardToRemove == null){
+                for(Card card : activeBoard.getHorizontalAxis()){
+                    if(card.getCardId() == doubtedCard){
+                        cardToRemove = card;
+                    }
+                }
+            }
+            //remove card:
+            activeBoard.removeCard(cardToRemove);
+            doubtedUser.currentToken--;
+            doubtingUser.currentToken++;
+        } else{//doubt is wrong
+            doubtedUser.currentToken++;
+            doubtingUser.currentToken--;
+        }
+        doubtCountdown.doStop();
+        //doubt has occured and we have to start the visible countdown:
+        visibleCountdown = new CountdownHelper(currentSettings.getVisibleAfterDoubtCountdown(), this);
+        visibleCountdown.start();
+        doubtCountdownRunning = false;
+    }
+    public void startTurnCd(){
+        return;
+    }
+    public void startVisibleCd(){
+        return;
+    }
+
+    private boolean evaluateDoubt(int cardId, int questionableCardId){
+        //horizontal check:
+        for(Card card : activeBoard.getHorizontalAxis()){
+            if(card.getCardId() == cardId){
+                for(Card card2 : activeBoard.getHorizontalAxis()){
+                    if(questionableCardId == card2.getCardId()){
+                        //both cards are in vertical axis:
+                        try{
+                            return horizontalValueCategory.isPlacementCorrect(card, card2);
+                        }catch (Exception ex){}
+                    }
+                }
+                break; //second card is not horizontal -> skip the rest since we have no duplicates
+            }
+
+        }
+        //vertical check:
+        for(Card card : activeBoard.getVerticalAxis()){
+            if(card.getCardId() == cardId){
+                for(Card card2 : activeBoard.getVerticalAxis()){
+                    if(questionableCardId == card2.getCardId()){
+                        //both cards are in vertical axis:
+                        try{
+                            return verticalValueCategory.isPlacementCorrect(card, card2);
+                        }catch (Exception ex){}
+                    }
+                }
+                break; //second card is not horizontal -> skip the rest since we have no duplicates
+            }
+
+        }
+        return true; //this is bullshit :/
+    }
+
 
     public GameStateDTO convertToDTO(){
         GameStateDTO gameStateDTO = new GameStateDTO();
         //add starting card first.
         Card startingCard = this.activeBoard.getStartingCard();
         CardDTO startingCardDTO = CardMapper.ConvertEntityToCardDTO(startingCard);
-
+        gameStateDTO.setStartingCard(startingCardDTO);
 
         gameStateDTO.addCard(startingCardDTO);
         for(Card card : this.activeBoard.getHorizontalAxis()){
@@ -137,6 +233,7 @@ public class Game {
         return gameStateDTO;
 
     }
+
 
     public EvaluatedGameStateDTO evaluate(){
         EvaluatedGameStateDTO evaluationState = new EvaluatedGameStateDTO();
@@ -229,5 +326,13 @@ public class Game {
 
     public void setGameService(GameService gameService) {
         this.gameService = gameService;
+    }
+
+    public boolean isDoubtCountdownRunning() {
+        return doubtCountdownRunning;
+    }
+
+    public void setDoubtCountdownRunning(boolean doubtCountdownRunning) {
+        this.doubtCountdownRunning = doubtCountdownRunning;
     }
 }

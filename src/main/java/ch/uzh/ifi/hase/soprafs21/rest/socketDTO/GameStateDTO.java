@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameStateDTO {
+    private CardDTO startingCard;
     private List<CardDTO> cards;
     private int playertokens;
     private long playersturn;
@@ -15,6 +16,14 @@ public class GameStateDTO {
 
     public GameStateDTO() {
         cards = new ArrayList<>();
+    }
+
+    public CardDTO getStartingCard() {
+        return startingCard;
+    }
+
+    public void setStartingCard(CardDTO startingCard) {
+        this.startingCard = startingCard;
     }
 
     public CardDTO getNextCardOnStack() {

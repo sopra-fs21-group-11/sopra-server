@@ -74,6 +74,39 @@ public class Board {
        startingCardIndexVertical = verticalAxis.indexOf(startingCard);
     }
 
+    public void removeCard(Card cardToRemove){
+        Card rightNeighbour = cardToRemove.getRightNeighbour();
+        Card leftNeighbour = cardToRemove.getLeftNeighbour();
+        Card higherNeighbour = cardToRemove.getHigherNeighbour();
+        Card lowerNeighbour = cardToRemove.getLowerNeighbour();
+        //rearrange pointers:
+
+        if(verticalAxis.contains(cardToRemove)) {
+            if (lowerNeighbour == null) { //is at lower border
+                higherNeighbour.setLowerNeighbour(null);
+            }
+            else if (higherNeighbour == null) { //is at upper border
+                lowerNeighbour.setHigherNeighbour(null);
+            } else{//no neighbour is null:
+                lowerNeighbour.setHigherNeighbour(higherNeighbour);
+                higherNeighbour.setLowerNeighbour(lowerNeighbour);
+            }
+            horizontalAxis.remove(cardToRemove);
+            return;
+        }
+        if(horizontalAxis.contains(cardToRemove)){
+            if(rightNeighbour == null){//is at right border
+                leftNeighbour.setRightNeighbour(null);
+            } else if (leftNeighbour == null){//is at left border
+                rightNeighbour.setLeftNeighbour(null);
+            } else{//no neighbour is null
+                rightNeighbour.setLeftNeighbour(leftNeighbour);
+                leftNeighbour.setRightNeighbour(rightNeighbour);
+            }
+            horizontalAxis.remove(cardToRemove);
+            return;
+        }
+    }
 
 
     public LinkedList<Card> getHorizontalAxis() {
