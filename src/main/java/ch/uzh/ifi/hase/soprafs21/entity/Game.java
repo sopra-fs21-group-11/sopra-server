@@ -96,22 +96,42 @@ public class Game {
         CardDTO startingCardDTO = CardMapper.ConvertEntityToCardDTO(startingCard);
 
 
-        gameStateDTO.addCard(startingCardDTO);
-        for(Card card : this.activeBoard.getHorizontalAxis()){
-            if(card.getCardId()==startingCard.getCardId()){
-                continue;
-            }
-            CardDTO nextCardonHorizontalAxisDTO = CardMapper.ConvertEntityToCardDTO(card);
-            gameStateDTO.addCard(nextCardonHorizontalAxisDTO);
-
+        gameStateDTO.setStartingCard(startingCardDTO);
+        int positionCounter = 1;
+        Card loopCard = startingCard;
+        while(loopCard.getLeftNeighbour() !=null){ //get left cards
+            CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
+            cardDTO.setPosition(positionCounter);
+            gameStateDTO.addLeftCard(cardDTO);
+            loopCard = loopCard.getLeftNeighbour();
+            positionCounter++;
         }
-        for(Card card : this.activeBoard.getVerticalAxis()){
-            if(card.getCardId()==startingCard.getCardId()){
-                continue;
-            }
-            CardDTO nextCardonVerticalAxisDTO = CardMapper.ConvertEntityToCardDTO(card);
-            gameStateDTO.addCard(nextCardonVerticalAxisDTO);
-
+        positionCounter = 1;
+        loopCard = startingCard;
+        while(loopCard.getRightNeighbour() !=null){ //get right cards
+            CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
+            cardDTO.setPosition(positionCounter);
+            gameStateDTO.addRightCard(cardDTO);
+            loopCard = loopCard.getRightNeighbour();
+            positionCounter++;
+        }
+        positionCounter = 1;
+        loopCard = startingCard;
+        while(loopCard.getHigherNeighbour() !=null){ //get top cards
+            CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
+            cardDTO.setPosition(positionCounter);
+            gameStateDTO.addTopCard(cardDTO);
+            loopCard = loopCard.getHigherNeighbour();
+            positionCounter++;
+        }
+        positionCounter = 1;
+        loopCard = startingCard;
+        while(loopCard.getLowerNeighbour() !=null){ //get bottom cards
+            CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
+            cardDTO.setPosition(positionCounter);
+            gameStateDTO.addBottomCard(cardDTO);
+            loopCard = loopCard.getLowerNeighbour();
+            positionCounter++;
         }
 
         CardDTO nextCard = CardMapper.ConvertEntityToCardDTO(this.nextCard);
@@ -128,28 +148,38 @@ public class Game {
 
     public EvaluatedGameStateDTO evaluate(){
         EvaluatedGameStateDTO evaluationState = new EvaluatedGameStateDTO();
-        List<EvaluatedCardDTO> evaluatedCards = new ArrayList<>();
+        List<EvaluatedCardDTO> evaluatedTop = new ArrayList<>();
+        List<EvaluatedCardDTO> evaluatedBottom = new ArrayList<>();
+        List<EvaluatedCardDTO> evaluatedLeft = new ArrayList<>();
+        List<EvaluatedCardDTO> evaluatedRight = new ArrayList<>();
+
         ValueCategory verticalCategory = this.getCurrentSettings().getVerticalValueCategory();
         ValueCategory horizontalCategory = this.getCurrentSettings().getHorizontalValueCategory();
 
         Card loopCard = activeBoard.getStartingCard();//start with startingcard
+        int positionCounter = 1;
         //go up
         while(loopCard.getHigherNeighbour()!= null){
             try {
                 boolean correct = verticalCategory.isPlacementCorrect(loopCard, loopCard.getHigherNeighbour());
-                evaluatedCards.add(CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getHigherNeighbour(), correct));//add neighbour
+                EvaluatedCardDTO evaluatedCardDTO = CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getHigherNeighbour(), correct);
+                evaluatedCardDTO.setPosition(positionCounter);
+                evaluatedTop.add(evaluatedCardDTO);//add neighbour
             } catch (Exception e){}
             loopCard= loopCard.getHigherNeighbour();
+            positionCounter++;
         }
 
-
+        positionCounter = 1;
         loopCard = activeBoard.getStartingCard();//start with startingcard
         //go down
         while(loopCard.getLowerNeighbour()!= null){
             try {
                 boolean correct = verticalCategory.isPlacementCorrect(loopCard, loopCard.getLowerNeighbour());
-                evaluatedCards.add(CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getLowerNeighbour(), correct));//add neighbour
-            }
+                EvaluatedCardDTO evaluatedCardDTO = CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getLowerNeighbour(), correct);
+                evaluatedCardDTO.setPosition(positionCounter);
+                evaluatedBottom.add(evaluatedCardDTO);//add neighbour
+                 }
             catch (Exception e) {           }
 
             loopCard= loopCard.getLowerNeighbour();
@@ -157,30 +187,38 @@ public class Game {
         loopCard = activeBoard.getStartingCard();//start with startingcard
 
 
-
+        positionCounter = 1;
         //go left
         while(loopCard.getLeftNeighbour()!= null){
             try {
                 boolean correct = horizontalCategory.isPlacementCorrect(loopCard, loopCard.getLeftNeighbour());
-                evaluatedCards.add(CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getLeftNeighbour(), correct));//add neighbour
-            }
+                EvaluatedCardDTO evaluatedCardDTO = CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getLeftNeighbour(), correct);
+                evaluatedCardDTO.setPosition(positionCounter);
+                evaluatedLeft.add(evaluatedCardDTO);//add neighbour
+                            }
             catch (Exception e) {           }
             loopCard= loopCard.getLeftNeighbour();
         }
         loopCard = activeBoard.getStartingCard();//start with startingcard
 
-
+        positionCounter = 1;
         //go right
         while(loopCard.getRightNeighbour()!= null){
             try {
                 boolean correct = horizontalCategory.isPlacementCorrect(loopCard, loopCard.getRightNeighbour());
-                evaluatedCards.add(CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getRightNeighbour(), correct));//add neighbour
-            }
+                EvaluatedCardDTO evaluatedCardDTO = CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getRightNeighbour(), correct);
+                evaluatedCardDTO.setPosition(positionCounter);
+                evaluatedRight.add(evaluatedCardDTO);//add neighbour
+                }
             catch (Exception e) {           }
             loopCard= loopCard.getRightNeighbour();
         }
+        evaluationState.setTop(evaluatedTop);
+        evaluationState.setBottom(evaluatedBottom);
+        evaluationState.setLeft(evaluatedLeft);
+        evaluationState.setRight(evaluatedRight);
 
-        evaluationState.setCards(evaluatedCards);
+        //evaluationState.setCards(evaluatedCards);
         evaluationState.setGamestate(this.activeState.toString());
         evaluationState.setPlayersturn(this.currentPlayer.getKey().getId());
         evaluationState.setNextCardOnStack(CardMapper.ConvertEntityToCardDTO(this.nextCard));
