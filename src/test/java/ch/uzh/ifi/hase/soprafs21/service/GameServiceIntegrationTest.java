@@ -1,8 +1,12 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
+import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -129,10 +133,57 @@ public class GameServiceIntegrationTest {
 
         Game joinedGame = gameService.joinRunningGame(createdUser, "testSessID", startedGame.getId());
         assertTrue(joinedGame.getJoinedPlayer().size()==1);
+        joinedGame = gameService.joinRunningGame(joiningUser,"testSessID2", startedGame.getId());
+        assertTrue(joinedGame.getPlayers().size()==2);
+
+        joiningUser.setCurrentToken(4);
+        createdUser.setCurrentToken(4);
+
+        //neew valuecategory for compare mechanics:
+        ValueCategory ns = new NCoordinateCategory();
+        ValueCategory ew = new ECoordinateCategory();
+        //joinedGame.
+
+        TestPlacementAndDoubting(joinedGame, createdUser, joiningUser);
 
 
     }
 
+    private void TestPlacementAndDoubting(Game game, User user, User user2){
+        long id = game.getId();
+        String session = "testSessID";
+        Card nextCard = game.getNextCard();
+        long startingCardId = game.convertToDTO().getStartingCard().getId();
+        float startingCardNCoord = game.convertToDTO().getStartingCard().getNcoord(); //for testing reason, we gonna cheat a little :)
+        float startingCardECoord = game.convertToDTO().getStartingCard().getEcoord();
+        if(startingCardECoord <= nextCard.getEwCoordinates()){//we place it on the right for a correct placement
+            game.performTurn(user.getId(), nextCard,1, "horizontal");
+        }else {//we place it on the left for a correct placement
+            game.performTurn(user.getId(), nextCard,0, "horizontal");
+        }
 
+
+        int currentToken = user.getCurrentToken();
+        //the countdown should be on now. lets doubt:
+        gameService.doubtAction(id,(int)nextCard.getCardId(), (int)startingCardId,"testSessID2");
+        int tokenAfterDoubt = user.getCurrentToken();
+        assertTrue(currentToken+1==tokenAfterDoubt);
+
+        try{Thread.sleep(game.getCurrentSettings().getVisibleAfterDoubtCountdown()*1000+100);} catch (Exception ex){} //wait for the visible cd is finished add 100 for safety reason.
+
+        //do the same vertical and with wrong placement. and with other user
+        nextCard = game.getNextCard();
+        if(startingCardNCoord >= nextCard.getNsCoordinates()){//we place it on the top for a correct placement
+            game.performTurn(user.getId(), nextCard,1, "vertical");
+        }else {//we place it on the bottom for a correct placement
+            game.performTurn(user.getId(), nextCard,0, "vertical");
+        }
+
+        currentToken = user2.getCurrentToken();
+        //the countdown should be on now. lets doubt:
+        gameService.doubtAction(id,(int)nextCard.getCardId(), (int)startingCardId,"testSessID");
+        tokenAfterDoubt = user2.getCurrentToken();
+        assertTrue(currentToken-1==tokenAfterDoubt);
+    }
 
 }

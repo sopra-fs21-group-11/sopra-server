@@ -43,6 +43,7 @@ public class GameService {
 
     public Game startGame(GameLobby gameToStart){
         Game startedGame = gameToStart.StartGame();
+        startedGame.setGameService(this);
         runningGames.add(startedGame);
         openGames.remove(gameToStart);
         return startedGame;
@@ -53,6 +54,15 @@ public class GameService {
         newGame.setId(getNextFreeId());
         openGames.add(newGame);
         return newGame;
+    }
+
+    public Game doubtAction(long gameId, int placedCard, int doubtedCard, String sessionId){
+        Game doubtGame = getRunningGameById(gameId);
+
+        doubtGame.performDoubt(sessionId, placedCard, doubtedCard);
+
+
+        return doubtGame;
     }
 
     public GameLobby kickPlayer(User host, User userToKick, long gameId){

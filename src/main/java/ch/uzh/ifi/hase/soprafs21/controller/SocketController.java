@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameDoubtDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameTurnDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.JoinGameDTO;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
@@ -46,6 +47,13 @@ public class SocketController {
     public void performTurn(@Header("simpSessionId") String sessionId, GameTurnDTO gameTurnDTO) throws Exception {
         gameService.incomingTurn(gameTurnDTO.getGameId(), sessionId, gameTurnDTO.getPlacementIndex(), gameTurnDTO.getAxis());
         gameService.sendGameStateToUsers(gameTurnDTO.getGameId());
+    }
+
+    @MessageMapping("/game/doubt")
+    public void doubt(@Header("simpSessionId") String sessionId, GameDoubtDTO gameDoubtDTO) throws Exception {
+
+        gameService.doubtAction(gameDoubtDTO.getGameId(), gameDoubtDTO.getPlacedCard(), gameDoubtDTO.getDoubtedCard(), sessionId);
+
     }
 
 

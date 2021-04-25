@@ -258,6 +258,20 @@ Response: (Might be edited because makes no sense...)
 The messages received by the server via websocket look the following:
 
 {
+    "startingcard": {
+            "id": 54,
+            "lowerNeighbour": 22,
+            "higherNeighbour": 0,
+            "rightNeighbour": 0,
+            "leftNeighbour": 0,
+            "ncoord": 46.11,
+            "ecoord": 6.06,
+            "name": "Onex",
+            "population": 0,
+            "area": 0.0,
+            "height": 0,
+            "canton": null
+    },
     "cards": [{
             "id": 54,
             "lowerNeighbour": 22,
