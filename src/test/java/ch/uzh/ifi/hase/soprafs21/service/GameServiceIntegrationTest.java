@@ -107,6 +107,7 @@ public class GameServiceIntegrationTest {
 
     }
 
+    //TODO: test anpassen
     @Test
     public void StartAndJoinRunningGame() throws Exception {
         User testUser = new User();

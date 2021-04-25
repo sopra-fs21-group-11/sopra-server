@@ -102,6 +102,7 @@ public class Game {
     }
 
     private void doubtingPhase(){
+        this.activeState = GameState.DOUBTINGPHASE;
         CountdownHelper countdown = new CountdownHelper(currentSettings.getDoubtCountdown(), this);
         this.doubtCountdown = countdown;
         countdown.start();
@@ -128,18 +129,33 @@ public class Game {
             //doubt is rightous -> remove and handle tokens
             //first get card obj from id (I know this could be refactored beautiful...
             Card cardToRemove = null;
-            for(Card card : activeBoard.getVerticalAxis()){
+            for(Card card : activeBoard.getTopList()){
                 if(card.getCardId() == doubtedCard){
                     cardToRemove = card;
                 }
             }
             if(cardToRemove == null){
-                for(Card card : activeBoard.getHorizontalAxis()){
+                for(Card card : activeBoard.getBottomList()){
                     if(card.getCardId() == doubtedCard){
                         cardToRemove = card;
                     }
                 }
             }
+            if(cardToRemove == null){
+                for(Card card : activeBoard.getLeftList()){
+                    if(card.getCardId() == doubtedCard){
+                        cardToRemove = card;
+                    }
+                }
+            }
+            if(cardToRemove == null){
+                for(Card card : activeBoard.getRightList()){
+                    if(card.getCardId() == doubtedCard){
+                        cardToRemove = card;
+                    }
+                }
+            }
+
             //remove card:
             activeBoard.removeCard(cardToRemove);
             doubtedUser.currentToken--;
@@ -160,41 +176,104 @@ public class Game {
         return;
     }
 
-
-    private boolean evaluateDoubt(int cardId, int questionableCardId){
-        //horizontal check:
-        for(Card card : activeBoard.getHorizontalAxis()){
-            if(card.getCardId() == cardId){
-                for(Card card2 : activeBoard.getHorizontalAxis()){
-                    if(questionableCardId == card2.getCardId()){
-                        //both cards are in vertical axis:
-                        try{
-                            return horizontalValueCategory.isPlacementCorrect(card, card2);
-                        }catch (Exception ex){}
+    private boolean evaluateDoubt(int placedCardId, int questionableCardId){
+        //topList check
+        for(Card card : activeBoard.getTopList()){
+            if(card.getCardId() == placedCardId) {
+                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
+                    try {
+                        return verticalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
+                    }
+                    catch (Exception ex) {
                     }
                 }
-                break; //second card is not horizontal -> skip the rest since we have no duplicates
+                else {
+                    for (Card card2 : activeBoard.getTopList()) {
+                        if (card2.getCardId() == questionableCardId) {
+                            try {
+                                return verticalValueCategory.isPlacementCorrect(card, card2);
+                            }
+                            catch (Exception ex) {
+                            }
+                        }
+                    }
+                }
             }
-
         }
-        //vertical check:
-        for(Card card : activeBoard.getVerticalAxis()){
-            if(card.getCardId() == cardId){
-                for(Card card2 : activeBoard.getVerticalAxis()){
-                    if(questionableCardId == card2.getCardId()){
-                        //both cards are in vertical axis:
-                        try{
-                            return verticalValueCategory.isPlacementCorrect(card, card2);
-                        }catch (Exception ex){}
+
+        //bottomList check
+        for(Card card : activeBoard.getBottomList()) {
+            if (card.getCardId() == placedCardId) {
+                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
+                    try {
+                        return verticalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
+                    }
+                    catch (Exception ex) {
                     }
                 }
-                break; //second card is not horizontal -> skip the rest since we have no duplicates
+                else {
+                    for (Card card2 : activeBoard.getBottomList()) {
+                        if (card2.getCardId() == questionableCardId) {
+                            try {
+                                return verticalValueCategory.isPlacementCorrect(card, card2);
+                            }
+                            catch (Exception ex) {
+                            }
+                        }
+                    }
+                }
             }
+        }
 
+        //leftList check
+        for(Card card : activeBoard.getLeftList()) {
+            if (card.getCardId() == placedCardId) {
+                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
+                    try {
+                        return verticalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
+                    }
+                    catch (Exception ex) {
+                    }
+                }
+                else {
+                    for (Card card2 : activeBoard.getLeftList()) {
+                        if (card2.getCardId() == questionableCardId) {
+                            try {
+                                return verticalValueCategory.isPlacementCorrect(card, card2);
+                            }
+                            catch (Exception ex) {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //rightList check
+        for(Card card : activeBoard.getRightList()) {
+            if (card.getCardId() == placedCardId) {
+                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
+                    try {
+                        return verticalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
+                    }
+                    catch (Exception ex) {
+                    }
+                }
+                else {
+                    for (Card card2 : activeBoard.getRightList()) {
+                        if (card2.getCardId() == questionableCardId) {
+                            try {
+                                return verticalValueCategory.isPlacementCorrect(card, card2);
+                            }
+                            catch (Exception ex) {
+                            }
+                        }
+                    }
+                }
+            }
         }
         return true; //this is bullshit :/
     }
-
 
     public GameStateDTO convertToDTO(){
         GameStateDTO gameStateDTO = new GameStateDTO();
