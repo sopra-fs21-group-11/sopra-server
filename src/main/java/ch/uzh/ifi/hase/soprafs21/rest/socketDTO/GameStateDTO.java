@@ -61,13 +61,6 @@ public class GameStateDTO {
         this.bottom.add(card);
     }
 
-    public CardDTO getStartingCard() {
-        return startingCard;
-    }
-
-    public void setStartingCard(CardDTO startingCard) {
-        this.startingCard = startingCard;
-    }
 
     public int getPlayertokens() {
         return playertokens;
@@ -91,5 +84,37 @@ public class GameStateDTO {
 
     public void setGamestate(String gamestate) {
         this.gamestate = gamestate;
+    }
+
+    public List<CardDTO> getLeft() {
+        return left;
+    }
+
+    public void setLeft(List<CardDTO> left) {
+        this.left = left;
+    }
+
+    public List<CardDTO> getRight() {
+        return right;
+    }
+
+    public void setRight(List<CardDTO> right) {
+        this.right = right;
+    }
+
+    public List<CardDTO> getTop() {
+        return top;
+    }
+
+    public void setTop(List<CardDTO> top) {
+        this.top = top;
+    }
+
+    public List<CardDTO> getBottom() {
+        return bottom;
+    }
+
+    public void setBottom(List<CardDTO> bottom) {
+        this.bottom = bottom;
     }
 }
