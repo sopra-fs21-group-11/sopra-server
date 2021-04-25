@@ -7,15 +7,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameStateDTO {
+
+    private List<CardDTO> left;
+    private List<CardDTO> right;
+    private List<CardDTO> top;
+    private List<CardDTO> bottom;
+
     private CardDTO startingCard;
-    private List<CardDTO> cards;
+
     private int playertokens;
     private long playersturn;
     private String gamestate;
     private CardDTO nextCardOnStack;
 
     public GameStateDTO() {
-        cards = new ArrayList<>();
+
+        left = new ArrayList<>();
+        right = new ArrayList<>();
+        top = new ArrayList<>();
+        bottom = new ArrayList<>();
+
+
     }
 
     public CardDTO getStartingCard() {
@@ -34,16 +46,27 @@ public class GameStateDTO {
         this.nextCardOnStack = nextCardOnStack;
     }
 
-    public List<CardDTO> getCards() {
-        return cards;
+
+
+    public void addLeftCard(CardDTO card){
+        this.left.add(card);
+    }
+    public void addRightCard(CardDTO card){
+        this.right.add(card);
+    }
+    public void addTopCard(CardDTO card){
+        this.top.add(card);
+    }
+    public void addBottomCard(CardDTO card){
+        this.bottom.add(card);
     }
 
-    public void setCards(List<CardDTO> cards) {
-        this.cards = cards;
+    public CardDTO getStartingCard() {
+        return startingCard;
     }
 
-    public void addCard(CardDTO card){
-        this.cards.add(card);
+    public void setStartingCard(CardDTO startingCard) {
+        this.startingCard = startingCard;
     }
 
     public int getPlayertokens() {
