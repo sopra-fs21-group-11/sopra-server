@@ -329,6 +329,13 @@ public class Game {
 
         gameStateDTO.setPlayersturn(this.currentPlayer.getKey().getId());
 
+        Object[] obj = players.toArray();
+        //debug with only one player. Usually we get in else case.:
+        if(players.size()<=1){
+            gameStateDTO.setNextPlayer(1);
+        }else {
+            gameStateDTO.setNextPlayer(((Map.Entry<User, String>) obj[1]).getKey().getId());
+        }
         return gameStateDTO;
 
     }

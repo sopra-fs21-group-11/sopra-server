@@ -134,7 +134,8 @@ Response:
         "hostId": 2,
         "players": [
             2
-        ]
+        ],
+        "gameStarted": false
     },
 	    {
         "id": 2,
@@ -153,7 +154,8 @@ Response:
         "hostId": 2,
         "players": [
             2
-        ]
+        ],
+	"gameStarted": false
     }
 ]
 
@@ -181,7 +183,8 @@ Response:
     "hostId": 2,
     "players": [
         2
-    ]
+    ],
+    "gameStarted": false
 }
 
 Description: The sending joins the game (Currently multiple joins possible I know...)
@@ -308,7 +311,8 @@ The messages received by the server via websocket look the following:
     },
     "playertokens": 4,
     "playersturn": 1,
-    "gamestate": "DOUBTINGPHASE",
+    "nextPlayer": 4,
+    "gamestate": CARDPLACEMENT,
     "nextCardOnStack": {
         "id": 68,
         "lowerNeighbour": 0,
@@ -325,6 +329,13 @@ The messages received by the server via websocket look the following:
         "position": 0
     }
 }
+
+Doubt:
+{
+	"placedCard": 68,
+	"doubtedCard": 49,
+	"gameId": 1
+} Answer: New GameState with answer (Still in DOUBTINGPHASE) Next Cardplacing phase will be send after visiblecountdown. 
 
 
 

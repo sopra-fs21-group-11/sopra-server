@@ -19,6 +19,7 @@ public class GameGetDTO {
     private String name;
     private long hostId;
     private List<Long> players;
+    private boolean gameStarted;
 
     public int getTokenGainOnNearestGuess() {
         return tokenGainOnNearestGuess;
@@ -138,5 +139,13 @@ public class GameGetDTO {
 
     public void setNrOfStartingTokens(int nrOfStartingTokens) {
         this.nrOfStartingTokens = nrOfStartingTokens;
+    }
+
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        this.gameStarted = gameStarted;
     }
 }

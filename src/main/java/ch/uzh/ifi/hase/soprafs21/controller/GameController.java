@@ -75,13 +75,20 @@ public class GameController {
     }
 
 
+
     @GetMapping("/games/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO getGameById(@PathVariable long id) {
         GameLobby game = gameService.getOpenGameById(id);
-
-        return GameMapper.ConvertEntityToGameGetDTO(game);
+        GameGetDTO gameGetDTO = null;
+        if(game != null) {
+            gameGetDTO = GameMapper.ConvertEntityToGameGetDTO(game);
+        } else {
+            Game runningGame = gameService.getRunningGameById(id);
+            gameGetDTO = GameMapper.ConvertRunningGameToGetDTO(runningGame);
+        }
+        return gameGetDTO;
     }
 
     @PostMapping("/games")
