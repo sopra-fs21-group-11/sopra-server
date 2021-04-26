@@ -115,9 +115,9 @@ public class Game {
     }
 
     public void performDoubt(String sessionId, int placedCard, int doubtedCard){
-        //if(!doubtCountdown.isAlive()){//countdown isnt running -> we dont accept.
-        //    return;
-        //}
+        if(!doubtCountdown.isAlive()){//countdown isnt running -> we dont accept.
+           return;
+        }
         User doubtingUser = null;
         for(var user : players){
             if(user.getValue() == sessionId){
@@ -167,10 +167,12 @@ public class Game {
         //doubt has occured and we have to start the visible countdown:
         visibleCountdown = new CountdownHelper(currentSettings.getVisibleAfterDoubtCountdown(), this);
         visibleCountdown.start();
+        gameService.sendGameStateToUsers(id);
     }
     public void startTurnCd(){
         //start a new turn cd and send state
         turnCountdown = new CountdownHelper(currentSettings.getPlayerTurnCountdown(), this);
+        this.activeState = GameState.CARDPLACEMENT;
         gameService.sendGameStateToUsers(id);
         return;
     }

@@ -46,7 +46,7 @@ public class SocketController {
     @MessageMapping("/game/turn")
     public void performTurn(@Header("simpSessionId") String sessionId, GameTurnDTO gameTurnDTO) throws Exception {
         gameService.incomingTurn(gameTurnDTO.getGameId(), sessionId, gameTurnDTO.getPlacementIndex(), gameTurnDTO.getAxis());
-        gameService.sendGameStateToUsers(gameTurnDTO.getGameId());
+        //gameService.sendGameStateToUsers(gameTurnDTO.getGameId());
     }
 
     @MessageMapping("/game/doubt")
