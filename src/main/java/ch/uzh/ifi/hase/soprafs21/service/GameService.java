@@ -4,6 +4,8 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedGameStateDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,6 +45,7 @@ public class GameService {
 
     public Game startGame(GameLobby gameToStart){
         Game startedGame = gameToStart.StartGame();
+        startedGame.setGameService(this);
         runningGames.add(startedGame);
         openGames.remove(gameToStart);
         return startedGame;
@@ -53,6 +56,15 @@ public class GameService {
         newGame.setId(getNextFreeId());
         openGames.add(newGame);
         return newGame;
+    }
+
+    public Game doubtAction(long gameId, int placedCard, int doubtedCard, String sessionId){
+        Game doubtGame = getRunningGameById(gameId);
+
+        doubtGame.performDoubt(sessionId, placedCard, doubtedCard);
+
+
+        return doubtGame;
     }
 
     public GameLobby kickPlayer(User host, User userToKick, long gameId){
@@ -116,6 +128,7 @@ public class GameService {
         if(turningUser.getId().equals(game.getCurrentPlayer().getKey().getId())){// is it turningusers turn?
             game.performTurn(turningUser.getId(), game.getNextCard(), placementIndex, axis);
         }
+        sendGameStateToUsers(gameId);
     }
 
     public GameLobby getOpenGameById(long id){
@@ -144,6 +157,16 @@ public class GameService {
             gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken()); //nr of token is userspecific
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId,gameStateDTO);
 
+        }
+    }
+
+    public void sendEvaluatedGameStateToUsers(long id){
+        Game gameToSend = this.getRunningGameById(id);
+        for(var userToSend: gameToSend.getPlayers()){
+            String sessionId = userToSend.getValue();
+            EvaluatedGameStateDTO gameStateDTO = gameToSend.evaluate();
+            gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken());
+            this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId, gameStateDTO);
         }
     }
     /**
