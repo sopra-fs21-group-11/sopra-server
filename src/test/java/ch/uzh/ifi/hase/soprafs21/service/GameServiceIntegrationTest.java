@@ -111,13 +111,13 @@ public class GameServiceIntegrationTest {
     public void StartAndJoinRunningGame() throws Exception {
         User testUser = new User();
         testUser.setPassword("testName");
-        testUser.setUsername("testUsername");
+        testUser.setUsername("host");
 
         User createdUser = userService.createUser(testUser);
         GameLobby lobby = gameService.createNewGameLobby(testUser);
 
         User user = new User();
-        user.setUsername("testUser");
+        user.setUsername("guest");
         user.setPassword("testUserPassword");
         User joiningUser = userService.createUser(user);
 
@@ -131,59 +131,53 @@ public class GameServiceIntegrationTest {
         Game searchedGame = gameService.getRunningGameById(startedGame.getId());
         assertEquals(searchedGame.getId(), startedGame.getId());
 
-        Game joinedGame = gameService.joinRunningGame(createdUser, "testSessID", startedGame.getId());
+        Game joinedGame = gameService.joinRunningGame(createdUser, "hostSessID", startedGame.getId());
         assertTrue(joinedGame.getJoinedPlayer().size()==1);
-        joinedGame = gameService.joinRunningGame(joiningUser,"testSessID2", startedGame.getId());
+        joinedGame = gameService.joinRunningGame(joiningUser,"guestSessID", startedGame.getId());
         assertTrue(joinedGame.getPlayers().size()==2);
 
         joiningUser.setCurrentToken(4);
         createdUser.setCurrentToken(4);
 
-        //new valueCategory for compare mechanics:
-        ValueCategory ns = new NCoordinateCategory();
-        ValueCategory ew = new ECoordinateCategory();
-        //joinedGame.
-
         TestPlacementAndDoubting(joinedGame, createdUser, joiningUser);
-
-
     }
 
-    private void TestPlacementAndDoubting(Game game, User user, User user2){
+    private void TestPlacementAndDoubting(Game game, User host, User guest){
         long id = game.getId();
-        String session = "testSessID";
         Card nextCard = game.getNextCard();
         long startingCardId = game.convertToDTO().getStartingCard().getId();
         float startingCardNCoord = game.convertToDTO().getStartingCard().getNcoord(); //for testing reason, we gonna cheat a little :)
         float startingCardECoord = game.convertToDTO().getStartingCard().getEcoord();
         if(startingCardECoord <= nextCard.getEwCoordinates()){//we place it on the right for a correct placement
-            game.performTurn(user.getId(), nextCard,0, "right");
+            game.performTurn(host.getId(), nextCard,0, "right");
         }else {//we place it on the left for a correct placement
-            game.performTurn(user.getId(), nextCard,0, "left");
+            game.performTurn(host.getId(), nextCard,0, "left");
         }
 
 
-        int currentToken = user.getCurrentToken();
+        int currentToken = host.getCurrentToken();
         //the countdown should be on now. lets doubt:
-        gameService.doubtAction(id,(int)nextCard.getCardId(), (int)startingCardId,"testSessID2");
-        int tokenAfterDoubt = user.getCurrentToken();
+        gameService.doubtAction(id,(int)nextCard.getCardId(), (int)startingCardId,"guestSessID");
+        int tokenAfterDoubt = host.getCurrentToken();
         assertTrue(currentToken+1==tokenAfterDoubt);
 
         try{Thread.sleep(game.getCurrentSettings().getVisibleAfterDoubtCountdown()*1000+100);} catch (Exception ex){} //wait for the visible cd is finished add 100 for safety reason.
 
-        //do the same vertical and with wrong placement. and with other user
+        //do the same vertical and with wrong placement. and with other host
         nextCard = game.getNextCard();
-        if(startingCardNCoord >= nextCard.getNsCoordinates()){//we place it on the top for a correct placement
-            game.performTurn(user.getId(), nextCard,0, "bottom");
-        }else {//we place it on the bottom for a correct placement
-            game.performTurn(user.getId(), nextCard,0, "top");
+        if(startingCardNCoord >= nextCard.getNsCoordinates()){
+            //we place it on the top for a wrong placement
+            game.performTurn(host.getId(), nextCard,0, "top");
+        }
+        else {
+            //we place it on the bottom for a wrong placement
+            game.performTurn(host.getId(), nextCard,0, "bottom");
         }
 
-        currentToken = user2.getCurrentToken();
+        currentToken = guest.getCurrentToken();
         //the countdown should be on now. lets doubt:
-        gameService.doubtAction(id,(int)nextCard.getCardId(), (int)startingCardId,"testSessID");
-        tokenAfterDoubt = user2.getCurrentToken();
+        gameService.doubtAction(id,(int)nextCard.getCardId(), (int)startingCardId,"hostSessID");
+        tokenAfterDoubt = guest.getCurrentToken();
         assertTrue(currentToken-1==tokenAfterDoubt);
     }
-
 }

@@ -115,9 +115,9 @@ public class Game {
     }
 
     public void performDoubt(String sessionId, int placedCard, int doubtedCard){
-        if(!doubtCountdown.isAlive()){//countdown isnt running -> we dont accept.
-            return;
-        }
+        //if(!doubtCountdown.isAlive()){//countdown isnt running -> we dont accept.
+        //    return;
+        //}
         User doubtingUser = null;
         for(var user : players){
             if(user.getValue() == sessionId){
@@ -130,32 +130,31 @@ public class Game {
             //first get card obj from id (I know this could be refactored beautiful...
             Card cardToRemove = null;
             for(Card card : activeBoard.getTopList()){
-                if(card.getCardId() == doubtedCard){
+                if(card.getCardId() == placedCard){
                     cardToRemove = card;
                 }
             }
             if(cardToRemove == null){
                 for(Card card : activeBoard.getBottomList()){
-                    if(card.getCardId() == doubtedCard){
+                    if(card.getCardId() == placedCard){
                         cardToRemove = card;
                     }
                 }
             }
             if(cardToRemove == null){
                 for(Card card : activeBoard.getLeftList()){
-                    if(card.getCardId() == doubtedCard){
+                    if(card.getCardId() == placedCard){
                         cardToRemove = card;
                     }
                 }
             }
             if(cardToRemove == null){
                 for(Card card : activeBoard.getRightList()){
-                    if(card.getCardId() == doubtedCard){
+                    if(card.getCardId() == placedCard){
                         cardToRemove = card;
                     }
                 }
             }
-
             //remove card:
             activeBoard.removeCard(cardToRemove);
             doubtedUser.currentToken--;
@@ -230,7 +229,7 @@ public class Game {
             if (card.getCardId() == placedCardId) {
                 if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
                     try {
-                        return verticalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
+                        return horizontalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
                     }
                     catch (Exception ex) {
                     }
@@ -239,7 +238,7 @@ public class Game {
                     for (Card card2 : activeBoard.getLeftList()) {
                         if (card2.getCardId() == questionableCardId) {
                             try {
-                                return verticalValueCategory.isPlacementCorrect(card, card2);
+                                return horizontalValueCategory.isPlacementCorrect(card, card2);
                             }
                             catch (Exception ex) {
                             }
@@ -254,7 +253,7 @@ public class Game {
             if (card.getCardId() == placedCardId) {
                 if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
                     try {
-                        return verticalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
+                        return horizontalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
                     }
                     catch (Exception ex) {
                     }
@@ -263,7 +262,7 @@ public class Game {
                     for (Card card2 : activeBoard.getRightList()) {
                         if (card2.getCardId() == questionableCardId) {
                             try {
-                                return verticalValueCategory.isPlacementCorrect(card, card2);
+                                return horizontalValueCategory.isPlacementCorrect(card, card2);
                             }
                             catch (Exception ex) {
                             }
