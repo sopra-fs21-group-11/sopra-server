@@ -65,7 +65,11 @@ public class Deck extends Stack {
         }
         for(int i = 0;i<=30;i++){//hardcoded: A deck contains 30 cards. TODO: change this according to gamesettings.
             Random rand = new Random();
-            cards.add(locationCards.get(rand.nextInt(locationCards.size()-1)));//pick a random card out of the dataset
+            int index = rand.nextInt(locationCards.size()-1);
+            while(cards.contains(locationCards.get(rand.nextInt(locationCards.size()-1)))){
+                index = rand.nextInt(locationCards.size()-1);
+            }
+            cards.add(locationCards.get(index));//pick a random card out of the dataset
         }
 
     }

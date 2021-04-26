@@ -7,14 +7,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameStateDTO {
-    private List<CardDTO> cards;
+
+    private List<CardDTO> left;
+    private List<CardDTO> right;
+    private List<CardDTO> top;
+    private List<CardDTO> bottom;
+
+    private CardDTO startingCard;
+
     private int playertokens;
     private long playersturn;
     private String gamestate;
     private CardDTO nextCardOnStack;
 
     public GameStateDTO() {
-        cards = new ArrayList<>();
+
+        left = new ArrayList<>();
+        right = new ArrayList<>();
+        top = new ArrayList<>();
+        bottom = new ArrayList<>();
+
+
+    }
+
+    public CardDTO getStartingCard() {
+        return startingCard;
+    }
+
+    public void setStartingCard(CardDTO startingCard) {
+        this.startingCard = startingCard;
     }
 
     public CardDTO getNextCardOnStack() {
@@ -25,17 +46,21 @@ public class GameStateDTO {
         this.nextCardOnStack = nextCardOnStack;
     }
 
-    public List<CardDTO> getCards() {
-        return cards;
+
+
+    public void addLeftCard(CardDTO card){
+        this.left.add(card);
+    }
+    public void addRightCard(CardDTO card){
+        this.right.add(card);
+    }
+    public void addTopCard(CardDTO card){
+        this.top.add(card);
+    }
+    public void addBottomCard(CardDTO card){
+        this.bottom.add(card);
     }
 
-    public void setCards(List<CardDTO> cards) {
-        this.cards = cards;
-    }
-
-    public void addCard(CardDTO card){
-        this.cards.add(card);
-    }
 
     public int getPlayertokens() {
         return playertokens;
@@ -59,5 +84,37 @@ public class GameStateDTO {
 
     public void setGamestate(String gamestate) {
         this.gamestate = gamestate;
+    }
+
+    public List<CardDTO> getLeft() {
+        return left;
+    }
+
+    public void setLeft(List<CardDTO> left) {
+        this.left = left;
+    }
+
+    public List<CardDTO> getRight() {
+        return right;
+    }
+
+    public void setRight(List<CardDTO> right) {
+        this.right = right;
+    }
+
+    public List<CardDTO> getTop() {
+        return top;
+    }
+
+    public void setTop(List<CardDTO> top) {
+        this.top = top;
+    }
+
+    public List<CardDTO> getBottom() {
+        return bottom;
+    }
+
+    public void setBottom(List<CardDTO> bottom) {
+        this.bottom = bottom;
     }
 }

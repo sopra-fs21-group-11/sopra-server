@@ -5,14 +5,32 @@ import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.Deck;
+import ch.uzh.ifi.hase.soprafs21.entity.Game;
+import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs21.service.GameService;
+import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.hibernate.mapping.Value;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CompareCardTest {
+
+    @Qualifier("userRepository")
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private GameService gameService;
 
     @Test
     public void compareTwoCards() throws Exception{//whatch out. There will be null-pointer exceptions that are handled by the try-catch blocks. Dont let your eyes disturb you :).
@@ -52,4 +70,6 @@ public class CompareCardTest {
         assertFalse(ns.isPlacementCorrect(card1,card2));
 
     }
+
+
 }

@@ -34,6 +34,8 @@ public class GameSettings {
         this.nrOfStartingTokens = 4;
     }
 
+
+
     public int getTokenGainOnNearestGuess() {
         return tokenGainOnNearestGuess;
     }
@@ -41,6 +43,7 @@ public class GameSettings {
     public void setTokenGainOnNearestGuess(int tokenGainOnNearestGuess) {
         this.tokenGainOnNearestGuess = tokenGainOnNearestGuess;
     }
+
 
     public int getPlayersMin() {
         return playersMin;
