@@ -107,7 +107,6 @@ public class GameServiceIntegrationTest {
 
     }
 
-    //TODO: test anpassen
     @Test
     public void StartAndJoinRunningGame() throws Exception {
         User testUser = new User();
@@ -140,7 +139,7 @@ public class GameServiceIntegrationTest {
         joiningUser.setCurrentToken(4);
         createdUser.setCurrentToken(4);
 
-        //neew valuecategory for compare mechanics:
+        //new valueCategory for compare mechanics:
         ValueCategory ns = new NCoordinateCategory();
         ValueCategory ew = new ECoordinateCategory();
         //joinedGame.
@@ -158,9 +157,9 @@ public class GameServiceIntegrationTest {
         float startingCardNCoord = game.convertToDTO().getStartingCard().getNcoord(); //for testing reason, we gonna cheat a little :)
         float startingCardECoord = game.convertToDTO().getStartingCard().getEcoord();
         if(startingCardECoord <= nextCard.getEwCoordinates()){//we place it on the right for a correct placement
-            game.performTurn(user.getId(), nextCard,1, "horizontal");
+            game.performTurn(user.getId(), nextCard,0, "right");
         }else {//we place it on the left for a correct placement
-            game.performTurn(user.getId(), nextCard,0, "horizontal");
+            game.performTurn(user.getId(), nextCard,0, "left");
         }
 
 
@@ -175,9 +174,9 @@ public class GameServiceIntegrationTest {
         //do the same vertical and with wrong placement. and with other user
         nextCard = game.getNextCard();
         if(startingCardNCoord >= nextCard.getNsCoordinates()){//we place it on the top for a correct placement
-            game.performTurn(user.getId(), nextCard,1, "vertical");
+            game.performTurn(user.getId(), nextCard,0, "bottom");
         }else {//we place it on the bottom for a correct placement
-            game.performTurn(user.getId(), nextCard,0, "vertical");
+            game.performTurn(user.getId(), nextCard,0, "top");
         }
 
         currentToken = user2.getCurrentToken();
