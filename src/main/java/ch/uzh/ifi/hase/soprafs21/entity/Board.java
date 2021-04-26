@@ -9,69 +9,127 @@ import java.util.List;
 import java.util.Locale;
 
 public class Board {
-    private LinkedList<Card> horizontalAxis;
-    private LinkedList<Card> verticalAxis;
+    //private LinkedList<Card> horizontalAxis;
+    //private LinkedList<Card> verticalAxis;
+    private LinkedList<Card> topList;
+    private LinkedList<Card> bottomList;
+    private LinkedList<Card> leftList;
+    private LinkedList<Card> rightList;
     private Card startingCard;
-    private int startingCardIndexVertical=0;
-    private int startingCardIndexHorizontal=0;
+    //private int startingCardIndexVertical=0;
+    //private int startingCardIndexHorizontal=0;
 
     public Board(Card startingCard){
-        this.horizontalAxis = new LinkedList<>();
-        this.verticalAxis = new LinkedList<>();
+        this.topList = new LinkedList<>();
+        this.bottomList = new LinkedList<>();
+        this.leftList = new LinkedList<>();
+        this.rightList = new LinkedList<>();
         this.startingCard = startingCard;
-        this.horizontalAxis.add(startingCard);
-        this.verticalAxis.add(startingCard);
     }
     public void placeCard(Card cardToPlace, int index, String axis){
-        //horizontalAxis
-       if(axis.toLowerCase(Locale.ROOT).contains("horizontal")){
-           int indexToInsert = index;
-
-           if(indexToInsert == 0){//no left neighbour -> placed at the border
-               horizontalAxis.get(0).setLeftNeighbour(cardToPlace);
-               cardToPlace.setRightNeighbour(horizontalAxis.get(0));
-               horizontalAxis.add(0, cardToPlace);
-           }else if (indexToInsert == horizontalAxis.size()) {//index to insert is the same as length -> no right neighbour -> right border
-
-                horizontalAxis.get(indexToInsert-1).setRightNeighbour(cardToPlace);
-                cardToPlace.setLeftNeighbour(horizontalAxis.get(indexToInsert-1));
-                horizontalAxis.add(indexToInsert, cardToPlace);
-           } else{
-
-               horizontalAxis.get(indexToInsert-1).setRightNeighbour(cardToPlace);
-               horizontalAxis.get(indexToInsert).setLeftNeighbour(cardToPlace);
-               cardToPlace.setLeftNeighbour(horizontalAxis.get(indexToInsert-1));
-               cardToPlace.setRightNeighbour(horizontalAxis.get(indexToInsert));
-               horizontalAxis.add(indexToInsert, cardToPlace);
-           }
+        if(axis.toLowerCase(Locale.ROOT).contains("top")){
+            //no upper neighbour
+            if(topList.size()== index){
+                topList.get(index-1).setHigherNeighbour(cardToPlace);
+                cardToPlace.setLowerNeighbour(topList.get(index-1));
+                topList.addLast(cardToPlace);
+            }
+            //lower neighbour is starting card
+            else if(index == 0){
+                startingCard.setHigherNeighbour(cardToPlace);
+                cardToPlace.setLowerNeighbour(startingCard);
+                if(!topList.isEmpty()){
+                    cardToPlace.setHigherNeighbour(topList.get(index));
+                    topList.get(index).setLowerNeighbour(cardToPlace);
+                }
+                topList.addFirst(cardToPlace);
 
 
-       }else {
-           //vertical
-           int indexToInsert = index;
+            }
+            else {
+                cardToPlace.setLowerNeighbour(topList.get(index-1));
+                cardToPlace.setHigherNeighbour(topList.get(index));
+                topList.get(index-1).setHigherNeighbour(cardToPlace);
+                topList.get(index).setLowerNeighbour(cardToPlace);
+                topList.add(index,cardToPlace);
+            }
 
-           if (indexToInsert == 0) {//no lower neighbour -> placed at the border
-               verticalAxis.get(0).setLowerNeighbour(cardToPlace);
-               cardToPlace.setHigherNeighbour(verticalAxis.get(0));
-               verticalAxis.add(0, cardToPlace);
-           }
-           else if (indexToInsert == verticalAxis.size()) {//index to insert is the same as length -> no right neighbour -> right border
-               verticalAxis.get(indexToInsert - 1).setHigherNeighbour(cardToPlace);
-               cardToPlace.setLowerNeighbour(verticalAxis.get(indexToInsert - 1));
-               verticalAxis.add(indexToInsert, cardToPlace);
-           }
-           else {
-               verticalAxis.get(indexToInsert - 1).setHigherNeighbour(cardToPlace);
-               verticalAxis.get(indexToInsert).setLowerNeighbour(cardToPlace);
-               cardToPlace.setLowerNeighbour(verticalAxis.get(indexToInsert - 1));
-               cardToPlace.setHigherNeighbour(verticalAxis.get(indexToInsert));
-               verticalAxis.add(indexToInsert, cardToPlace);
-           }
-       }
-
-       //reset index
-       startingCardIndexHorizontal = horizontalAxis.indexOf(startingCard);
-       startingCardIndexVertical = verticalAxis.indexOf(startingCard);
+        }
+        else if(axis.toLowerCase(Locale.ROOT).contains("bottom")){
+            //no lower neighbour
+            if(bottomList.size()== index){
+                bottomList.get(index-1).setLowerNeighbour(cardToPlace);
+                cardToPlace.setHigherNeighbour(bottomList.get(index-1));
+                bottomList.addLast(cardToPlace);
+            }
+            //higher neighbour is starting card
+            else if(index == 0){
+                startingCard.setLowerNeighbour(cardToPlace);
+                cardToPlace.setHigherNeighbour(startingCard);
+                if(!bottomList.isEmpty()){
+                    cardToPlace.setLowerNeighbour(bottomList.get(index));
+                    bottomList.get(index).setHigherNeighbour(cardToPlace);
+                }
+                bottomList.addFirst(cardToPlace);
+            }
+            else {
+                cardToPlace.setHigherNeighbour(bottomList.get(index-1));
+                cardToPlace.setLowerNeighbour(bottomList.get(index));
+                bottomList.get(index-1).setLowerNeighbour(cardToPlace);
+                bottomList.get(index).setHigherNeighbour(cardToPlace);
+                bottomList.add(index,cardToPlace);
+            }
+        }
+        else if(axis.toLowerCase(Locale.ROOT).contains("left")){
+            //no left neighbour
+            if(leftList.size() == index){
+                leftList.get(index-1).setLeftNeighbour(cardToPlace);
+                cardToPlace.setRightNeighbour(leftList.get(index-1));
+                leftList.addLast(cardToPlace);
+            }
+            //right neighbour is starting card
+            else if(index == 0){
+                startingCard.setLeftNeighbour(cardToPlace);
+                cardToPlace.setRightNeighbour(startingCard);
+                if(!leftList.isEmpty()){
+                    cardToPlace.setLeftNeighbour(leftList.get(index));
+                    leftList.get(index).setRightNeighbour(cardToPlace);
+                }
+                leftList.addFirst(cardToPlace);
+            }
+            else {
+                cardToPlace.setRightNeighbour(leftList.get(index-1));
+                cardToPlace.setLeftNeighbour(leftList.get(index));
+                leftList.get(index-1).setLeftNeighbour(cardToPlace);
+                leftList.get(index).setRightNeighbour(cardToPlace);
+                leftList.add(index,cardToPlace);
+            }
+        }
+        else if(axis.toLowerCase(Locale.ROOT).contains("right")){
+            //no right neighbour
+            if(rightList.size()== index){
+                rightList.get(index-1).setRightNeighbour(cardToPlace);
+                cardToPlace.setLeftNeighbour(rightList.get(index-1));
+                rightList.addLast(cardToPlace);
+            }
+            //left neighbour is starting card
+            else if(index == 0){
+                startingCard.setRightNeighbour(cardToPlace);
+                cardToPlace.setLeftNeighbour(startingCard);
+                if(!rightList.isEmpty()){
+                    cardToPlace.setRightNeighbour(rightList.get(index));
+                    rightList.get(index).setLeftNeighbour(cardToPlace);
+                }
+                rightList.addFirst(cardToPlace);
+            }
+            else {
+                cardToPlace.setLeftNeighbour(rightList.get(index-1));
+                cardToPlace.setRightNeighbour(rightList.get(index));
+                rightList.get(index-1).setRightNeighbour(cardToPlace);
+                rightList.get(index).setLeftNeighbour(cardToPlace);
+                rightList.add(index,cardToPlace);
+            }
+        }
     }
 
     public void removeCard(Card cardToRemove){
@@ -81,40 +139,62 @@ public class Board {
         Card lowerNeighbour = cardToRemove.getLowerNeighbour();
         //rearrange pointers:
 
-        if(verticalAxis.contains(cardToRemove)) {
-            if (lowerNeighbour == null) { //is at lower border
-                higherNeighbour.setLowerNeighbour(null);
+        if(topList.contains(cardToRemove)){
+            if(cardToRemove.getHigherNeighbour() != null){
+                cardToRemove.getHigherNeighbour().setLowerNeighbour(cardToRemove.getLowerNeighbour());
+                cardToRemove.getLowerNeighbour().setHigherNeighbour(cardToRemove.getHigherNeighbour());
             }
-            else if (higherNeighbour == null) { //is at upper border
-                lowerNeighbour.setHigherNeighbour(null);
-            } else{//no neighbour is null:
-                lowerNeighbour.setHigherNeighbour(higherNeighbour);
-                higherNeighbour.setLowerNeighbour(lowerNeighbour);
+            else{
+                cardToRemove.getLowerNeighbour().setHigherNeighbour(null);
             }
-            horizontalAxis.remove(cardToRemove);
-            return;
+            topList.remove(cardToRemove);
         }
-        if(horizontalAxis.contains(cardToRemove)){
-            if(rightNeighbour == null){//is at right border
-                leftNeighbour.setRightNeighbour(null);
-            } else if (leftNeighbour == null){//is at left border
-                rightNeighbour.setLeftNeighbour(null);
-            } else{//no neighbour is null
-                rightNeighbour.setLeftNeighbour(leftNeighbour);
-                leftNeighbour.setRightNeighbour(rightNeighbour);
+        else if(bottomList.contains(cardToRemove)){
+            if(cardToRemove.getLowerNeighbour() != null){
+                cardToRemove.getLowerNeighbour().setHigherNeighbour(cardToRemove.getHigherNeighbour());
+                cardToRemove.getHigherNeighbour().setLowerNeighbour(cardToRemove.getLowerNeighbour());
             }
-            horizontalAxis.remove(cardToRemove);
-            return;
+            else{
+                cardToRemove.getHigherNeighbour().setLowerNeighbour(null);
+            }
+            bottomList.remove(cardToRemove);
+        }
+        else if(leftList.contains(cardToRemove)){
+            if(cardToRemove.getLeftNeighbour() != null){
+                cardToRemove.getLeftNeighbour().setRightNeighbour(cardToRemove.getRightNeighbour());
+                cardToRemove.getRightNeighbour().setLeftNeighbour(cardToRemove.getLeftNeighbour());
+            }
+            else{
+                cardToRemove.getRightNeighbour().setLeftNeighbour(null);
+            }
+            leftList.remove(cardToRemove);
+        }
+        else if(rightList.contains(cardToRemove)){
+            if(cardToRemove.getRightNeighbour() != null){
+                cardToRemove.getRightNeighbour().setLeftNeighbour(cardToRemove.getLeftNeighbour());
+                cardToRemove.getLeftNeighbour().setRightNeighbour(cardToRemove.getRightNeighbour());
+            }
+            else{
+                cardToRemove.getLeftNeighbour().setRightNeighbour(null);
+            }
+            rightList.remove(cardToRemove);
         }
     }
 
-
-    public LinkedList<Card> getHorizontalAxis() {
-        return horizontalAxis;
+    public LinkedList<Card> getTopList() {
+        return topList;
     }
 
-    public LinkedList<Card> getVerticalAxis() {
-        return verticalAxis;
+    public LinkedList<Card> getBottomList() {
+        return bottomList;
+    }
+
+    public LinkedList<Card> getLeftList() {
+        return leftList;
+    }
+
+    public LinkedList<Card> getRightList() {
+        return rightList;
     }
 
     public Card getStartingCard() {

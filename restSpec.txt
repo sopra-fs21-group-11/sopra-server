@@ -258,66 +258,73 @@ Response: (Might be edited because makes no sense...)
 The messages received by the server via websocket look the following:
 
 {
-    "startingcard": {
-            "id": 54,
-            "lowerNeighbour": 22,
-            "higherNeighbour": 0,
-            "rightNeighbour": 0,
-            "leftNeighbour": 0,
-            "ncoord": 46.11,
-            "ecoord": 6.06,
-            "name": "Onex",
-            "population": 0,
-            "area": 0.0,
-            "height": 0,
-            "canton": null
+    "left": [{
+		"id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 1
+	}, 
+	{	
+		 "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 0,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 2
+	}],
+    "right": [],
+    "top": [],
+    "bottom": [],
+    "startingCard": {
+        "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 0
     },
-    "cards": [{
-            "id": 54,
-            "lowerNeighbour": 22,
-            "higherNeighbour": 0,
-            "rightNeighbour": 0,
-            "leftNeighbour": 0,
-            "ncoord": 46.11,
-            "ecoord": 6.06,
-            "name": "Onex",
-            "population": 0,
-            "area": 0.0,
-            "height": 0,
-            "canton": null
-        },
-{
-            "id": 22,
-            "lowerNeighbour": 0,
-            "higherNeighbour": 54,
-            "rightNeighbour": 0,
-            "leftNeighbour": 0,
-            "ncoord": 45.50,
-            "ecoord": 7.06,
-            "name": "Zürich",
-            "population": 0,
-            "area": 0.0,
-            "height": 0,
-            "canton": null
-        }
-    ],
     "playertokens": 4,
     "playersturn": 1,
-    "gamestate": "CARDPLACEMENT",
+    "gamestate": "DOUBTINGPHASE",
     "nextCardOnStack": {
-        "id": 29,
+        "id": 68,
         "lowerNeighbour": 0,
         "higherNeighbour": 0,
         "rightNeighbour": 0,
         "leftNeighbour": 0,
-        "ncoord": 46.56,
-        "ecoord": 8.34,
-        "name": "Bauen",
+        "ncoord": 47.16,
+        "ecoord": 7.08,
+        "name": "Lajoux",
         "population": 0,
         "area": 0.0,
         "height": 0,
-        "canton": null
+        "canton": null,
+        "position": 0
     }
 }
+
 
 
