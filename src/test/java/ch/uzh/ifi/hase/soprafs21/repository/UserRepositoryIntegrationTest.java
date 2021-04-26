@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.repository;
 
-import ch.uzh.ifi.hase.soprafs21.constant.Boolean;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

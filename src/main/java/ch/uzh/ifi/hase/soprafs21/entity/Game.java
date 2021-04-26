@@ -91,21 +91,24 @@ public class Game {
             return;
         }
         //set next player
-        players.add(currentPlayer);
-        currentPlayer = players.remove();
+        //players.add(currentPlayer);
         //place card
         activeBoard.placeCard(cardToPlace, placementIndex,axis);
         //set next card
         nextCard = deckStack.pop();
         //start doubtingphase after a player placed a card:
         doubtingPhase();
+        currentPlayer = players.remove();
+        players.add(currentPlayer); //the doubtingphase has its one currentPlayer
+
     }
 
     private void doubtingPhase(){
         this.activeState = GameState.DOUBTINGPHASE;
-        CountdownHelper countdown = new CountdownHelper(currentSettings.getDoubtCountdown(), this);
+        CountdownHelper countdown = new CountdownHelper(currentSettings.getDoubtCountdown(), this, currentPlayer.getKey());
         this.doubtCountdown = countdown;
         countdown.start();
+
         //doubt incoming because loop exit (anyone else has stopped this.countdownRunning):
         //do nothing while visibleAfterDoubt
 
@@ -124,7 +127,7 @@ public class Game {
                 doubtingUser = user.getKey();
             }
         }
-        User doubtedUser = currentPlayer.getKey();
+        User doubtedUser = doubtCountdown.getDoubtedUser();
         if(!evaluateDoubt(placedCard, doubtedCard)){
             //doubt is rightous -> remove and handle tokens
             //first get card obj from id (I know this could be refactored beautiful...
@@ -165,13 +168,13 @@ public class Game {
         }
         doubtCountdown.doStop();
         //doubt has occured and we have to start the visible countdown:
-        visibleCountdown = new CountdownHelper(currentSettings.getVisibleAfterDoubtCountdown(), this);
+        visibleCountdown = new CountdownHelper(currentSettings.getVisibleAfterDoubtCountdown(), this, null);
         visibleCountdown.start();
         gameService.sendGameStateToUsers(id);
     }
     public void startTurnCd(){
         //start a new turn cd and send state
-        turnCountdown = new CountdownHelper(currentSettings.getPlayerTurnCountdown(), this);
+        turnCountdown = new CountdownHelper(currentSettings.getPlayerTurnCountdown(), this, null);
         this.activeState = GameState.CARDPLACEMENT;
         gameService.sendGameStateToUsers(id);
         return;
@@ -329,6 +332,13 @@ public class Game {
 
         gameStateDTO.setPlayersturn(this.currentPlayer.getKey().getId());
 
+        Object[] obj = players.toArray();
+        //debug with only one player. Usually we get in else case.:
+        if(players.size()<=1){
+            gameStateDTO.setNextPlayer(1);
+        }else {
+            gameStateDTO.setNextPlayer(((Map.Entry<User, String>) obj[1]).getKey().getId());
+        }
         return gameStateDTO;
 
     }
@@ -340,6 +350,8 @@ public class Game {
         List<EvaluatedCardDTO> evaluatedBottom = new ArrayList<>();
         List<EvaluatedCardDTO> evaluatedLeft = new ArrayList<>();
         List<EvaluatedCardDTO> evaluatedRight = new ArrayList<>();
+        evaluationState.setStartingCard(CardMapper.ConvertEntityToCardDTO(activeBoard.getStartingCard()));
+
 
         ValueCategory verticalCategory = this.getCurrentSettings().getVerticalValueCategory();
         ValueCategory horizontalCategory = this.getCurrentSettings().getHorizontalValueCategory();
@@ -443,6 +455,16 @@ public class Game {
 
     public void setGameService(GameService gameService) {
         this.gameService = gameService;
+    }
+
+    /**
+     * Can be accessed only once (At the start of the game).
+     * Needs to be called because Host would take his turn twice because the currentPlayer has been initialized and the queue has host at the top.
+     * This is basically a turn without any action.
+     */
+    public void rearrangeGame(){
+        players.add(currentPlayer);
+        players.remove();
     }
 
 }

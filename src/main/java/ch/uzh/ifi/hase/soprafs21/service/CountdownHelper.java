@@ -1,15 +1,18 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
+import ch.uzh.ifi.hase.soprafs21.entity.User;
 
 public class CountdownHelper extends Thread {
     private boolean doStop = false;
     private int time;
     private volatile Game game;
+    private final User doubtedUser;
 
-    public CountdownHelper(int time, Game callingGame) {
+    public CountdownHelper(int time, Game callingGame, User doubtedUser) {
         this.time = time;
         this.game = callingGame;
+        this.doubtedUser = doubtedUser;
     }
 
     public synchronized void doStop(){
@@ -43,5 +46,9 @@ public class CountdownHelper extends Thread {
 
             this.startTurnCd();
 
+    }
+
+    public User getDoubtedUser() {
+        return doubtedUser;
     }
 }

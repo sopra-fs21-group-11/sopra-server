@@ -17,6 +17,7 @@ public class GameStateDTO {
 
     private int playertokens;
     private long playersturn;
+    private long nextPlayer;
     private String gamestate;
     private CardDTO nextCardOnStack;
 
@@ -28,6 +29,14 @@ public class GameStateDTO {
         bottom = new ArrayList<>();
 
 
+    }
+
+    public long getNextPlayer() {
+        return nextPlayer;
+    }
+
+    public void setNextPlayer(long nextPlayer) {
+        this.nextPlayer = nextPlayer;
     }
 
     public CardDTO getStartingCard() {

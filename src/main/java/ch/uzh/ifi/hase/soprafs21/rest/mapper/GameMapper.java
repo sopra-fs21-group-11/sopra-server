@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 
+import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
@@ -8,6 +9,7 @@ import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GameMapper {
     public static GameGetDTO ConvertEntityToGameGetDTO(GameLobby gameLobby){
@@ -28,6 +30,7 @@ public class GameMapper {
         gameGetDTO.setTokenGainOnNearestGuess(settings.getTokenGainOnNearestGuess());
         gameGetDTO.setVisibleAfterDoubtCountdown(settings.getVisibleAfterDoubtCountdown());
         gameGetDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
+        gameGetDTO.setGameStarted(false);
 
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){
@@ -35,6 +38,35 @@ public class GameMapper {
         }
         gameGetDTO.setPlayers(playerList);
 
+        return gameGetDTO;
+    }
+
+    public static GameGetDTO ConvertRunningGameToGetDTO(Game game){
+        GameSettings settings = game.getCurrentSettings();
+
+        GameGetDTO gameGetDTO = new GameGetDTO();
+        gameGetDTO.setId(game.getId());
+        gameGetDTO.setName("Running Game - No name");
+        gameGetDTO.setDoubtCountdown(settings.getDoubtCountdown());
+        gameGetDTO.setHostId(0);
+        gameGetDTO.setPlayersMax(settings.getPlayersMax());
+        gameGetDTO.setPlayersMin(settings.getPlayersMin());
+        gameGetDTO.setHorizontalValueCategoryId(settings.getHorizontalValueCategory().getId());
+        gameGetDTO.setVerticalValueCategoryId(settings.getVerticalValueCategory().getId());
+        gameGetDTO.setNrOfEvaluations(settings.getNrOfEvaluations());
+        gameGetDTO.setPlayerTurnCountdown(settings.getPlayerTurnCountdown());
+        gameGetDTO.setTokenGainOnCorrectGuess(settings.getTokenGainOnCorrectGuess());
+        gameGetDTO.setTokenGainOnNearestGuess(settings.getTokenGainOnNearestGuess());
+        gameGetDTO.setVisibleAfterDoubtCountdown(settings.getVisibleAfterDoubtCountdown());
+        gameGetDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
+        gameGetDTO.setGameStarted(false);
+
+        List<Long> playerList = new ArrayList<>();
+        for(Map.Entry<User, String>  user : game.getPlayers()){
+            playerList.add(user.getKey().getId());
+        }
+        gameGetDTO.setPlayers(playerList);
+        gameGetDTO.setGameStarted(true);
         return gameGetDTO;
     }
 
