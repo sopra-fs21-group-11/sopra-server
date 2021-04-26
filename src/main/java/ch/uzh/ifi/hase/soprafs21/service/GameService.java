@@ -109,6 +109,8 @@ public class GameService {
             for(var user : FullGame.getPlayers()){
                 user.getKey().setCurrentToken(FullGame.getCurrentSettings().getNrOfStartingTokens());
             }
+            //when we start the game we have to rearrange the player queue because host would take a double turn:
+            FullGame.rearrangeGame();
             return true;
         }
     }

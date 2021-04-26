@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
@@ -8,6 +9,8 @@ import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedGameStateDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,6 +138,8 @@ public class GameServiceIntegrationTest {
         assertTrue(joinedGame.getJoinedPlayer().size()==1);
         joinedGame = gameService.joinRunningGame(joiningUser,"guestSessID", startedGame.getId());
         assertTrue(joinedGame.getPlayers().size()==2);
+        assertTrue(joinedGame.getJoinedPlayer().size()==0);//game is full -> call full game
+        assertTrue(gameService.gameIsFull(joinedGame.getId()));//deliver tokens and rearrange queue
 
         joiningUser.setCurrentToken(4);
         createdUser.setCurrentToken(4);
@@ -167,11 +172,11 @@ public class GameServiceIntegrationTest {
         nextCard = game.getNextCard();
         if(startingCardNCoord >= nextCard.getNsCoordinates()){
             //we place it on the top for a wrong placement
-            game.performTurn(host.getId(), nextCard,0, "top");
+            game.performTurn(guest.getId(), nextCard,0, "top");
         }
         else {
             //we place it on the bottom for a wrong placement
-            game.performTurn(host.getId(), nextCard,0, "bottom");
+            game.performTurn(guest.getId(), nextCard,0, "bottom");
         }
 
         currentToken = guest.getCurrentToken();
@@ -179,5 +184,98 @@ public class GameServiceIntegrationTest {
         gameService.doubtAction(id,(int)nextCard.getCardId(), (int)startingCardId,"hostSessID");
         tokenAfterDoubt = guest.getCurrentToken();
         assertTrue(currentToken-1==tokenAfterDoubt);
+
+        //lets place some more correct cards:
+
+        //get coordinates of startingcard to place on the correct side of the starting card.
+        float ecoord = game.convertToDTO().getStartingCard().getEcoord();
+        float ncoord = game.convertToDTO().getStartingCard().getNcoord();
+        //We create a mock card because placing and checking would be very difficult
+
+
+        User user = host;//next turn is host. We have to switch every time, we place a card.
+
+        if(game.convertToDTO().getStartingCard().getRightNeighbour()==0){
+            SwissLocationCard cardToPlace = new SwissLocationCard();
+            cardToPlace.setEwCoordinates(ecoord+0.1F);
+            cardToPlace.setNsCoordinates(ncoord+0.1F);
+            cardToPlace.setLocationName("MockCard");
+            cardToPlace.setCardId(999L);
+            game.performTurn(user.getId(),cardToPlace,0, "right");
+            if(user == host){
+                user = guest;
+            }else{
+                user = host;
+            }
+            try{Thread.sleep(game.getCurrentSettings().getDoubtCountdown()*1000+100);} catch (Exception ex){} //wait for the visible cd is finished add 100 for safety reason.
+
+        }
+
+        if(game.convertToDTO().getStartingCard().getLeftNeighbour()==0){
+            SwissLocationCard cardToPlace = new SwissLocationCard();
+            cardToPlace.setEwCoordinates(ecoord-0.1F);
+            cardToPlace.setNsCoordinates(ncoord-0.1F);
+            cardToPlace.setLocationName("MockCard");
+            cardToPlace.setCardId(998L);
+            game.performTurn(user.getId(),cardToPlace,0, "left");
+
+            if(user == host){
+                user = guest;
+            }else{
+                user = host;
+            }
+            try{Thread.sleep(game.getCurrentSettings().getDoubtCountdown()*1000+100);} catch (Exception ex){} //wait for the visible cd is finished add 100 for safety reason.
+
+        }
+
+        if(game.convertToDTO().getStartingCard().getHigherNeighbour()==0){
+            SwissLocationCard cardToPlace = new SwissLocationCard();
+            cardToPlace.setEwCoordinates(ecoord+0.1F);
+            cardToPlace.setNsCoordinates(ncoord+0.1F);
+            cardToPlace.setLocationName("MockCard");
+            cardToPlace.setCardId(997L);
+            game.performTurn(user.getId(),cardToPlace,0, "top");
+
+            if(user == host){
+                user = guest;
+            }else{
+                user = host;
+            }
+            try{Thread.sleep(game.getCurrentSettings().getDoubtCountdown()*1000+100);} catch (Exception ex){} //wait for the visible cd is finished add 100 for safety reason.
+
+        }
+
+        if(game.convertToDTO().getStartingCard().getLowerNeighbour()==0){
+            SwissLocationCard cardToPlace = new SwissLocationCard();
+            cardToPlace.setEwCoordinates(ecoord-0.1F);
+            cardToPlace.setNsCoordinates(ncoord-0.1F);
+            cardToPlace.setLocationName("MockCard");
+            cardToPlace.setCardId(996L);
+            game.performTurn(user.getId(),cardToPlace,0, "bottom");
+
+            if(user == host){
+                user = guest;
+            }else{
+                user = host;
+            }
+            try{Thread.sleep(game.getCurrentSettings().getDoubtCountdown()*1000+100);} catch (Exception ex){} //wait for the visible cd is finished add 100 for safety reason.
+
+        }
+
+        GameStateDTO stateDTO = game.convertToDTO();
+        //now we have a neighbour on every side. Lets evaluate:
+        EvaluatedGameStateDTO evaluatedGameStateDTO =  game.evaluate();
+        //all have to be correct
+        assertTrue(evaluatedGameStateDTO.getTop().get(0).isCorrect());
+        assertTrue(evaluatedGameStateDTO.getBottom().get(0).isCorrect());
+        assertTrue(evaluatedGameStateDTO.getLeft().get(0).isCorrect());
+        assertTrue(evaluatedGameStateDTO.getRight().get(0).isCorrect());
+
+        //Todo: Token assertion
+
+
+
+
+
     }
 }

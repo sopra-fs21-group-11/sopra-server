@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
-import ch.uzh.ifi.hase.soprafs21.constant.Boolean;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -148,6 +148,15 @@ public class GameControllerTest {
         mockMvc.perform(postRequest)
                 .andExpect(status().isOk());
 
+
+        //Game should now be started
+        given(gameService.getOpenGameById(any(long.class))).willReturn(null); //Opengames has to return null
+
+        given(gameService.getRunningGameById(any(long.class))).willReturn(game);
+        MockHttpServletRequestBuilder getRequest = get("/games/1").contentType(MediaType.APPLICATION_JSON);
+        getRequest.header("Authorization", "Bearer "+authToken);
+        mockMvc.perform(getRequest)
+                .andExpect((jsonPath("$.gameStarted", is(true))));
 
     }
 
