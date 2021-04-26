@@ -28,23 +28,22 @@ public class Board {
     }
     public void placeCard(Card cardToPlace, int index, String axis){
         if(axis.toLowerCase(Locale.ROOT).contains("top")){
-            //no upper neighbour
-            if(topList.size()== index){
-                topList.get(index-1).setHigherNeighbour(cardToPlace);
-                cardToPlace.setLowerNeighbour(topList.get(index-1));
-                topList.addLast(cardToPlace);
-            }
             //lower neighbour is starting card
-            else if(index == 0){
+            if(index == 0){
                 startingCard.setHigherNeighbour(cardToPlace);
                 cardToPlace.setLowerNeighbour(startingCard);
                 if(!topList.isEmpty()){
+                    //not the first card
                     cardToPlace.setHigherNeighbour(topList.get(index));
                     topList.get(index).setLowerNeighbour(cardToPlace);
                 }
                 topList.addFirst(cardToPlace);
-
-
+            }
+            //no upper neighbour
+            else if(topList.size()== index){
+                topList.get(index-1).setHigherNeighbour(cardToPlace);
+                cardToPlace.setLowerNeighbour(topList.get(index-1));
+                topList.addLast(cardToPlace);
             }
             else {
                 cardToPlace.setLowerNeighbour(topList.get(index-1));
@@ -56,21 +55,22 @@ public class Board {
 
         }
         else if(axis.toLowerCase(Locale.ROOT).contains("bottom")){
-            //no lower neighbour
-            if(bottomList.size()== index){
-                bottomList.get(index-1).setLowerNeighbour(cardToPlace);
-                cardToPlace.setHigherNeighbour(bottomList.get(index-1));
-                bottomList.addLast(cardToPlace);
-            }
             //higher neighbour is starting card
-            else if(index == 0){
+            if(index == 0){
                 startingCard.setLowerNeighbour(cardToPlace);
                 cardToPlace.setHigherNeighbour(startingCard);
                 if(!bottomList.isEmpty()){
+                    //not the first card
                     cardToPlace.setLowerNeighbour(bottomList.get(index));
                     bottomList.get(index).setHigherNeighbour(cardToPlace);
                 }
                 bottomList.addFirst(cardToPlace);
+            }
+            //no lower neighbour
+            else if(bottomList.size()== index){
+                bottomList.get(index-1).setLowerNeighbour(cardToPlace);
+                cardToPlace.setHigherNeighbour(bottomList.get(index-1));
+                bottomList.addLast(cardToPlace);
             }
             else {
                 cardToPlace.setHigherNeighbour(bottomList.get(index-1));
@@ -81,21 +81,22 @@ public class Board {
             }
         }
         else if(axis.toLowerCase(Locale.ROOT).contains("left")){
-            //no left neighbour
-            if(leftList.size() == index){
-                leftList.get(index-1).setLeftNeighbour(cardToPlace);
-                cardToPlace.setRightNeighbour(leftList.get(index-1));
-                leftList.addLast(cardToPlace);
-            }
             //right neighbour is starting card
-            else if(index == 0){
+            if(index == 0){
                 startingCard.setLeftNeighbour(cardToPlace);
                 cardToPlace.setRightNeighbour(startingCard);
                 if(!leftList.isEmpty()){
+                    //not the first card
                     cardToPlace.setLeftNeighbour(leftList.get(index));
                     leftList.get(index).setRightNeighbour(cardToPlace);
                 }
                 leftList.addFirst(cardToPlace);
+            }
+            //no left neighbour
+            else if(leftList.size() == index){
+                leftList.get(index-1).setLeftNeighbour(cardToPlace);
+                cardToPlace.setRightNeighbour(leftList.get(index-1));
+                leftList.addLast(cardToPlace);
             }
             else {
                 cardToPlace.setRightNeighbour(leftList.get(index-1));
@@ -106,21 +107,22 @@ public class Board {
             }
         }
         else if(axis.toLowerCase(Locale.ROOT).contains("right")){
-            //no right neighbour
-            if(rightList.size()== index){
-                rightList.get(index-1).setRightNeighbour(cardToPlace);
-                cardToPlace.setLeftNeighbour(rightList.get(index-1));
-                rightList.addLast(cardToPlace);
-            }
             //left neighbour is starting card
-            else if(index == 0){
+            if(index == 0){
                 startingCard.setRightNeighbour(cardToPlace);
                 cardToPlace.setLeftNeighbour(startingCard);
                 if(!rightList.isEmpty()){
+                    //not the first card
                     cardToPlace.setRightNeighbour(rightList.get(index));
                     rightList.get(index).setLeftNeighbour(cardToPlace);
                 }
                 rightList.addFirst(cardToPlace);
+            }
+            //no right neighbour
+            else if(rightList.size()== index){
+                rightList.get(index-1).setRightNeighbour(cardToPlace);
+                cardToPlace.setLeftNeighbour(rightList.get(index-1));
+                rightList.addLast(cardToPlace);
             }
             else {
                 cardToPlace.setLeftNeighbour(rightList.get(index-1));
