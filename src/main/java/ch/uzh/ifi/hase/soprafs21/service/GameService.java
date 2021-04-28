@@ -149,15 +149,6 @@ public class GameService {
         return false;
     }
 
-    public boolean openGameExists(long id){
-        for(GameLobby game : this.getAllOpenGames()){
-            if(game.getId() == id){
-                return true;
-            }
-        }
-        return false;
-    }
-
     public Game getRunningGameById(long id){
         for(Game game: this.runningGames){
             if(game.getId()==id){
