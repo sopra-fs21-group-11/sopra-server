@@ -187,8 +187,36 @@ public class Board {
         }
     }
 
-    public Card getCardById(int id){//TODO: implement method
-        return startingCard;
+    public Card getCardById(int id){
+        if(startingCard.getCardId() == id){
+            return startingCard;
+        }
+        for(Card card : getTopList()){
+            if(card.getCardId() == id){
+                return card;
+            }
+        }
+
+        for(Card card : getBottomList()){
+            if(card.getCardId() == id){
+                return card;
+            }
+        }
+
+        for(Card card : getLeftList()){
+            if(card.getCardId() == id){
+                return card;
+            }
+        }
+
+        for(Card card : getRightList()){
+            if(card.getCardId() == id){
+                return card;
+            }
+        }
+
+        //card not found:
+        return null;
     }
 
     public LinkedList<Card> getTopList() {

@@ -129,6 +129,8 @@ public class Game {
         if(!doubtCountdown.isAlive()){//countdown isnt running -> we dont accept.
            return;
         }
+        Card referenceCard = activeBoard.getCardById(doubtedCard);
+        Card doubtedCardToSend = activeBoard.getCardById(placedCard);
         User doubtingUser = null;
         for(var user : players){
             if(user.getValue() == sessionId){
@@ -140,34 +142,9 @@ public class Game {
         if(!evaluateDoubt(placedCard, doubtedCard)){
             evaluateResult = false;
             //doubt is rightous -> remove and handle tokens
-            //first get card obj from id (I know this could be refactored beautiful...
-            Card cardToRemove = null;
-            for(Card card : activeBoard.getTopList()){
-                if(card.getCardId() == placedCard){
-                    cardToRemove = card;
-                }
-            }
-            if(cardToRemove == null){
-                for(Card card : activeBoard.getBottomList()){
-                    if(card.getCardId() == placedCard){
-                        cardToRemove = card;
-                    }
-                }
-            }
-            if(cardToRemove == null){
-                for(Card card : activeBoard.getLeftList()){
-                    if(card.getCardId() == placedCard){
-                        cardToRemove = card;
-                    }
-                }
-            }
-            if(cardToRemove == null){
-                for(Card card : activeBoard.getRightList()){
-                    if(card.getCardId() == placedCard){
-                        cardToRemove = card;
-                    }
-                }
-            }
+            //first get card obj from id
+            Card cardToRemove = activeBoard.getCardById(placedCard);
+
             //remove card:
             activeBoard.removeCard(cardToRemove);
             doubtedUser.currentToken--;
@@ -177,8 +154,7 @@ public class Game {
             doubtingUser.currentToken--;
         }
         doubtCountdown.doStop();
-        Card referenceCard = activeBoard.getCardById(doubtedCard);
-        Card doubtedCardToSend = activeBoard.getCardById(placedCard);
+
         gameService.sendDoubtResultDTO(id,referenceCard, doubtedCardToSend, evaluateResult );
         //doubt has occured and we have to start the visible countdown:
         visibleCountdown = new CountdownHelper(currentSettings.getVisibleAfterDoubtCountdown(), this);
@@ -186,11 +162,6 @@ public class Game {
 
     }
 
-    public void startEvaluationVisibleCd(){
-        //send evaluatedgameState:
-        gameService.sendEvaluatedGameStateToUsers(id);
-        visibleCountdown = new CountdownHelper(currentSettings.getEvaluationCountdownVisible(), this);
-    }
 
     public boolean startActualEvaluation(){
         if(activeBoard.getPlacedCard()==currentSettings.getCardsBeforeEvaluation()) {
@@ -216,102 +187,21 @@ public class Game {
 
 
     private boolean evaluateDoubt(int placedCardId, int questionableCardId){
-        //topList check
-        for(Card card : activeBoard.getTopList()){
-            if(card.getCardId() == placedCardId) {
-                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
-                    try {
-                        return verticalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
-                    }
-                    catch (Exception ex) {
-                    }
-                }
-                else {
-                    for (Card card2 : activeBoard.getTopList()) {
-                        if (card2.getCardId() == questionableCardId) {
-                            try {
-                                return verticalValueCategory.isPlacementCorrect(card, card2);
-                            }
-                            catch (Exception ex) {
-                            }
-                        }
-                    }
-                }
-            }
+        Card placedCard = activeBoard.getCardById(placedCardId);
+        Card questionableCard = activeBoard.getCardById(questionableCardId);
+        //check if we have to evaluate vertical or horizontal category:
+        ValueCategory compareCategory = null;
+        if(placedCard.getHigherNeighbour() == questionableCard || placedCard.getLowerNeighbour() == questionableCard){
+            compareCategory = verticalValueCategory;
         }
-
-        //bottomList check
-        for(Card card : activeBoard.getBottomList()) {
-            if (card.getCardId() == placedCardId) {
-                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
-                    try {
-                        return verticalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
-                    }
-                    catch (Exception ex) {
-                    }
-                }
-                else {
-                    for (Card card2 : activeBoard.getBottomList()) {
-                        if (card2.getCardId() == questionableCardId) {
-                            try {
-                                return verticalValueCategory.isPlacementCorrect(card, card2);
-                            }
-                            catch (Exception ex) {
-                            }
-                        }
-                    }
-                }
-            }
+        else if(placedCard.getLeftNeighbour() == questionableCard || placedCard.getRightNeighbour() == questionableCard){
+            compareCategory = horizontalValueCategory;
         }
-
-        //leftList check
-        for(Card card : activeBoard.getLeftList()) {
-            if (card.getCardId() == placedCardId) {
-                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
-                    try {
-                        return horizontalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
-                    }
-                    catch (Exception ex) {
-                    }
-                }
-                else {
-                    for (Card card2 : activeBoard.getLeftList()) {
-                        if (card2.getCardId() == questionableCardId) {
-                            try {
-                                return horizontalValueCategory.isPlacementCorrect(card, card2);
-                            }
-                            catch (Exception ex) {
-                            }
-                        }
-                    }
-                }
-            }
+        try {
+            return compareCategory.isPlacementCorrect(placedCard, questionableCard);
+        } catch (Exception ex){
+            return true;
         }
-
-        //rightList check
-        for(Card card : activeBoard.getRightList()) {
-            if (card.getCardId() == placedCardId) {
-                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
-                    try {
-                        return horizontalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
-                    }
-                    catch (Exception ex) {
-                    }
-                }
-                else {
-                    for (Card card2 : activeBoard.getRightList()) {
-                        if (card2.getCardId() == questionableCardId) {
-                            try {
-                                return horizontalValueCategory.isPlacementCorrect(card, card2);
-                            }
-                            catch (Exception ex) {
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return true; //this is bullshit :/
     }
 
     public GameStateDTO convertToDTO(){
