@@ -10,6 +10,8 @@ public class GameGetDTO {
     private int doubtCountdown;
     private int visibleAfterDoubtCountdown;
     private int playerTurnCountdown;
+    private int evaluationCountdown;
+    private int evaluationCountdownVisible;
     private int tokenGainOnCorrectGuess;
     private int tokenGainOnNearestGuess;
     private int nrOfStartingTokens;
@@ -17,8 +19,8 @@ public class GameGetDTO {
     private long horizontalValueCategoryId;
     private long verticalValueCategoryId;
     private String name;
-    private long hostId;
-    private List<Long> players;
+    private UserGetDTO hostId;
+    private List<UserGetDTO> players;
     private boolean gameStarted;
 
     public int getTokenGainOnNearestGuess() {
@@ -29,11 +31,11 @@ public class GameGetDTO {
         this.tokenGainOnNearestGuess = tokenGainOnNearestGuess;
     }
 
-    public List<Long> getPlayers() {
+    public List<UserGetDTO> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<Long> players) {
+    public void setPlayers(List<UserGetDTO> players) {
         this.players = players;
     }
 
@@ -125,11 +127,11 @@ public class GameGetDTO {
         this.name = name;
     }
 
-    public long getHostId() {
+    public UserGetDTO getHostId() {
         return hostId;
     }
 
-    public void setHostId(long hostId) {
+    public void setHostId(UserGetDTO hostId) {
         this.hostId = hostId;
     }
 
@@ -147,5 +149,21 @@ public class GameGetDTO {
 
     public void setGameStarted(boolean gameStarted) {
         this.gameStarted = gameStarted;
+    }
+
+    public int getEvaluationCountdown() {
+        return evaluationCountdown;
+    }
+
+    public void setEvaluationCountdown(int evaluationCountdown) {
+        this.evaluationCountdown = evaluationCountdown;
+    }
+
+    public int getEvaluationCountdownVisible() {
+        return evaluationCountdownVisible;
+    }
+
+    public void setEvaluationCountdownVisible(int evaluationCountdownVisible) {
+        this.evaluationCountdownVisible = evaluationCountdownVisible;
     }
 }

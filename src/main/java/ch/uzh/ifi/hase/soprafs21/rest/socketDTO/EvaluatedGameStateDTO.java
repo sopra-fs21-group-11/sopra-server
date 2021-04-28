@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
 
+import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +13,8 @@ public class EvaluatedGameStateDTO {
     private List<EvaluatedCardDTO> bottom;
     private CardDTO startingCard;
     private int playertokens;
-    private long playersturn;
+    private UserGetDTO playersturn;
+    private UserGetDTO nextPlayer;
     private String gamestate;
     private CardDTO nextCardOnStack;
 
@@ -84,11 +87,11 @@ public class EvaluatedGameStateDTO {
         this.playertokens = playertokens;
     }
 
-    public long getPlayersturn() {
+    public UserGetDTO getPlayersturn() {
         return playersturn;
     }
 
-    public void setPlayersturn(long playersturn) {
+    public void setPlayersturn(UserGetDTO playersturn) {
         this.playersturn = playersturn;
     }
 
@@ -106,5 +109,13 @@ public class EvaluatedGameStateDTO {
 
     public void setStartingCard(CardDTO startingCard) {
         this.startingCard = startingCard;
+    }
+
+    public UserGetDTO getNextPlayer() {
+        return nextPlayer;
+    }
+
+    public void setNextPlayer(UserGetDTO nextPlayer) {
+        this.nextPlayer = nextPlayer;
     }
 }
