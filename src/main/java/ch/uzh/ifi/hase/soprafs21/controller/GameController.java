@@ -80,7 +80,10 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO getGameById(@PathVariable long id) {
-        GameLobby game = gameService.getOpenGameById(id);
+        GameLobby game = null;
+        if(gameService.openGameExists(id)) {
+            game = gameService.getOpenGameById(id);
+        }
         GameGetDTO gameGetDTO = null;
         if(game != null) {
             gameGetDTO = GameMapper.ConvertEntityToGameGetDTO(game);

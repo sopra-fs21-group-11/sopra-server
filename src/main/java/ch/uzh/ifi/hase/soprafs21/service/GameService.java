@@ -15,9 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional
@@ -110,7 +108,7 @@ public class GameService {
                 user.getKey().setCurrentToken(FullGame.getCurrentSettings().getNrOfStartingTokens());
             }
             //when we start the game we have to rearrange the player queue because host would take a double turn:
-            FullGame.rearrangeGame();
+            FullGame.initializeGameWhenFull();
             return true;
         }
     }
@@ -140,6 +138,15 @@ public class GameService {
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No game with id "+id+" found.");
+    }
+
+    public boolean openGameExists(long id){
+        for(GameLobby game : this.getAllOpenGames()){
+            if(game.getId() == id){
+                return true;
+            }
+        }
+        return false;
     }
 
     public Game getRunningGameById(long id){
