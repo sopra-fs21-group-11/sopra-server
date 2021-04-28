@@ -48,13 +48,8 @@ public class CountdownHelper extends Thread {
         }
     }
 
-    private synchronized  void startTurnCd(){
-
-        this.game.startTurnCd();
-    }
-
-    private synchronized  void startEvaluationVisibleCd(){
-        this.game.startEvaluationVisibleCd();
+    private synchronized void startEvaluationAfterCdFinished(){
+        this.game.performEvaluationAfterGuessPresentOrCdEnded();
     }
 
     @Override
@@ -72,7 +67,7 @@ public class CountdownHelper extends Thread {
             if(!evaluation) { //if we have an evaluation, we wont start turncd but we start visiblecd:
                 this.startEvaluationCheck();
             } else{
-                this.startEvaluationVisibleCd();
+                startEvaluationAfterCdFinished();//we start the evaluation regardless if all guesses have came in.
             }
 
     }

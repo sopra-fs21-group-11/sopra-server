@@ -186,13 +186,6 @@ public class Game {
 
     }
 
-    public void startEvaluationCd(){
-        evaluationCountdown = new CountdownHelper(currentSettings.getEvaluationCountdown(), this, true);
-        evaluationCountdown.start();
-        gameService.sendGameStateToUsers(id); //send a gamestate without placement:true/false but with gamestate: evaluationphase
-
-    }
-
     public void startEvaluationVisibleCd(){
         //send evaluatedgameState:
         gameService.sendEvaluatedGameStateToUsers(id);
@@ -396,17 +389,20 @@ public class Game {
                 guessingUser = user.getKey();
             }
         }
-        if(evaluation.addGuess(guessingUser,guess.getNrOfWrongPlacedCards())){
-            //if this returns true, all guesses have came in. -> evaluate
-            evaluationCountdown.doStop();//stop cd
-            evaluation.shareTokens(nrOfWrongCards);
-            gameService.sendEvaluatedGameStateToUsers(id);
-            activeBoard.setPlacedCard(0);
-            visibleCountdown = new CountdownHelper(currentSettings.getEvaluationCountdownVisible(), this);
-            visibleCountdown.start();
+        boolean allGuessesCameIn = evaluation.addGuess(guessingUser,guess.getNrOfWrongPlacedCards());
+        if(allGuessesCameIn){
+
         }
     }
-
+    public void performEvaluationAfterGuessPresentOrCdEnded(){
+        //if this returns true, all guesses have came in. -> evaluate
+        evaluationCountdown.doStop();//stop cd
+        evaluation.shareTokens(nrOfWrongCards);
+        gameService.sendEvaluatedGameStateToUsers(id);
+        activeBoard.setPlacedCard(0);
+        visibleCountdown = new CountdownHelper(currentSettings.getEvaluationCountdownVisible(), this);
+        visibleCountdown.start();
+    }
     public EvaluatedGameStateDTO evaluate(){
         EvaluatedGameStateDTO evaluationState = new EvaluatedGameStateDTO();
         List<EvaluatedCardDTO> evaluatedTop = new ArrayList<>();
