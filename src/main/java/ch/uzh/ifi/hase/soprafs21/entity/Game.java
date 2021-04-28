@@ -215,37 +215,37 @@ public class Game {
         int positionCounter = 1;
         Card loopCard = startingCard;
         while(loopCard.getLeftNeighbour() !=null){ //get left cards
+            loopCard = loopCard.getLeftNeighbour();
             CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
             cardDTO.setPosition(positionCounter);
             gameStateDTO.addLeftCard(cardDTO);
-            loopCard = loopCard.getLeftNeighbour();
             positionCounter++;
         }
         positionCounter = 1;
         loopCard = startingCard;
         while(loopCard.getRightNeighbour() !=null){ //get right cards
+            loopCard = loopCard.getRightNeighbour();
             CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
             cardDTO.setPosition(positionCounter);
             gameStateDTO.addRightCard(cardDTO);
-            loopCard = loopCard.getRightNeighbour();
             positionCounter++;
         }
         positionCounter = 1;
         loopCard = startingCard;
         while(loopCard.getHigherNeighbour() !=null){ //get top cards
+            loopCard = loopCard.getHigherNeighbour();
             CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
             cardDTO.setPosition(positionCounter);
             gameStateDTO.addTopCard(cardDTO);
-            loopCard = loopCard.getHigherNeighbour();
             positionCounter++;
         }
         positionCounter = 1;
         loopCard = startingCard;
         while(loopCard.getLowerNeighbour() !=null){ //get bottom cards
+            loopCard = loopCard.getLowerNeighbour();
             CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
             cardDTO.setPosition(positionCounter);
             gameStateDTO.addBottomCard(cardDTO);
-            loopCard = loopCard.getLowerNeighbour();
             positionCounter++;
         }
 
