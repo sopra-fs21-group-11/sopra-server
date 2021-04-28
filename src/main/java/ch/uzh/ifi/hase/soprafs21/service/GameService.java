@@ -141,6 +141,14 @@ public class GameService {
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No game with id "+id+" found.");
     }
+    public boolean openGameExists(long id){
+        for(GameLobby game : this.getAllOpenGames()){
+            if(game.getId() == id){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public Game getRunningGameById(long id){
         for(Game game: this.runningGames){
