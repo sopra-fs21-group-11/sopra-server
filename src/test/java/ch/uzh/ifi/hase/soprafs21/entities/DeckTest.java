@@ -15,7 +15,7 @@ public class DeckTest {
     @Test
     public void TestDeckWithVauleCategory() throws Exception{
         //current standard-Deck has only swisslocationcards.
-        Deck deck = new Deck();
+        Deck deck = new Deck(30);
         ValueCategory nscat = new NCoordinateCategory();
         ValueCategory ewcat = new ECoordinateCategory();
 

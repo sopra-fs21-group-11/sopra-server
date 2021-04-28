@@ -1,12 +1,12 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 
+import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedGameStateDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -15,9 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional
@@ -27,11 +25,12 @@ public class GameService {
     private List<Game> runningGames = new ArrayList<>();
 
     private SimpMessagingTemplate template;
-
+    private UserService userService;
 
     @Autowired
-    public GameService(SimpMessagingTemplate template) {
+    public GameService(SimpMessagingTemplate template, UserService userService) {
          this.template = template;
+         this.userService = userService;
     }
 
 
@@ -110,7 +109,7 @@ public class GameService {
                 user.getKey().setCurrentToken(FullGame.getCurrentSettings().getNrOfStartingTokens());
             }
             //when we start the game we have to rearrange the player queue because host would take a double turn:
-            FullGame.rearrangeGame();
+            FullGame.initializeGameWhenFull();
             return true;
         }
     }
@@ -141,6 +140,14 @@ public class GameService {
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No game with id "+id+" found.");
     }
+    public boolean openGameExists(long id){
+        for(GameLobby game : this.getAllOpenGames()){
+            if(game.getId() == id){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public Game getRunningGameById(long id){
         for(Game game: this.runningGames){
@@ -151,15 +158,35 @@ public class GameService {
         return null;
     }
 
+    public void parseEvaluationGuess(long id, String sessionId, GameGuessDTO guess){
+        Game gameToParseEvaluationGuess = this.getRunningGameById(id);
+        gameToParseEvaluationGuess.parseEvaluationGuess(sessionId, guess);
+    }
+
     public void sendGameStateToUsers(long id){
         Game gameToSend = this.getRunningGameById(id);
         for(var userToSend : gameToSend.getPlayers()){
             String sessionId = userToSend.getValue();
             GameStateDTO gameStateDTO = gameToSend.convertToDTO();
+            gameStateDTO.setPlayersturn(userService.getUser(gameStateDTO.getPlayersturn().getId()));
+            gameStateDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
+
             gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken()); //nr of token is userspecific
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId,gameStateDTO);
 
         }
+    }
+    public void sendDoubtResultDTO(long gameId, Card referenceCard, Card doubtedCard, boolean isDoubtRightous){
+        Game gameToSend = this.getRunningGameById(gameId);
+        DoubtResultDTO resultDTO = new DoubtResultDTO();
+        resultDTO.setReferenceCard(CardMapper.ConvertEntityToCardDTO(referenceCard));
+        resultDTO.setDoubtedCard(CardMapper.ConvertEntityToCardDTO(doubtedCard));
+        resultDTO.setDoubtRightous(isDoubtRightous);
+        for(var userToSend: gameToSend.getPlayers()){
+            String sessionId = userToSend.getValue();
+            this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId, resultDTO);
+        }
+
     }
 
     public void sendEvaluatedGameStateToUsers(long id){
@@ -167,6 +194,7 @@ public class GameService {
         for(var userToSend: gameToSend.getPlayers()){
             String sessionId = userToSend.getValue();
             EvaluatedGameStateDTO gameStateDTO = gameToSend.evaluate();
+            gameStateDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
             gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken());
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId, gameStateDTO);
         }

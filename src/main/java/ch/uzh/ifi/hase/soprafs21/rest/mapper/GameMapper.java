@@ -19,7 +19,7 @@ public class GameMapper {
         gameGetDTO.setId(gameLobby.getId());
         gameGetDTO.setName(gameLobby.getName());
         gameGetDTO.setDoubtCountdown(settings.getDoubtCountdown());
-        gameGetDTO.setHostId(gameLobby.getHostId());
+        //gameGetDTO.setHostId(gameLobby.getHostId());
         gameGetDTO.setPlayersMax(settings.getPlayersMax());
         gameGetDTO.setPlayersMin(settings.getPlayersMin());
         gameGetDTO.setHorizontalValueCategoryId(settings.getHorizontalValueCategory().getId());
@@ -31,12 +31,15 @@ public class GameMapper {
         gameGetDTO.setVisibleAfterDoubtCountdown(settings.getVisibleAfterDoubtCountdown());
         gameGetDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
         gameGetDTO.setGameStarted(false);
+        gameGetDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
+        gameGetDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
+
 
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){
             playerList.add(user.getId());
         }
-        gameGetDTO.setPlayers(playerList);
+        //gameGetDTO.setPlayers(playerList);
 
         return gameGetDTO;
     }
@@ -48,7 +51,7 @@ public class GameMapper {
         gameGetDTO.setId(game.getId());
         gameGetDTO.setName("Running Game - No name");
         gameGetDTO.setDoubtCountdown(settings.getDoubtCountdown());
-        gameGetDTO.setHostId(0);
+        //gameGetDTO.setHostId(0);
         gameGetDTO.setPlayersMax(settings.getPlayersMax());
         gameGetDTO.setPlayersMin(settings.getPlayersMin());
         gameGetDTO.setHorizontalValueCategoryId(settings.getHorizontalValueCategory().getId());
@@ -60,12 +63,14 @@ public class GameMapper {
         gameGetDTO.setVisibleAfterDoubtCountdown(settings.getVisibleAfterDoubtCountdown());
         gameGetDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
         gameGetDTO.setGameStarted(false);
+        gameGetDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
+        gameGetDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
 
         List<Long> playerList = new ArrayList<>();
         for(Map.Entry<User, String>  user : game.getPlayers()){
             playerList.add(user.getKey().getId());
         }
-        gameGetDTO.setPlayers(playerList);
+        //gameGetDTO.setPlayers(playerList);
         gameGetDTO.setGameStarted(true);
         return gameGetDTO;
     }
@@ -88,6 +93,8 @@ public class GameMapper {
         gamePostDTO.setTokenGainOnNearestGuess(settings.getTokenGainOnNearestGuess());
         gamePostDTO.setVisibleAfterDoubtCountdown(settings.getVisibleAfterDoubtCountdown());
         gamePostDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
+        gamePostDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
+        gamePostDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
 
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){

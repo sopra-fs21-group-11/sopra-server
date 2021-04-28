@@ -19,14 +19,18 @@ public class Board {
     //private int startingCardIndexVertical=0;
     //private int startingCardIndexHorizontal=0;
 
+    private int placedCard;
+
     public Board(Card startingCard){
         this.topList = new LinkedList<>();
         this.bottomList = new LinkedList<>();
         this.leftList = new LinkedList<>();
         this.rightList = new LinkedList<>();
         this.startingCard = startingCard;
+        placedCard=0;
     }
     public void placeCard(Card cardToPlace, int index, String axis){
+        placedCard++;
         if(axis.toLowerCase(Locale.ROOT).contains("top")){
             //lower neighbour is starting card
             if(index == 0){
@@ -183,6 +187,38 @@ public class Board {
         }
     }
 
+    public Card getCardById(int id){
+        if(startingCard.getCardId() == id){
+            return startingCard;
+        }
+        for(Card card : getTopList()){
+            if(card.getCardId() == id){
+                return card;
+            }
+        }
+
+        for(Card card : getBottomList()){
+            if(card.getCardId() == id){
+                return card;
+            }
+        }
+
+        for(Card card : getLeftList()){
+            if(card.getCardId() == id){
+                return card;
+            }
+        }
+
+        for(Card card : getRightList()){
+            if(card.getCardId() == id){
+                return card;
+            }
+        }
+
+        //card not found:
+        return null;
+    }
+
     public LinkedList<Card> getTopList() {
         return topList;
     }
@@ -201,5 +237,13 @@ public class Board {
 
     public Card getStartingCard() {
         return startingCard;
+    }
+
+    public int getPlacedCard() {
+        return placedCard;
+    }
+
+    public void setPlacedCard(int placedCard) {
+        this.placedCard = placedCard;
     }
 }
