@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameDoubtDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameGuessDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameTurnDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.JoinGameDTO;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
@@ -40,20 +41,25 @@ public class SocketController {
         Game joinedGame = gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());
         if(gameService.gameIsFull(joinGameDTO.getGameId())){
             gameService.sendGameStateToUsers(joinedGame.getId());
+            //maybe a startTurnCd() here...
         }
     }
 
     @MessageMapping("/game/turn")
     public void performTurn(@Header("simpSessionId") String sessionId, GameTurnDTO gameTurnDTO) throws Exception {
         gameService.incomingTurn(gameTurnDTO.getGameId(), sessionId, gameTurnDTO.getPlacementIndex(), gameTurnDTO.getAxis());
-        //gameService.sendGameStateToUsers(gameTurnDTO.getGameId());
+        gameService.sendGameStateToUsers(gameTurnDTO.getGameId());
     }
 
     @MessageMapping("/game/doubt")
     public void doubt(@Header("simpSessionId") String sessionId, GameDoubtDTO gameDoubtDTO) throws Exception {
-
         gameService.doubtAction(gameDoubtDTO.getGameId(), gameDoubtDTO.getPlacedCard(), gameDoubtDTO.getDoubtedCard(), sessionId);
 
+    }
+
+    @MessageMapping("/game/guess")
+    public void guess(@Header("simpSessionId") String sessionId, GameGuessDTO gameGuessDTO) throws Exception{
+        gameService.parseEvaluationGuess(gameGuessDTO.getGameId(), sessionId, gameGuessDTO);
     }
 
 

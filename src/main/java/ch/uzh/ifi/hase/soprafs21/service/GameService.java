@@ -1,12 +1,12 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 
+import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedGameStateDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -151,6 +151,11 @@ public class GameService {
         return null;
     }
 
+    public void parseEvaluationGuess(long id, String sessionId, GameGuessDTO guess){
+        Game gameToParseEvaluationGuess = this.getRunningGameById(id);
+        gameToParseEvaluationGuess.parseEvaluationGuess(sessionId, guess);
+    }
+
     public void sendGameStateToUsers(long id){
         Game gameToSend = this.getRunningGameById(id);
         for(var userToSend : gameToSend.getPlayers()){
@@ -160,6 +165,18 @@ public class GameService {
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId,gameStateDTO);
 
         }
+    }
+    public void sendDoubtResultDTO(long gameId, Card referenceCard, Card doubtedCard, boolean isDoubtRightous){
+        Game gameToSend = this.getRunningGameById(gameId);
+        DoubtResultDTO resultDTO = new DoubtResultDTO();
+        resultDTO.setReferenceCard(CardMapper.ConvertEntityToCardDTO(referenceCard));
+        resultDTO.setDoubtedCard(CardMapper.ConvertEntityToCardDTO(doubtedCard));
+        resultDTO.setDoubtRightous(isDoubtRightous);
+        for(var userToSend: gameToSend.getPlayers()){
+            String sessionId = userToSend.getValue();
+            this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId, resultDTO);
+        }
+
     }
 
     public void sendEvaluatedGameStateToUsers(long id){

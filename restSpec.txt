@@ -329,13 +329,131 @@ The messages received by the server via websocket look the following:
         "position": 0
     }
 }
-
+-----Doubting------
 Doubt:
 {
 	"placedCard": 68,
 	"doubtedCard": 49,
 	"gameId": 1
-} Answer: New GameState with answer (Still in DOUBTINGPHASE) Next Cardplacing phase will be send after visiblecountdown. 
+}
+Result of Doubting:
+{
+	"referenceCard": {
+        "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 0
+    },
+	"doubtedCard": {
+        "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 0
+    },
+	"isDoubtRightous": true
+
+}
+
+
+
+-----Evaluation-----
+Guess:
+{
+	"nrOfWrongPlaceCards": 7,
+	"gameId": 1
+}
+
+Result of Evaluation
+{
+    "left": [{
+		"id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 1,
+	"correct": true
+	}, 
+	{	
+		 "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 0,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 2,
+	"correct": true
+	}],
+    "right": [],
+    "top": [],
+    "bottom": [],
+    "startingCard": {
+        "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 0
+    },
+    "playertokens": 4,
+    "playersturn": 1,
+    "nextPlayer": 4,
+    "gamestate": EVALUATION
+    "nextCardOnStack": {
+        "id": 68,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 0,
+        "ncoord": 47.16,
+        "ecoord": 7.08,
+        "name": "Lajoux",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 0
+    }
+	
+}
 
 
 

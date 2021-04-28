@@ -4,10 +4,7 @@ import ch.uzh.ifi.hase.soprafs21.constant.GameState;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.CardDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedGameStateDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
 import ch.uzh.ifi.hase.soprafs21.service.CountdownHelper;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -35,8 +32,12 @@ public class Game {
     private GameService gameService;
 
     private CountdownHelper doubtCountdown;
-    private Thread visibleCountdown;
-    private Thread turnCountdown;
+    private CountdownHelper visibleCountdown;
+    private CountdownHelper turnCountdown;
+    private CountdownHelper evaluationCountdown;
+
+    private Evaluation evaluation; //I created a new class because our game-class gets crowded slightly...
+    private int nrOfWrongCards;
 
 
     public Game(GameLobby lobby){
@@ -51,7 +52,7 @@ public class Game {
         this.horizontalValueCategory = lobby.getSettings().getHorizontalValueCategory();
 
 
-        this.deckStack = new Deck();//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
+        this.deckStack = new Deck(currentSettings.getCardsBeforeEvaluation()*currentSettings.getNrOfEvaluations());//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
 
         //We set the starting-card and the nextCard right away:
         this.activeBoard = new Board(deckStack.pop());
@@ -90,6 +91,7 @@ public class Game {
         if(currentPlayer.getKey().getId() != userid){
             return;
         }
+        gameService.sendGameStateToUsers(id);
         //set next player
         //players.add(currentPlayer);
         //place card
@@ -101,6 +103,11 @@ public class Game {
         currentPlayer = players.remove();
         players.add(currentPlayer); //the doubtingphase has its one currentPlayer
 
+        //if the nr of cards is = nr of cards between evaluation, we wait untill the douptingphase has finished and send evaluation state.
+/*
+
+
+        }*/
     }
 
     private void doubtingPhase(){
@@ -108,6 +115,7 @@ public class Game {
         CountdownHelper countdown = new CountdownHelper(currentSettings.getDoubtCountdown(), this, currentPlayer.getKey());
         this.doubtCountdown = countdown;
         countdown.start();
+
 
         //doubt incoming because loop exit (anyone else has stopped this.countdownRunning):
         //do nothing while visibleAfterDoubt
@@ -121,6 +129,8 @@ public class Game {
         if(!doubtCountdown.isAlive()){//countdown isnt running -> we dont accept.
            return;
         }
+        Card referenceCard = activeBoard.getCardById(doubtedCard);
+        Card doubtedCardToSend = activeBoard.getCardById(placedCard);
         User doubtingUser = null;
         for(var user : players){
             if(user.getValue() == sessionId){
@@ -128,36 +138,13 @@ public class Game {
             }
         }
         User doubtedUser = doubtCountdown.getDoubtedUser();
+        boolean evaluateResult = true;
         if(!evaluateDoubt(placedCard, doubtedCard)){
+            evaluateResult = false;
             //doubt is rightous -> remove and handle tokens
-            //first get card obj from id (I know this could be refactored beautiful...
-            Card cardToRemove = null;
-            for(Card card : activeBoard.getTopList()){
-                if(card.getCardId() == placedCard){
-                    cardToRemove = card;
-                }
-            }
-            if(cardToRemove == null){
-                for(Card card : activeBoard.getBottomList()){
-                    if(card.getCardId() == placedCard){
-                        cardToRemove = card;
-                    }
-                }
-            }
-            if(cardToRemove == null){
-                for(Card card : activeBoard.getLeftList()){
-                    if(card.getCardId() == placedCard){
-                        cardToRemove = card;
-                    }
-                }
-            }
-            if(cardToRemove == null){
-                for(Card card : activeBoard.getRightList()){
-                    if(card.getCardId() == placedCard){
-                        cardToRemove = card;
-                    }
-                }
-            }
+            //first get card obj from id
+            Card cardToRemove = activeBoard.getCardById(placedCard);
+
             //remove card:
             activeBoard.removeCard(cardToRemove);
             doubtedUser.currentToken--;
@@ -167,116 +154,54 @@ public class Game {
             doubtingUser.currentToken--;
         }
         doubtCountdown.doStop();
+
+        gameService.sendDoubtResultDTO(id,referenceCard, doubtedCardToSend, evaluateResult );
         //doubt has occured and we have to start the visible countdown:
-        visibleCountdown = new CountdownHelper(currentSettings.getVisibleAfterDoubtCountdown(), this, null);
+        visibleCountdown = new CountdownHelper(currentSettings.getVisibleAfterDoubtCountdown(), this);
         visibleCountdown.start();
-        gameService.sendGameStateToUsers(id);
+
     }
+
+
+    public boolean startActualEvaluation(){
+        if(activeBoard.getPlacedCard()==currentSettings.getCardsBeforeEvaluation()) {
+
+            this.activeState = GameState.EVALUATION;
+            nrOfWrongCards = 0;//setback of wrong nr.
+            this.evaluation = new Evaluation(players, getCurrentSettings().getTokenGainOnCorrectGuess(), getCurrentSettings().getTokenGainOnNearestGuess());
+            this.evaluationCountdown = new CountdownHelper(currentSettings.getEvaluationCountdown(), this, true);
+            gameService.sendGameStateToUsers(id);
+            return true;
+        } else{
+            return false;
+        }
+    }
+
     public void startTurnCd(){
         //start a new turn cd and send state
-        turnCountdown = new CountdownHelper(currentSettings.getPlayerTurnCountdown(), this, null);
+        turnCountdown = new CountdownHelper(currentSettings.getPlayerTurnCountdown(), this);
         this.activeState = GameState.CARDPLACEMENT;
         gameService.sendGameStateToUsers(id);
-        return;
     }
 
+
+
     private boolean evaluateDoubt(int placedCardId, int questionableCardId){
-        //topList check
-        for(Card card : activeBoard.getTopList()){
-            if(card.getCardId() == placedCardId) {
-                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
-                    try {
-                        return verticalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
-                    }
-                    catch (Exception ex) {
-                    }
-                }
-                else {
-                    for (Card card2 : activeBoard.getTopList()) {
-                        if (card2.getCardId() == questionableCardId) {
-                            try {
-                                return verticalValueCategory.isPlacementCorrect(card, card2);
-                            }
-                            catch (Exception ex) {
-                            }
-                        }
-                    }
-                }
-            }
+        Card placedCard = activeBoard.getCardById(placedCardId);
+        Card questionableCard = activeBoard.getCardById(questionableCardId);
+        //check if we have to evaluate vertical or horizontal category:
+        ValueCategory compareCategory = null;
+        if(placedCard.getHigherNeighbour() == questionableCard || placedCard.getLowerNeighbour() == questionableCard){
+            compareCategory = verticalValueCategory;
         }
-
-        //bottomList check
-        for(Card card : activeBoard.getBottomList()) {
-            if (card.getCardId() == placedCardId) {
-                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
-                    try {
-                        return verticalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
-                    }
-                    catch (Exception ex) {
-                    }
-                }
-                else {
-                    for (Card card2 : activeBoard.getBottomList()) {
-                        if (card2.getCardId() == questionableCardId) {
-                            try {
-                                return verticalValueCategory.isPlacementCorrect(card, card2);
-                            }
-                            catch (Exception ex) {
-                            }
-                        }
-                    }
-                }
-            }
+        else if(placedCard.getLeftNeighbour() == questionableCard || placedCard.getRightNeighbour() == questionableCard){
+            compareCategory = horizontalValueCategory;
         }
-
-        //leftList check
-        for(Card card : activeBoard.getLeftList()) {
-            if (card.getCardId() == placedCardId) {
-                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
-                    try {
-                        return horizontalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
-                    }
-                    catch (Exception ex) {
-                    }
-                }
-                else {
-                    for (Card card2 : activeBoard.getLeftList()) {
-                        if (card2.getCardId() == questionableCardId) {
-                            try {
-                                return horizontalValueCategory.isPlacementCorrect(card, card2);
-                            }
-                            catch (Exception ex) {
-                            }
-                        }
-                    }
-                }
-            }
+        try {
+            return compareCategory.isPlacementCorrect(placedCard, questionableCard);
+        } catch (Exception ex){
+            return true;
         }
-
-        //rightList check
-        for(Card card : activeBoard.getRightList()) {
-            if (card.getCardId() == placedCardId) {
-                if (activeBoard.getStartingCard().getCardId() == questionableCardId) {
-                    try {
-                        return horizontalValueCategory.isPlacementCorrect(card, activeBoard.getStartingCard());
-                    }
-                    catch (Exception ex) {
-                    }
-                }
-                else {
-                    for (Card card2 : activeBoard.getRightList()) {
-                        if (card2.getCardId() == questionableCardId) {
-                            try {
-                                return horizontalValueCategory.isPlacementCorrect(card, card2);
-                            }
-                            catch (Exception ex) {
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return true; //this is bullshit :/
     }
 
     public GameStateDTO convertToDTO(){
@@ -290,37 +215,37 @@ public class Game {
         int positionCounter = 1;
         Card loopCard = startingCard;
         while(loopCard.getLeftNeighbour() !=null){ //get left cards
+            loopCard = loopCard.getLeftNeighbour();
             CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
             cardDTO.setPosition(positionCounter);
             gameStateDTO.addLeftCard(cardDTO);
-            loopCard = loopCard.getLeftNeighbour();
             positionCounter++;
         }
         positionCounter = 1;
         loopCard = startingCard;
         while(loopCard.getRightNeighbour() !=null){ //get right cards
+            loopCard = loopCard.getRightNeighbour();
             CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
             cardDTO.setPosition(positionCounter);
             gameStateDTO.addRightCard(cardDTO);
-            loopCard = loopCard.getRightNeighbour();
             positionCounter++;
         }
         positionCounter = 1;
         loopCard = startingCard;
         while(loopCard.getHigherNeighbour() !=null){ //get top cards
+            loopCard = loopCard.getHigherNeighbour();
             CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
             cardDTO.setPosition(positionCounter);
             gameStateDTO.addTopCard(cardDTO);
-            loopCard = loopCard.getHigherNeighbour();
             positionCounter++;
         }
         positionCounter = 1;
         loopCard = startingCard;
         while(loopCard.getLowerNeighbour() !=null){ //get bottom cards
+            loopCard = loopCard.getLowerNeighbour();
             CardDTO cardDTO = CardMapper.ConvertEntityToCardDTO(loopCard);
             cardDTO.setPosition(positionCounter);
             gameStateDTO.addBottomCard(cardDTO);
-            loopCard = loopCard.getLowerNeighbour();
             positionCounter++;
         }
 
@@ -343,7 +268,31 @@ public class Game {
 
     }
 
+    public void parseEvaluationGuess(String sessionId, GameGuessDTO guess){
+        if(!evaluationCountdown.isAlive()) {
+            //if cd isnt alive anymore, we do nothing
+            return;
+        }
+        User guessingUser = null;
+        for(Map.Entry<User, String> user : players){
+            if(user.getValue().equals(sessionId)){
+                guessingUser = user.getKey();
+            }
+        }
+        boolean allGuessesCameIn = evaluation.addGuess(guessingUser,guess.getNrOfWrongPlacedCards());
+        if(allGuessesCameIn){
 
+        }
+    }
+    public void performEvaluationAfterGuessPresentOrCdEnded(){
+        //if this returns true, all guesses have came in. -> evaluate
+        evaluationCountdown.doStop();//stop cd
+        evaluation.shareTokens(nrOfWrongCards);
+        gameService.sendEvaluatedGameStateToUsers(id);
+        activeBoard.setPlacedCard(0);
+        visibleCountdown = new CountdownHelper(currentSettings.getEvaluationCountdownVisible(), this);
+        visibleCountdown.start();
+    }
     public EvaluatedGameStateDTO evaluate(){
         EvaluatedGameStateDTO evaluationState = new EvaluatedGameStateDTO();
         List<EvaluatedCardDTO> evaluatedTop = new ArrayList<>();
@@ -365,6 +314,9 @@ public class Game {
                 EvaluatedCardDTO evaluatedCardDTO = CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getHigherNeighbour(), correct);
                 evaluatedCardDTO.setPosition(positionCounter);
                 evaluatedTop.add(evaluatedCardDTO);//add neighbour
+                if(!correct){//card wrong -> add one to counter
+                    nrOfWrongCards++;
+                }
             } catch (Exception e){}
             loopCard= loopCard.getHigherNeighbour();
             positionCounter++;
@@ -379,6 +331,9 @@ public class Game {
                 EvaluatedCardDTO evaluatedCardDTO = CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getLowerNeighbour(), correct);
                 evaluatedCardDTO.setPosition(positionCounter);
                 evaluatedBottom.add(evaluatedCardDTO);//add neighbour
+                if(!correct){//card wrong -> add one to counter
+                    nrOfWrongCards++;
+                }
                  }
             catch (Exception e) {           }
 
@@ -395,6 +350,9 @@ public class Game {
                 EvaluatedCardDTO evaluatedCardDTO = CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getLeftNeighbour(), correct);
                 evaluatedCardDTO.setPosition(positionCounter);
                 evaluatedLeft.add(evaluatedCardDTO);//add neighbour
+                if(!correct){//card wrong -> add one to counter
+                    nrOfWrongCards++;
+                }
                             }
             catch (Exception e) {           }
             loopCard= loopCard.getLeftNeighbour();
@@ -409,6 +367,9 @@ public class Game {
                 EvaluatedCardDTO evaluatedCardDTO = CardMapper.ConvertEntityToEvaluatedCardDTO(loopCard.getRightNeighbour(), correct);
                 evaluatedCardDTO.setPosition(positionCounter);
                 evaluatedRight.add(evaluatedCardDTO);//add neighbour
+                if(!correct){//card wrong -> add one to counter
+                    nrOfWrongCards++;
+                }
                 }
             catch (Exception e) {           }
             loopCard= loopCard.getRightNeighbour();
