@@ -25,11 +25,12 @@ public class GameService {
     private List<Game> runningGames = new ArrayList<>();
 
     private SimpMessagingTemplate template;
-
+    private UserService userService;
 
     @Autowired
-    public GameService(SimpMessagingTemplate template) {
+    public GameService(SimpMessagingTemplate template, UserService userService) {
          this.template = template;
+         this.userService = userService;
     }
 
 
@@ -168,6 +169,9 @@ public class GameService {
         for(var userToSend : gameToSend.getPlayers()){
             String sessionId = userToSend.getValue();
             GameStateDTO gameStateDTO = gameToSend.convertToDTO();
+            gameStateDTO.setPlayersturn(userService.getUser(gameStateDTO.getPlayersturn().getId()));
+            gameStateDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
+
             gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken()); //nr of token is userspecific
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId,gameStateDTO);
 
@@ -191,6 +195,7 @@ public class GameService {
         for(var userToSend: gameToSend.getPlayers()){
             String sessionId = userToSend.getValue();
             EvaluatedGameStateDTO gameStateDTO = gameToSend.evaluate();
+            gameStateDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
             gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken());
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId, gameStateDTO);
         }

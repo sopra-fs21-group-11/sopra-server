@@ -12,10 +12,13 @@ public abstract class CountdownHelper extends Thread{
     private volatile Game game;
 
     public PropertyChangeSupport support;
+    public String gameId;
 
-    private boolean ended;
+    private boolean ended;//dont know if we can delete this or not
 
     public CountdownHelper(int time, Game callingGame) {
+        gameId = Long.toString(callingGame.getId());
+
         this.time = time;
         this.game = callingGame;
         support = new PropertyChangeSupport(this);
@@ -24,11 +27,11 @@ public abstract class CountdownHelper extends Thread{
         support.addPropertyChangeListener(pcl);
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener pcl){
+    /*public void removePropertyChangeListener(PropertyChangeListener pcl){
         support.removePropertyChangeListener(pcl);
-    }
+    }*/
     public void onPropertyChange(boolean ended){
-        support.firePropertyChange("CDEnded", this.ended, true);
+        support.firePropertyChange("CDEnded"+gameId, this.ended, true);
         ended = true;
     }
 
@@ -38,11 +41,7 @@ public abstract class CountdownHelper extends Thread{
     }
 
     private synchronized boolean keepRunning() {
-        return this.doStop == false;
-    }
-
-    private synchronized void startEvaluationAfterCdFinished(){
-        this.game.performEvaluationAfterGuessPresentOrCdEnded();
+        return this.doStop;
     }
 
     @Override
@@ -51,7 +50,7 @@ public abstract class CountdownHelper extends Thread{
         long countdown = now + time * 1000;
         while (now <= countdown) {
             try {
-                if(!keepRunning()){
+                if(keepRunning()){
                     return;
                 }
                 Thread.sleep(1000);

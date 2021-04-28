@@ -31,6 +31,9 @@ public class GameMapper {
         gameGetDTO.setVisibleAfterDoubtCountdown(settings.getVisibleAfterDoubtCountdown());
         gameGetDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
         gameGetDTO.setGameStarted(false);
+        gameGetDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
+        gameGetDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
+
 
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){
@@ -60,6 +63,8 @@ public class GameMapper {
         gameGetDTO.setVisibleAfterDoubtCountdown(settings.getVisibleAfterDoubtCountdown());
         gameGetDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
         gameGetDTO.setGameStarted(false);
+        gameGetDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
+        gameGetDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
 
         List<Long> playerList = new ArrayList<>();
         for(Map.Entry<User, String>  user : game.getPlayers()){
@@ -88,6 +93,8 @@ public class GameMapper {
         gamePostDTO.setTokenGainOnNearestGuess(settings.getTokenGainOnNearestGuess());
         gamePostDTO.setVisibleAfterDoubtCountdown(settings.getVisibleAfterDoubtCountdown());
         gamePostDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
+        gamePostDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
+        gamePostDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
 
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){

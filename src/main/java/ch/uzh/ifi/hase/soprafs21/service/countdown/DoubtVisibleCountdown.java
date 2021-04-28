@@ -13,7 +13,7 @@ public class DoubtVisibleCountdown extends CountdownHelper{
 
     @Override
     public void onPropertyChange(boolean countdownEnd){
-        super.support.firePropertyChange("DoubtVisibleCdEnded", this.countdownEnd, true);
+        super.support.firePropertyChange("DoubtVisibleCdEnded"+super.gameId, this.countdownEnd, true);
         countdownEnd = true;
     }
 }

@@ -16,13 +16,13 @@ public class PlayersTurnCountdown extends CountdownHelper{
     @Override
     public synchronized void doStop(){
         super.doStop();
-        super.support.firePropertyChange("PlayerTurnCdStopped", this.countdownEnd, true);
+        super.support.firePropertyChange("PlayerTurnCdStopped"+super.gameId, this.countdownEnd, true);
         countdownEnd = true;
     }
 
     @Override
     public void onPropertyChange(boolean countdownEnd){
-        super.support.firePropertyChange("PlayerTurnCdEnded", this.countdownEnd, true);
+        super.support.firePropertyChange("PlayerTurnCdEnded"+super.gameId, this.countdownEnd, true);
         countdownEnd = true;
     }
 }

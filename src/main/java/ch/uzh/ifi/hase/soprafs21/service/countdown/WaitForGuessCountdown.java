@@ -14,13 +14,13 @@ public class WaitForGuessCountdown extends CountdownHelper{
     @Override
     public synchronized void doStop(){
         super.doStop();
-        super.support.firePropertyChange("GuessCdStopped", this.countdownEnd, true);
+        super.support.firePropertyChange("GuessCdStopped"+super.gameId, this.countdownEnd, true);
         countdownEnd = true;
     }
 
     @Override
     public void onPropertyChange(boolean countdownEnd){
-        super.support.firePropertyChange("GuessCdEnded", this.countdownEnd, true);
+        super.support.firePropertyChange("GuessCdEnded"+super.gameId, this.countdownEnd, true);
         countdownEnd = true;
     }
 }

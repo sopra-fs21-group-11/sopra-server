@@ -3,7 +3,9 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 import ch.uzh.ifi.hase.soprafs21.constant.GameState;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.countdown.*;
@@ -37,6 +39,7 @@ public class Game implements PropertyChangeListener {
     private CountdownHelper visibleCountdown;
     private CountdownHelper turnCountdown;
     private CountdownHelper evaluationCountdown;
+    private CountdownHelper evaluationVisibleCountdown;
 
     private Evaluation evaluation; //I created a new class because our game-class gets crowded slightly...
     private int nrOfWrongCards;
@@ -105,75 +108,76 @@ public class Game implements PropertyChangeListener {
     }
 
     public void propertyChange(PropertyChangeEvent evt){
-        switch(evt.getPropertyName()) {//which property has changed?
-            case("DoubtCdEnded")://DoubtCountdown ended whithout any doubt incoming -> next turn
+        String senderProperty = evt.getPropertyName();
+        if(!senderProperty.endsWith(Long.toString(id))){ //if the id isnt ours, we skip.
+            return;
+        }
+        senderProperty = senderProperty.replaceAll("[0-9]", "");//remove all digits
+        //DoubtCountdown ended whithout any doubt incoming -> next turn
+        //Doubt Visible Countdown
+        //either the doubt is finished or noone has doubted.
+        if(senderProperty.equals("DoubtCdEnded")||senderProperty.equals("DoubtVisibleCdEnded"))//which property has changed?
+        {
+            //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
+            //check if we need to go in evaluation:
+            if (activeBoard.getPlacedCard() == currentSettings.getCardsBeforeEvaluation()) {
+                //start evaluation
+                activeState = GameState.EVALUATION;
+                gameService.sendGameStateToUsers(id);
+                this.evaluationCountdown = new WaitForGuessCountdown(currentSettings.getEvaluationCountdown(), this);
+                evaluationCountdown.addPropertyChangeListener(this);
+                evaluationCountdown.start();
+                //initialize new evaluation
+                evaluation = new Evaluation(players, currentSettings.getTokenGainOnCorrectGuess(), currentSettings.getTokenGainOnNearestGuess());
+            }
+            else {
                 this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
                 turnCountdown.addPropertyChangeListener(this);
                 turnCountdown.start();
                 activeState = GameState.CARDPLACEMENT;
                 gameService.sendGameStateToUsers(id);
-                break;
-            case("DoubtCdStopped")://Doubt incoming. we start visiblecd:
-                this.visibleCountdown = new DoubtVisibleCountdown(currentSettings.getVisibleAfterDoubtCountdown(), this);
-                visibleCountdown.addPropertyChangeListener(this);
-                visibleCountdown.start();
-                //doubt dto is sent by doubt methods
-                break;
-            case("GuessCdEnded")://EvaluationCountdown ended. Evaluate even not all guesses are here & start visiblecd
-                this.visibleCountdown = new EvaluationVisibleCountdown(currentSettings.getEvaluationCountdownVisible(), this);
-                visibleCountdown.start();
-                performEvaluationAfterGuessPresentOrCdEnded();
-                activeState = GameState.VISIBLE;
-                gameService.sendEvaluatedGameStateToUsers(id);
-                break;
-            case("GuessCdStopped"):
-                this.visibleCountdown = new DoubtVisibleCountdown(currentSettings.getEvaluationCountdownVisible(), this);
-                visibleCountdown.start();
-                performEvaluationAfterGuessPresentOrCdEnded();
-                activeState = GameState.VISIBLE;
-                gameService.sendEvaluatedGameStateToUsers(id);
-                break;
-            case("DoubtVisibleCdEnded")://Doubt Visible Countdown
-                //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
-                if(activeBoard.getPlacedCard() == currentSettings.getCardsBeforeEvaluation()){
-                    //start evaluation
-                    activeState = GameState.EVALUATION;
-                    gameService.sendGameStateToUsers(id);
-                    this.evaluationCountdown = new WaitForGuessCountdown(currentSettings.getEvaluationCountdown(), this);
-                    evaluationCountdown.addPropertyChangeListener(this);
-                    evaluationCountdown.start();
-                }else {
-                    //start next turn
-                    this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
-                    turnCountdown.addPropertyChangeListener(this);
-                    turnCountdown.start();
-                    activeState = GameState.CARDPLACEMENT;
-                    gameService.sendGameStateToUsers(id);
-                }
-                break;
-            case("PlayerTurnCdEnded"):
-                //PlayerCountdown has ended -> next players turn.
-                currentPlayer = players.remove();
-                players.add(currentPlayer);
-                //start new playerCountdown:
-                gameService.sendGameStateToUsers(id);
-                this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
-                turnCountdown.addPropertyChangeListener(this);
-                turnCountdown.start();
-                break;
-            case("PlayerTurnCdStopped")://A player performed a turn -> goto doubtingPhase
-                this.activeState = GameState.DOUBTINGPHASE;
-                this.doubtCountdown = new DoubtCountdown(currentSettings.getDoubtCountdown(), this, currentPlayer.getKey());
-                doubtCountdown.addPropertyChangeListener(this);
-                doubtCountdown.start();
-                break;
-            case("EvaluationVisibleCdEnded"): //next turn
-                this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
-                turnCountdown.addPropertyChangeListener(this);
-                turnCountdown.start();
-                break;
+            }
+        }
+        if(senderProperty.equals("DoubtCdStopped")) {//Doubt incoming. we start visiblecd:
+            this.visibleCountdown = new DoubtVisibleCountdown(currentSettings.getVisibleAfterDoubtCountdown(), this);
+            visibleCountdown.addPropertyChangeListener(this);
+            visibleCountdown.start();
+            //doubt dto is sent by doubt methods
+        }
+        //EvaluationCountdown ended. Evaluate even not all guesses are here & start visiblecd
+        //the same goes for when the guesscd has stopped.
+        if(senderProperty.equals("GuessCdEnded")|| senderProperty.equals("GuessCdStopped")) {
+            this.evaluationVisibleCountdown = new EvaluationVisibleCountdown(currentSettings.getEvaluationCountdownVisible(), this);
+            evaluationVisibleCountdown.addPropertyChangeListener(this);
+            evaluationVisibleCountdown.start();
+            performEvaluationAfterGuessPresentOrCdEnded();
+            activeState = GameState.VISIBLE;
+            gameService.sendEvaluatedGameStateToUsers(id);
+        }
+        //start next turn
+        if(senderProperty.equals("PlayerTurnCdEnded")) {
+            //PlayerCountdown has ended -> next players turn.
+            currentPlayer = players.remove();
+            players.add(currentPlayer);
+            //start new playerCountdown:
+            gameService.sendGameStateToUsers(id);
+            this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
+            turnCountdown.addPropertyChangeListener(this);
+            turnCountdown.start();
+        }
+        if(senderProperty.equals("PlayerTurnCdStopped")) {//A player performed a turn -> goto doubtingPhase
+            this.activeState = GameState.DOUBTINGPHASE;
+            this.doubtCountdown = new DoubtCountdown(currentSettings.getDoubtCountdown(), this, currentPlayer.getKey());
+            doubtCountdown.addPropertyChangeListener(this);
+            doubtCountdown.start();
+        }
+        if(senderProperty.equals("EvaluationVisibleCdEnded")) {
+            this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
+            turnCountdown.addPropertyChangeListener(this);
+            turnCountdown.start();
         }
     }
+
     public void performDoubt(String sessionId, int placedCard, int doubtedCard){
         if(!doubtCountdown.isAlive()){//countdown isnt running -> we dont accept.
             return;
@@ -278,15 +282,13 @@ public class Game implements PropertyChangeListener {
         gameStateDTO.setPlayertokens(1);
         gameStateDTO.setNextCardOnStack(nextCard);
 
-        gameStateDTO.setPlayersturn(this.currentPlayer.getKey().getId());
+
+        gameStateDTO.setPlayersturn(DTOMapper.INSTANCE.convertEntityToUserGetDTO(this.currentPlayer.getKey()));
+
 
         Object[] obj = players.toArray();
-        //debug with only one player. Usually we get in else case.:
-        if(players.size()<=1){
-            gameStateDTO.setNextPlayer(1);
-        }else {
-            gameStateDTO.setNextPlayer(((Map.Entry<User, String>) obj[1]).getKey().getId());
-        }
+        gameStateDTO.setNextPlayer(DTOMapper.INSTANCE.convertEntityToUserGetDTO(((Map.Entry<User, String>)obj[1]).getKey()));
+
         return gameStateDTO;
 
     }
@@ -304,12 +306,12 @@ public class Game implements PropertyChangeListener {
         }
         boolean allGuessesCameIn = evaluation.addGuess(guessingUser,guess.getNrOfWrongPlacedCards());
         if(allGuessesCameIn){
-
+            evaluationCountdown.doStop();//we stop the cd as soon as all guesses came in. -> onPropertyChange() handles the rest.
         }
     }
     public void performEvaluationAfterGuessPresentOrCdEnded(){
         //if this returns true, all guesses have came in. -> evaluate
-        evaluationCountdown.doStop();//stop cd
+        //evaluationCountdown.doStop();//no need to stop cd since this method only gets called when the cd has stopped anyway.
         evaluation.shareTokens(nrOfWrongCards);
         gameService.sendEvaluatedGameStateToUsers(id);
         activeBoard.setPlacedCard(0);
@@ -400,9 +402,12 @@ public class Game implements PropertyChangeListener {
         evaluationState.setLeft(evaluatedLeft);
         evaluationState.setRight(evaluatedRight);
 
-        //evaluationState.setCards(evaluatedCards);
         evaluationState.setGamestate(this.activeState.toString());
-        evaluationState.setPlayersturn(this.currentPlayer.getKey().getId());
+
+        evaluationState.setPlayersturn(DTOMapper.INSTANCE.convertEntityToUserGetDTO(this.currentPlayer.getKey()));
+        Object[] obj = players.toArray();
+        evaluationState.setNextPlayer(DTOMapper.INSTANCE.convertEntityToUserGetDTO(((Map.Entry<User, String>)obj[1]).getKey()));
+
         evaluationState.setNextCardOnStack(CardMapper.ConvertEntityToCardDTO(this.nextCard));
         return evaluationState;
     }

@@ -20,13 +20,13 @@ public class DoubtCountdown extends CountdownHelper{
     @Override
     public synchronized void doStop(){
         super.doStop();
-        super.support.firePropertyChange("DoubtCdStopped", this.countdownEnd, true);
+        super.support.firePropertyChange("DoubtCdStopped"+super.gameId, this.countdownEnd, true);
         countdownEnd = true;
     }
 
     @Override
     public void onPropertyChange(boolean countdownEnd){
-        super.support.firePropertyChange("DoubtCdEnded", this.countdownEnd, true);
+        super.support.firePropertyChange("DoubtCdEnded"+super.gameId, this.countdownEnd, true);
         countdownEnd = true;
     }
 
