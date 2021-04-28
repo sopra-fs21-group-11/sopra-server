@@ -444,6 +444,10 @@ public class Game implements PropertyChangeListener {
         this.gameService = gameService;
     }
 
+    public long getHostPlayerId() {
+        return hostPlayerId;
+    }
+
     /**
      * Can be accessed only once (At the start of the game).
      * Needs to be called because Host would take his turn twice because the currentPlayer has been initialized and the queue has host at the top.

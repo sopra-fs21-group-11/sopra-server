@@ -19,8 +19,8 @@ public class GameGetDTO {
     private long horizontalValueCategoryId;
     private long verticalValueCategoryId;
     private String name;
-    private long hostId;
-    private List<Long> players;
+    private UserGetDTO hostId;
+    private List<UserGetDTO> players;
     private boolean gameStarted;
 
     public int getTokenGainOnNearestGuess() {
@@ -31,11 +31,11 @@ public class GameGetDTO {
         this.tokenGainOnNearestGuess = tokenGainOnNearestGuess;
     }
 
-    public List<Long> getPlayers() {
+    public List<UserGetDTO> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<Long> players) {
+    public void setPlayers(List<UserGetDTO> players) {
         this.players = players;
     }
 
@@ -127,11 +127,11 @@ public class GameGetDTO {
         this.name = name;
     }
 
-    public long getHostId() {
+    public UserGetDTO getHostId() {
         return hostId;
     }
 
-    public void setHostId(long hostId) {
+    public void setHostId(UserGetDTO hostId) {
         this.hostId = hostId;
     }
 
