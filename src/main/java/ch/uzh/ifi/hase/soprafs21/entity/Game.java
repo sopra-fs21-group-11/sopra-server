@@ -190,6 +190,9 @@ public class Game implements PropertyChangeListener {
                 doubtingUser = user.getKey();
             }
         }
+        if(doubtingUser == null){//user not in game
+            return;
+        }
         User doubtedUser = ((DoubtCountdown)doubtCountdown).getDoubtedUser();
         boolean evaluateResult = true;
         if(!evaluateDoubt(placedCard, doubtedCard)){

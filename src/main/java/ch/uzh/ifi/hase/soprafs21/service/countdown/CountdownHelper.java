@@ -56,6 +56,7 @@ public abstract class CountdownHelper extends Thread{
                 Thread.sleep(1000);
             }
             catch (Exception ex) {
+                this.doStop();
             }
             now = System.currentTimeMillis();
         }
