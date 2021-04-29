@@ -36,7 +36,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     }
 
-    @Bean
+    /*@Bean
     public FilterRegistrationBean corsFilter(){
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
@@ -52,5 +52,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
-    }
+    }*/
 }

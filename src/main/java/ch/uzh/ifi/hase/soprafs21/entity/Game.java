@@ -92,19 +92,12 @@ public class Game implements PropertyChangeListener {
         return true;
     }
 
-    public void performTurn(long userid, Card cardToPlace, int placementIndex, String axis){
-        if(currentPlayer.getKey().getId() != userid){
+    public void performTurn(long userid, Card cardToPlace, int placementIndex, String axis) {
+        if (currentPlayer.getKey().getId() != userid) {
             return;
         }
-        //set next player
-        //players.add(currentPlayer);
-        //place card
-        activeBoard.placeCard(cardToPlace, placementIndex,axis);
-        //set next card
-        nextCard = deckStack.pop();
+        activeBoard.placeCard(cardToPlace, placementIndex, axis);
         this.turnCountdown.doStop();
-        currentPlayer = players.remove();
-        players.add(currentPlayer); //the doubtingphase has its one currentPlayer
     }
 
     public void propertyChange(PropertyChangeEvent evt){
@@ -118,6 +111,10 @@ public class Game implements PropertyChangeListener {
         //either the doubt is finished or noone has doubted.
         if(senderProperty.equals("DoubtCdEnded")||senderProperty.equals("DoubtVisibleCdEnded"))//which property has changed?
         {
+            currentPlayer = players.remove(); //switch currentUser
+            players.add(currentPlayer);
+            nextCard = deckStack.pop();
+
             //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
             //check if we need to go in evaluation:
             if (activeBoard.getPlacedCard() == currentSettings.getCardsBeforeEvaluation()) {
@@ -139,6 +136,7 @@ public class Game implements PropertyChangeListener {
             }
         }
         if(senderProperty.equals("DoubtCdStopped")) {//Doubt incoming. we start visiblecd:
+            activeState=GameState.DOUBTVISIBLE;
             this.visibleCountdown = new DoubtVisibleCountdown(currentSettings.getVisibleAfterDoubtCountdown(), this);
             visibleCountdown.addPropertyChangeListener(this);
             visibleCountdown.start();
@@ -151,7 +149,7 @@ public class Game implements PropertyChangeListener {
             evaluationVisibleCountdown.addPropertyChangeListener(this);
             evaluationVisibleCountdown.start();
             performEvaluationAfterGuessPresentOrCdEnded();
-            activeState = GameState.VISIBLE;
+            activeState = GameState.EVALUATIONVISIBLE;
             gameService.sendEvaluatedGameStateToUsers(id);
         }
         //start next turn
@@ -172,6 +170,7 @@ public class Game implements PropertyChangeListener {
             doubtCountdown.start();
         }
         if(senderProperty.equals("EvaluationVisibleCdEnded")) {
+            activeState=GameState.CARDPLACEMENT;
             this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
             turnCountdown.addPropertyChangeListener(this);
             turnCountdown.start();
