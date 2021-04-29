@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -178,13 +179,22 @@ public class GameService {
     }
     public void sendDoubtResultDTO(long gameId, Card referenceCard, Card doubtedCard, boolean isDoubtRightous){
         Game gameToSend = this.getRunningGameById(gameId);
+        GameStateDTO gameStateDTO = gameToSend.convertToDTO();//get gamestate and convert it to gameDoubtDTO
+        GameDoubtDTO gameDoubtDTO = GameMapper.ConvertGameStateDTOToGameDoubtDTO(gameStateDTO);
         DoubtResultDTO resultDTO = new DoubtResultDTO();
+
         resultDTO.setReferenceCard(CardMapper.ConvertEntityToCardDTO(referenceCard));
         resultDTO.setDoubtedCard(CardMapper.ConvertEntityToCardDTO(doubtedCard));
         resultDTO.setDoubtRightous(isDoubtRightous);
+
+        gameDoubtDTO.setDoubtResultDTO(resultDTO);
+        gameDoubtDTO.setPlayersturn(userService.getUser(gameStateDTO.getPlayersturn().getId()));
+        gameDoubtDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
         for(var userToSend: gameToSend.getPlayers()){
             String sessionId = userToSend.getValue();
-            this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId, resultDTO);
+            gameDoubtDTO.setPlayertokens(userToSend.getKey().getCurrentToken());
+
+            this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId, gameDoubtDTO);
         }
 
     }
@@ -219,4 +229,5 @@ public class GameService {
         }
         return retId;
     }
+
 }

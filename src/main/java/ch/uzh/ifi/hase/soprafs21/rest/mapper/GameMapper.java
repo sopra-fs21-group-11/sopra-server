@@ -6,6 +6,8 @@ import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameDoubtDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,5 +105,22 @@ public class GameMapper {
         gamePostDTO.setPlayers(playerList);
 
         return gamePostDTO;
+    }
+
+    public static GameDoubtDTO ConvertGameStateDTOToGameDoubtDTO(GameStateDTO gameStateDTO){
+        GameDoubtDTO gameDoubtDTO = new GameDoubtDTO();
+        gameDoubtDTO.setLeft(gameStateDTO.getLeft());
+        gameDoubtDTO.setRight(gameDoubtDTO.getRight());
+        gameDoubtDTO.setTop(gameStateDTO.getTop());
+        gameDoubtDTO.setBottom(gameStateDTO.getBottom());
+
+        gameDoubtDTO.setStartingCard(gameStateDTO.getStartingCard());
+
+        gameDoubtDTO.setPlayersturn(gameStateDTO.getPlayersturn());
+        gameDoubtDTO.setNextPlayer(gameStateDTO.getNextPlayer());
+        gameDoubtDTO.setGamestate(gameStateDTO.getGamestate());
+        gameDoubtDTO.setNextCardOnStack(gameStateDTO.getNextCardOnStack());
+
+        return gameDoubtDTO;
     }
 }
