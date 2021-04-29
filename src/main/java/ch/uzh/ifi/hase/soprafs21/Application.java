@@ -39,7 +39,7 @@ public class Application {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "https://sopra-fs21-group-11-server.herokuapp.com").allowedMethods("*");
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "https://sopra-fs21-group-11-client.herokuapp.com").allowedMethods("*");
             }
         };
     }
