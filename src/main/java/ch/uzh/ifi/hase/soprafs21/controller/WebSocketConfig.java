@@ -43,7 +43,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         CorsConfiguration config = new CorsConfiguration();
         //config.applyPermitDefaultValues();
         config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedOrigin("https://sopra-fs21-group-11-server.herokuapp.com");
+        config.addAllowedOrigin("https://sopra-fs21-group-11-client.herokuapp.com");
         config.setAllowCredentials(true);
         //config.addAllowedOrigin("*");
         config.setAllowedMethods(Arrays.asList("POST", "OPTIONS", "GET", "DELETE", "PUT"));
