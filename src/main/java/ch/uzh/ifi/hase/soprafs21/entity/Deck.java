@@ -78,7 +78,7 @@ public class Deck extends Stack {
      * Picks the top card and returns it
      * @return The card that is picked.
      */
-    public Card pop(){
+    public synchronized Card pop(){
         return this.cards.pop();
     }
 

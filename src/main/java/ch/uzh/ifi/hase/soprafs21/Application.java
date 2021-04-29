@@ -39,7 +39,7 @@ public class Application {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*").allowedMethods("*");
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "https://sopra-fs21-group-11-server.herokuapp.com").allowedMethods("*");
             }
         };
     }
@@ -47,9 +47,6 @@ public class Application {
     @EnableWebSecurity
     @Configuration
     class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-
-
 
         @Bean
         @Profile("test")
@@ -62,7 +59,6 @@ public class Application {
             };
         }
 
-
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.csrf().disable()
@@ -70,6 +66,7 @@ public class Application {
                     .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/users").permitAll()
                     .antMatchers(HttpMethod.POST, "/users/login").permitAll()
+                    .antMatchers("/gs-guide-websocket").permitAll()
                     .requestMatchers(CorsUtils::isCorsRequest).permitAll()
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     .anyRequest().authenticated();
