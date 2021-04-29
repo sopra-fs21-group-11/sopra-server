@@ -262,9 +262,9 @@ public class GameServiceIntegrationTest {
 
         }
 
-        GameStateDTO stateDTO = game.convertToDTO();
+        /*GameStateDTO stateDTO = game.convertToDTO();
         //now we have a neighbour on every side. Lets evaluate:
-        EvaluatedGameStateDTO evaluatedGameStateDTO =  game.evaluate();
+        EvaluatedGameStateDTO evaluatedGameStateDTO =  game.evaluate();*/
         //all have to be correct
 
         //rewrite this guy :/
