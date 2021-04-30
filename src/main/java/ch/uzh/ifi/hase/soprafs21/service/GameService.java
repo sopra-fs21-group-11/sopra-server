@@ -97,6 +97,8 @@ public class GameService {
 
     public Game joinRunningGame(User user, String sessionId, long gameId){
         Game gameToJoin = getRunningGameById(gameId);
+        //if player has lost connection:
+
         gameToJoin.joinGame(user, sessionId);
         return gameToJoin;
     }
@@ -143,6 +145,8 @@ public class GameService {
                 userService.saveGameTime(user.getKey().getId(), minutesPlayed);
             }
         }
+        //after saving values we have to remove the game from the list.
+        runningGames.remove(gameToEnd);
     }
     public void incomingTurn(long gameId, String sessionId, int placementIndex, String axis){
         Game game = getRunningGameById(gameId);

@@ -34,7 +34,6 @@ public class SocketController {
         Game joinedGame = gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());
         if(gameService.gameIsFull(joinGameDTO.getGameId())){
             gameService.sendGameStateToUsers(joinedGame.getId());
-            //maybe a startTurnCd() here...
         }
     }
 

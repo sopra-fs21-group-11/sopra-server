@@ -72,6 +72,15 @@ public class Game implements PropertyChangeListener {
     }
 
     public boolean joinGame(User user, String sessionId){
+        //we check if the player was already in the game with a different sessionId:
+       for(var player : players){
+           if(player.getKey().getId() == user.getId()){
+               //change sessionId such that the player gets the next gameState and return.
+               player.setValue(sessionId);
+               return true;
+           }
+       }
+
         boolean waitingFor = false;
         for(User waitingForUser : this.waitingForPlayers){
             if(waitingForUser.getId() == user.getId()){
@@ -223,6 +232,9 @@ public class Game implements PropertyChangeListener {
             turnCountdown.removePropertyChangeListener(this);
             evaluationCountdown.removePropertyChangeListener(this);
             evaluationVisibleCountdown.removePropertyChangeListener(this);
+            //and now we send the last gamestate:
+            activeState = GameState.GAMEEND;
+            gameService.sendGameStateToUsers(id);
         } catch(Exception ex){
 
         }
