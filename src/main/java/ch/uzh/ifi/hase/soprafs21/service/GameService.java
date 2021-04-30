@@ -97,8 +97,6 @@ public class GameService {
 
     public Game joinRunningGame(User user, String sessionId, long gameId){
         Game gameToJoin = getRunningGameById(gameId);
-        //if player has lost connection:
-
         gameToJoin.joinGame(user, sessionId);
         return gameToJoin;
     }
