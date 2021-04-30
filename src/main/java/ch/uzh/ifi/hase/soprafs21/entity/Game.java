@@ -61,7 +61,7 @@ public class Game implements PropertyChangeListener {
         this.horizontalValueCategory = lobby.getSettings().getHorizontalValueCategory();
 
 
-        this.deckStack = new Deck(currentSettings.getCardsBeforeEvaluation()*currentSettings.getNrOfEvaluations());//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
+        this.deckStack = new Deck(currentSettings.getCardsBeforeEvaluation()*currentSettings.getNrOfEvaluations()+currentSettings.getNrOfEvaluations());//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
 
         //We set the starting-card and the nextCard right away:
         this.activeBoard = new Board(deckStack.pop());
@@ -127,12 +127,8 @@ public class Game implements PropertyChangeListener {
             currentPlayer = players.remove(); //switch currentUser
             players.add(currentPlayer);
 
-            //check if deck is empty:
-            if(!deckStack.isEmpty()) {
-                nextCard = deckStack.pop();
-            } else{
+            if(deckStack.isEmpty()) {
                 //start evaluation:
-                //start evaluation
                 activeState = GameState.EVALUATION;
                 gameService.sendGameStateToUsers(id);
                 this.evaluationCountdown = new WaitForGuessCountdown(currentSettings.getEvaluationCountdown(), this);
@@ -140,6 +136,10 @@ public class Game implements PropertyChangeListener {
                 evaluationCountdown.start();
                 //initialize new evaluation
                 evaluation = new Evaluation(players, currentSettings.getTokenGainOnCorrectGuess(), currentSettings.getTokenGainOnNearestGuess());
+                return;
+            }
+            else{
+                nextCard = deckStack.pop();
             }
 
             //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
@@ -172,12 +172,12 @@ public class Game implements PropertyChangeListener {
         //EvaluationCountdown ended. Evaluate even not all guesses are here & start visiblecd
         //the same goes for when the guesscd has stopped.
         if(senderProperty.equals("GuessCdEnded")|| senderProperty.equals("GuessCdStopped")) {
-            this.evaluationVisibleCountdown = new EvaluationVisibleCountdown(currentSettings.getEvaluationCountdownVisible(), this);
-            evaluationVisibleCountdown.addPropertyChangeListener(this);
-            evaluationVisibleCountdown.start();
             performEvaluationAfterGuessPresentOrCdEnded();
             activeState = GameState.EVALUATIONVISIBLE;
             gameService.sendEvaluatedGameStateToUsers(id);
+            this.evaluationVisibleCountdown = new EvaluationVisibleCountdown(currentSettings.getEvaluationCountdownVisible(), this);
+            evaluationVisibleCountdown.addPropertyChangeListener(this);
+            evaluationVisibleCountdown.start();
         }
         //start next turn
         if(senderProperty.equals("PlayerTurnCdEnded")) {
@@ -192,6 +192,7 @@ public class Game implements PropertyChangeListener {
         }
         if(senderProperty.equals("PlayerTurnCdStopped")) {//A player performed a turn -> goto doubtingPhase
             this.activeState = GameState.DOUBTINGPHASE;
+            gameService.sendGameStateToUsers(id);
             this.doubtCountdown = new DoubtCountdown(currentSettings.getDoubtCountdown(), this, currentPlayer.getKey());
             doubtCountdown.addPropertyChangeListener(this);
             doubtCountdown.start();
@@ -359,7 +360,7 @@ public class Game implements PropertyChangeListener {
 
 
         Object[] obj = players.toArray();
-        gameStateDTO.setNextPlayer(DTOMapper.INSTANCE.convertEntityToUserGetDTO(((Map.Entry<User, String>)obj[1]).getKey()));
+        gameStateDTO.setNextPlayer(DTOMapper.INSTANCE.convertEntityToUserGetDTO(((Map.Entry<User, String>)obj[0]).getKey()));
 
         return gameStateDTO;
 
@@ -478,7 +479,7 @@ public class Game implements PropertyChangeListener {
 
         evaluationState.setPlayersturn(DTOMapper.INSTANCE.convertEntityToUserGetDTO(this.currentPlayer.getKey()));
         Object[] obj = players.toArray();
-        evaluationState.setNextPlayer(DTOMapper.INSTANCE.convertEntityToUserGetDTO(((Map.Entry<User, String>)obj[1]).getKey()));
+        evaluationState.setNextPlayer(DTOMapper.INSTANCE.convertEntityToUserGetDTO(((Map.Entry<User, String>)obj[0]).getKey()));
 
         evaluationState.setNextCardOnStack(CardMapper.ConvertEntityToCardDTO(this.nextCard));
         return evaluationState;
@@ -545,9 +546,6 @@ public class Game implements PropertyChangeListener {
         this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
         turnCountdown.addPropertyChangeListener(this);
         turnCountdown.start();
-        //send first gamestate:
-        activeState = GameState.CARDPLACEMENT; //might not be necessary.
-        gameService.sendGameStateToUsers(id);
 
         //set gameStartTime:
         startTime = new Date();
