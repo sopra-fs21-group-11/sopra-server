@@ -218,6 +218,13 @@ public class Game implements PropertyChangeListener {
             this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
             turnCountdown.addPropertyChangeListener(this);
             turnCountdown.start();
+
+            //next turn and stuff:
+            currentPlayer = players.remove();
+            players.add(currentPlayer);
+            nextCard = deckStack.pop();
+            gameService.sendGameStateToUsers(id);
+
         }
     }
 

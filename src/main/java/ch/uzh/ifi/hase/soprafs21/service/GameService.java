@@ -201,7 +201,6 @@ public class GameService {
             GameStateDTO gameStateDTO = gameToSend.convertToDTO();
             gameStateDTO.setPlayersturn(userService.getUser(gameStateDTO.getPlayersturn().getId()));
             gameStateDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
-
             gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken()); //nr of token is userspecific
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId,gameStateDTO);
 

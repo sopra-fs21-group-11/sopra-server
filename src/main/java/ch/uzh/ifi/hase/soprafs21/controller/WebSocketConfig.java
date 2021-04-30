@@ -31,7 +31,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/gs-guide-websocket")
-                .setAllowedOrigins("http://localhost:3000", "https://sopra-fs21-group-11-client.herokuapp.com").withSockJS();
+                .setAllowedOrigins("https://sopra-fs21-group-11-client.herokuapp.com", "http://localhost:3000")
+
+                .withSockJS();
                 //.setAllowedOrigins("*").withSockJS();
 
     }
