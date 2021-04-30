@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
-import ch.uzh.ifi.hase.soprafs21.constant.Boolean;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -87,20 +87,22 @@ public class GameControllerTest {
         given(userService.getUserByToken(any(String.class))).willReturn(user);
         given(gameService.createNewGameLobby(any(User.class))).willReturn(lobby);
 
+
         MockHttpServletRequestBuilder postRequest = post("/games").contentType(MediaType.APPLICATION_JSON);
         postRequest.header("Authorization", "Bearer "+authToken);
 
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated());
 
+        given(gameService.openGameExists(any(Long.class))).willReturn(true);
         given(gameService.getOpenGameById(any(long.class))).willReturn(lobby);
         MockHttpServletRequestBuilder getRequest = get("/games/1").contentType(MediaType.APPLICATION_JSON);
         getRequest.header("Authorization", "Bearer "+authToken);
 
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int)lobby.getId())))
-                .andExpect(jsonPath("$.hostId", is((int)lobby.getHostId())));
+                .andExpect(jsonPath("$.id", is((int)lobby.getId())));
+                //.andExpect(jsonPath("$.hostId.id", is((int)lobby.getHostId())));
 
     }
 
@@ -148,6 +150,15 @@ public class GameControllerTest {
         mockMvc.perform(postRequest)
                 .andExpect(status().isOk());
 
+
+        //Game should now be started
+        given(gameService.getOpenGameById(any(long.class))).willReturn(null); //Opengames has to return null
+
+        given(gameService.getRunningGameById(any(long.class))).willReturn(game);
+        MockHttpServletRequestBuilder getRequest = get("/games/1").contentType(MediaType.APPLICATION_JSON);
+        getRequest.header("Authorization", "Bearer "+authToken);
+        mockMvc.perform(getRequest)
+                .andExpect((jsonPath("$.gameStarted", is(true))));
 
     }
 

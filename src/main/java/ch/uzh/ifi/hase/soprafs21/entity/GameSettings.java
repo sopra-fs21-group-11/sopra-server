@@ -8,10 +8,13 @@ import org.hibernate.mapping.Value;
 public class GameSettings {
     private int playersMin;
     private int playersMax;
+    private int cardsBeforeEvaluation;
     private int nrOfEvaluations;
     private int doubtCountdown;
     private int visibleAfterDoubtCountdown;
     private int playerTurnCountdown;
+    private int evaluationCountdown;
+    private int evaluationCountdownVisible;
     private int tokenGainOnCorrectGuess;
     private int tokenGainOnNearestGuess;
     private ValueCategory horizontalValueCategoryId;
@@ -22,10 +25,13 @@ public class GameSettings {
         //default settings:
         this.playersMin = 1;//TODO: I took 1 because of postman testing use. Default should be 2.
         this.playersMax = 6;
+        this.cardsBeforeEvaluation = 4;
         this.nrOfEvaluations = 2;
-        this.doubtCountdown = 30;
+        this.doubtCountdown = 10;
         this.visibleAfterDoubtCountdown = 5;
         this.playerTurnCountdown = 30;
+        this.evaluationCountdown = 30;
+        this.evaluationCountdownVisible = 30;
         this.tokenGainOnCorrectGuess = 2;
         this.tokenGainOnNearestGuess = 1;
         //has to be set by id. id is hardcoded in ValueCategories. This is still standardsetup
@@ -125,5 +131,27 @@ public class GameSettings {
         this.verticalValueCategoryId = verticalValueCategoryId;
     }
 
+    public int getCardsBeforeEvaluation() {
+        return cardsBeforeEvaluation;
+    }
 
+    public void setCardsBeforeEvaluation(int cardsBeforeEvaluation) {
+        this.cardsBeforeEvaluation = cardsBeforeEvaluation;
+    }
+
+    public int getEvaluationCountdown() {
+        return evaluationCountdown;
+    }
+
+    public void setEvaluationCountdown(int evaluationCountdown) {
+        this.evaluationCountdown = evaluationCountdown;
+    }
+
+    public int getEvaluationCountdownVisible() {
+        return evaluationCountdownVisible;
+    }
+
+    public void setEvaluationCountdownVisible(int evaluationCountdownVisible) {
+        this.evaluationCountdownVisible = evaluationCountdownVisible;
+    }
 }

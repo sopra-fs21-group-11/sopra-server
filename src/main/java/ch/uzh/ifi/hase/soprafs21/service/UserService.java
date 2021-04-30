@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
-import ch.uzh.ifi.hase.soprafs21.constant.Boolean;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -133,6 +132,52 @@ public class UserService {
 
         log.debug("Updated Information for User: {}", updateuser);
         return updateuser;
+    }
+
+    public void saveWins(long userId, long winsToAdd){
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            return;
+        }
+        User updateUser = user.get();
+        updateUser.setTotalWins(updateUser.getTotalWins()+winsToAdd);
+        userRepository.save(updateUser);
+        userRepository.flush();
+
+    }
+
+    public void saveDefeats(long userId, long defeatsToAdd){
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            return;
+        }
+        User updateUser = user.get();
+        updateUser.setTotalDefeats(updateUser.getTotalDefeats()+defeatsToAdd);
+        userRepository.save(updateUser);
+        userRepository.flush();
+    }
+
+    public void saveGameTime(long userId, long minutesToAdd){
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            return;
+        }
+        User updateUser = user.get();
+        updateUser.setPlayTime(updateUser.getPlayTime()+minutesToAdd);
+        userRepository.save(updateUser);
+        userRepository.flush();
+    }
+
+    public void saveEarnedTokens(long userId, int tokensToAdd){
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            return;
+        }
+        User updateUser = user.get();
+        updateUser.setTotalTokens(updateUser.getTotalTokens()+tokensToAdd);
+        userRepository.save(updateUser);
+        userRepository.flush();
+
     }
 
     /**

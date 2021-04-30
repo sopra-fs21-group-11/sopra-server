@@ -1,7 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs21.constant.Boolean;
-
 import java.util.Date;
 
 public class UserGetDTO {

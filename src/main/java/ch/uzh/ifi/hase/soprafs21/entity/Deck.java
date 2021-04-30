@@ -14,7 +14,7 @@ public class Deck extends Stack {
     private List<ValueCategory> possibleComparisonStrategies;
 
 
-    public Deck(){
+    public Deck(int totalCardsInDeck){
         cards = new Stack<>();
         List<Card> locationCards = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("src/bunzendataset.csv"))) {
@@ -63,9 +63,13 @@ public class Deck extends Stack {
 
 
         }
-        for(int i = 0;i<=30;i++){//hardcoded: A deck contains 30 cards. TODO: change this according to gamesettings.
+        for(int i = 0;i<=totalCardsInDeck;i++){//hardcoded: A deck contains 30 cards. TODO: change this according to gamesettings.
             Random rand = new Random();
-            cards.add(locationCards.get(rand.nextInt(locationCards.size()-1)));//pick a random card out of the dataset
+            int index = rand.nextInt(locationCards.size()-1);
+            while(cards.contains(locationCards.get(rand.nextInt(locationCards.size()-1)))){
+                index = rand.nextInt(locationCards.size()-1);
+            }
+            cards.add(locationCards.get(index));//pick a random card out of the dataset
         }
 
     }
@@ -74,7 +78,7 @@ public class Deck extends Stack {
      * Picks the top card and returns it
      * @return The card that is picked.
      */
-    public Card pop(){
+    public synchronized Card pop(){
         return this.cards.pop();
     }
 

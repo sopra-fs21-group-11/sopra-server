@@ -7,7 +7,7 @@ public class EvaluationTest {
 
     @Test
     public void evaluationTest() throws Exception {
-        
+        //Mock Game Board and stuff:
 
 
     }

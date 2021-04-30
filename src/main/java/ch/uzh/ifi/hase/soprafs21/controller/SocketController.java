@@ -2,20 +2,14 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameDoubtDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameTurnDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.JoinGameDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class SocketController {
@@ -50,10 +44,22 @@ public class SocketController {
     }
 
     @MessageMapping("/game/doubt")
-    public void doubt(@Header("simpSessionId") String sessionId, GameDoubtDTO gameDoubtDTO) throws Exception {
-
+    public void doubt(@Header("simpSessionId") String sessionId, DoubtDTO gameDoubtDTO) throws Exception {
         gameService.doubtAction(gameDoubtDTO.getGameId(), gameDoubtDTO.getPlacedCard(), gameDoubtDTO.getDoubtedCard(), sessionId);
 
+    }
+
+    @MessageMapping("/game/guess")
+    public void guess(@Header("simpSessionId") String sessionId, GameGuessDTO gameGuessDTO) throws Exception{
+        gameService.parseEvaluationGuess(gameGuessDTO.getGameId(), sessionId, gameGuessDTO);
+    }
+
+    @MessageMapping("/game/end")
+    public void end(@Header("simpSessionId") String sessionId, GameEndDTO gameEndDTO)throws Exception {
+
+        if(gameService.endingAllowed(gameEndDTO.getGameId(), sessionId)) {
+            gameService.gameEnded(gameEndDTO.getGameId());
+        }
     }
 
 
