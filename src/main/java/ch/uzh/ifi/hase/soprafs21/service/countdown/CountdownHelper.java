@@ -27,9 +27,9 @@ public abstract class CountdownHelper extends Thread{
         support.addPropertyChangeListener(pcl);
     }
 
-    /*public void removePropertyChangeListener(PropertyChangeListener pcl){
+    public void removePropertyChangeListener(PropertyChangeListener pcl){
         support.removePropertyChangeListener(pcl);
-    }*/
+    }
     public void onPropertyChange(boolean ended){
         support.firePropertyChange("CDEnded"+gameId, this.ended, true);
         ended = true;

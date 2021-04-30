@@ -2,10 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.DoubtDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameGuessDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameTurnDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.JoinGameDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +53,14 @@ public class SocketController {
     @MessageMapping("/game/guess")
     public void guess(@Header("simpSessionId") String sessionId, GameGuessDTO gameGuessDTO) throws Exception{
         gameService.parseEvaluationGuess(gameGuessDTO.getGameId(), sessionId, gameGuessDTO);
+    }
+
+    @MessageMapping("/game/end")
+    public void end(@Header("simpSessionId") String sessionId, GameEndDTO gameEndDTO)throws Exception {
+
+        if(gameService.endingAllowed(gameEndDTO.getGameId(), sessionId)) {
+            gameService.gameEnded(gameEndDTO.getGameId());
+        }
     }
 
 

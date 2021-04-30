@@ -187,6 +187,15 @@ public class Board {
         }
     }
 
+    public void clearBoard(Card nextStartingCard){
+        topList.clear();
+        bottomList.clear();
+        leftList.clear();
+        rightList.clear();
+        startingCard=nextStartingCard;
+        placedCard=0;
+    }
+
     public Card getCardById(int id){
         if(startingCard.getCardId() == id){
             return startingCard;
