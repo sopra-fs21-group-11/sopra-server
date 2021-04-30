@@ -127,12 +127,8 @@ public class Game implements PropertyChangeListener {
             currentPlayer = players.remove(); //switch currentUser
             players.add(currentPlayer);
 
-            //check if deck is empty:
-            if(!deckStack.isEmpty()) {
-                nextCard = deckStack.pop();
-            } else{
+            if(deckStack.isEmpty()) {
                 //start evaluation:
-                //start evaluation
                 activeState = GameState.EVALUATION;
                 gameService.sendGameStateToUsers(id);
                 this.evaluationCountdown = new WaitForGuessCountdown(currentSettings.getEvaluationCountdown(), this);
@@ -140,6 +136,10 @@ public class Game implements PropertyChangeListener {
                 evaluationCountdown.start();
                 //initialize new evaluation
                 evaluation = new Evaluation(players, currentSettings.getTokenGainOnCorrectGuess(), currentSettings.getTokenGainOnNearestGuess());
+                return;
+            }
+            else{
+                nextCard = deckStack.pop();
             }
 
             //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
@@ -547,7 +547,7 @@ public class Game implements PropertyChangeListener {
         turnCountdown.start();
         //send first gamestate:
         activeState = GameState.CARDPLACEMENT; //might not be necessary.
-        gameService.sendGameStateToUsers(id);
+        //gameService.sendGameStateToUsers(id);
 
         //set gameStartTime:
         startTime = new Date();

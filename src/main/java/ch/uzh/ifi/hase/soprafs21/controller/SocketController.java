@@ -33,14 +33,14 @@ public class SocketController {
         User joiningUser = userService.getUser(joinGameDTO.getId());
         Game joinedGame = gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());
         if(gameService.gameIsFull(joinGameDTO.getGameId())){
-            gameService.sendGameStateToUsers(joinedGame.getId());
+            gameService.sendGameStateToUsers(joinedGame.getId()); //TODO: in Game is Full wird State geschickt und hier nochmal
         }
     }
 
     @MessageMapping("/game/turn")
     public void performTurn(@Header("simpSessionId") String sessionId, GameTurnDTO gameTurnDTO) throws Exception {
         gameService.incomingTurn(gameTurnDTO.getGameId(), sessionId, gameTurnDTO.getPlacementIndex(), gameTurnDTO.getAxis());
-        gameService.sendGameStateToUsers(gameTurnDTO.getGameId());
+        gameService.sendGameStateToUsers(gameTurnDTO.getGameId()); //TODO: in incomingTurn wird State verschickt und hier nochmal
     }
 
     @MessageMapping("/game/doubt")

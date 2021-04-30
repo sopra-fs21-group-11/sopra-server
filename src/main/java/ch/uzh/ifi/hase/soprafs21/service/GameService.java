@@ -160,7 +160,6 @@ public class GameService {
         if(turningUser.getId().equals(game.getCurrentPlayer().getKey().getId())){// is it turningusers turn?
             game.performTurn(turningUser.getId(), game.getNextCard(), placementIndex, axis);
         }
-        sendGameStateToUsers(gameId);
     }
 
     public GameLobby getOpenGameById(long id){
