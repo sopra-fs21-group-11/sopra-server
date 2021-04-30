@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
@@ -115,7 +117,35 @@ public class GameService {
         }
     }
 
-
+    public void gameEnded(long gameId){
+        Game gameToEnd = getRunningGameById(gameId);
+        gameToEnd.endGame();//remove propertyChangeListeners
+        //save earned tokens:
+        for(var user : gameToEnd.getPlayers()){
+            if(gameToEnd.hasWinner()) {
+                //set wins
+                if(user.getKey().getId() == gameToEnd.getWinnerId()){
+                    userService.saveWins(user.getKey().getId(), 1); //add 1 win
+                }
+                //set defeats
+                if(user.getKey().getId() != gameToEnd.getWinnerId()){
+                    userService.saveDefeats(user.getKey().getId(), 1);//add 1 defeat
+                }
+            }
+            //set playtime:
+            long diffInMillies = Math.abs((new Date()).getTime() - gameToEnd.getStartTime().getTime());
+            long minutesPlayed = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            //playtime and token are only set if a game lasted longer than 3 min.
+            if(minutesPlayed >=3){
+                //set tokens
+                userService.saveEarnedTokens(user.getKey().getId(), user.getKey().getCurrentToken());
+                //set playtime:
+                userService.saveGameTime(user.getKey().getId(), minutesPlayed);
+            }
+        }
+        //after saving values we have to remove the game from the list.
+        runningGames.remove(gameToEnd);
+    }
     public void incomingTurn(long gameId, String sessionId, int placementIndex, String axis){
         Game game = getRunningGameById(gameId);
         User turningUser = new User(); //need to assign. Else the condition turninguser.getid... doesnt work.
@@ -171,7 +201,6 @@ public class GameService {
             GameStateDTO gameStateDTO = gameToSend.convertToDTO();
             gameStateDTO.setPlayersturn(userService.getUser(gameStateDTO.getPlayersturn().getId()));
             gameStateDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
-
             gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken()); //nr of token is userspecific
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId,gameStateDTO);
 
@@ -186,10 +215,25 @@ public class GameService {
         resultDTO.setReferenceCard(CardMapper.ConvertEntityToCardDTO(referenceCard));
         resultDTO.setDoubtedCard(CardMapper.ConvertEntityToCardDTO(doubtedCard));
         resultDTO.setDoubtRightous(isDoubtRightous);
+        List<Long> neighbours = new ArrayList<>();
+        if(doubtedCard.getRightNeighbour()!=null){
+            neighbours.add(doubtedCard.getRightNeighbour().getCardId());
+        }
+        if(doubtedCard.getLeftNeighbour()!=null){
+            neighbours.add((doubtedCard.getLeftNeighbour().getCardId()));
+        }
+        if(doubtedCard.getHigherNeighbour()!=null){
+            neighbours.add(doubtedCard.getHigherNeighbour().getCardId());
+        }
+        if(doubtedCard.getLowerNeighbour()!=null){
+            neighbours.add(doubtedCard.getLowerNeighbour().getCardId());
+        }
+        resultDTO.setDoubtedCardNeighbours(neighbours);
 
         gameDoubtDTO.setDoubtResultDTO(resultDTO);
         gameDoubtDTO.setPlayersturn(userService.getUser(gameStateDTO.getPlayersturn().getId()));
         gameDoubtDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
+
         for(var userToSend: gameToSend.getPlayers()){
             String sessionId = userToSend.getValue();
             gameDoubtDTO.setPlayertokens(userToSend.getKey().getCurrentToken());
@@ -208,6 +252,22 @@ public class GameService {
             gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken());
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId, gameStateDTO);
         }
+    }
+
+    /**
+     * check if game-end-request is validated
+     * @param gameId id of game
+     * @param sessionId sessionId of host
+     * @return validationResult
+     */
+    public boolean endingAllowed(long gameId, String sessionId){
+        Game gameToEnd = getRunningGameById(gameId);
+        for(var user : gameToEnd.getPlayers()){
+            if(user.getValue().equals(sessionId) && user.getKey().getId() == gameToEnd.getHostPlayerId()){
+                return true;
+            }
+        }
+        return false;
     }
     /**
      * Helper method for assigning the gameId

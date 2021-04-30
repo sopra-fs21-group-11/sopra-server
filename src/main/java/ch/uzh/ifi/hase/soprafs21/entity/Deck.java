@@ -74,11 +74,21 @@ public class Deck extends Stack {
 
     }
 
+    @Override
+    public int size(){
+        return cards.size();
+    }
+
+    @Override
+    public boolean isEmpty(){
+        return cards.isEmpty();
+    }
+
     /**
      * Picks the top card and returns it
      * @return The card that is picked.
      */
-    public synchronized Card pop(){
+    public Card pop(){
         return this.cards.pop();
     }
 

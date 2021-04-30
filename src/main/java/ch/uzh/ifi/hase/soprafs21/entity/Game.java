@@ -31,7 +31,9 @@ public class Game implements PropertyChangeListener {
 
     private final GameSettings currentSettings;
 
-    private SimpMessagingTemplate template;
+    //private SimpMessagingTemplate template;
+
+    private Date startTime;
 
     private GameService gameService;
 
@@ -43,6 +45,8 @@ public class Game implements PropertyChangeListener {
 
     private Evaluation evaluation; //I created a new class because our game-class gets crowded slightly...
     private int nrOfWrongCards;
+
+    private long winnerId;
 
 
     public Game(GameLobby lobby){
@@ -68,6 +72,15 @@ public class Game implements PropertyChangeListener {
     }
 
     public boolean joinGame(User user, String sessionId){
+        //we check if the player was already in the game with a different sessionId:
+       for(var player : players){
+           if(player.getKey().getId() == user.getId()){
+               //change sessionId such that the player gets the next gameState and return.
+               player.setValue(sessionId);
+               return true;
+           }
+       }
+
         boolean waitingFor = false;
         for(User waitingForUser : this.waitingForPlayers){
             if(waitingForUser.getId() == user.getId()){
@@ -113,7 +126,21 @@ public class Game implements PropertyChangeListener {
         {
             currentPlayer = players.remove(); //switch currentUser
             players.add(currentPlayer);
-            nextCard = deckStack.pop();
+
+            //check if deck is empty:
+            if(!deckStack.isEmpty()) {
+                nextCard = deckStack.pop();
+            } else{
+                //start evaluation:
+                //start evaluation
+                activeState = GameState.EVALUATION;
+                gameService.sendGameStateToUsers(id);
+                this.evaluationCountdown = new WaitForGuessCountdown(currentSettings.getEvaluationCountdown(), this);
+                evaluationCountdown.addPropertyChangeListener(this);
+                evaluationCountdown.start();
+                //initialize new evaluation
+                evaluation = new Evaluation(players, currentSettings.getTokenGainOnCorrectGuess(), currentSettings.getTokenGainOnNearestGuess());
+            }
 
             //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
             //check if we need to go in evaluation:
@@ -170,10 +197,53 @@ public class Game implements PropertyChangeListener {
             doubtCountdown.start();
         }
         if(senderProperty.equals("EvaluationVisibleCdEnded")) {
+            //check if deck is empty. if so, game is finished.
+            if(deckStack.isEmpty()){
+                //game ended and we have a regular winner:
+                int winnerTokens = 0;
+                for(var player:players){
+                    if(player.getKey().currentToken>winnerTokens){
+                        winnerId = player.getKey().getId();
+                        winnerTokens = player.getKey().currentToken;
+                    }
+                }
+                gameService.gameEnded(id);
+                return;
+            }
+            //cleanup board and set new startingcard:
+            activeBoard.clearBoard(deckStack.pop());
+            nextCard = deckStack.pop();//maybe we need to assign the next player here... idk.
+
             activeState=GameState.CARDPLACEMENT;
             this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
             turnCountdown.addPropertyChangeListener(this);
             turnCountdown.start();
+
+            //next turn and stuff:
+            currentPlayer = players.remove();
+            players.add(currentPlayer);
+            nextCard = deckStack.pop();
+            gameService.sendGameStateToUsers(id);
+
+        }
+    }
+
+    /**
+     * Call this method to remove any propertyListener and cleanup everything.
+     */
+    public void endGame(){
+        try {
+            //first we remove any countdown eventlistener. Not that we run into strange happenings...
+            doubtCountdown.removePropertyChangeListener(this);
+            visibleCountdown.removePropertyChangeListener(this);
+            turnCountdown.removePropertyChangeListener(this);
+            evaluationCountdown.removePropertyChangeListener(this);
+            evaluationVisibleCountdown.removePropertyChangeListener(this);
+            //and now we send the last gamestate:
+            activeState = GameState.GAMEEND;
+            gameService.sendGameStateToUsers(id);
+        } catch(Exception ex){
+
         }
     }
 
@@ -450,6 +520,18 @@ public class Game implements PropertyChangeListener {
         return hostPlayerId;
     }
 
+    public boolean hasWinner() {
+        return hasWinner;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public long getWinnerId() {
+        return winnerId;
+    }
+
     /**
      * Can be accessed only once (At the start of the game).
      * Needs to be called because Host would take his turn twice because the currentPlayer has been initialized and the queue has host at the top.
@@ -466,6 +548,9 @@ public class Game implements PropertyChangeListener {
         //send first gamestate:
         activeState = GameState.CARDPLACEMENT; //might not be necessary.
         gameService.sendGameStateToUsers(id);
+
+        //set gameStartTime:
+        startTime = new Date();
 
     }
 

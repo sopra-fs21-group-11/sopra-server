@@ -276,6 +276,8 @@ public class GameServiceIntegrationTest {
         //Todo: Token assertion
 
 
+        //end game:
+        gameService.gameEnded(game.getId());
 
 
 

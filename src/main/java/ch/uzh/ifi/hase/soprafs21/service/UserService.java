@@ -134,6 +134,52 @@ public class UserService {
         return updateuser;
     }
 
+    public void saveWins(long userId, long winsToAdd){
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            return;
+        }
+        User updateUser = user.get();
+        updateUser.setTotalWins(updateUser.getTotalWins()+winsToAdd);
+        userRepository.save(updateUser);
+        userRepository.flush();
+
+    }
+
+    public void saveDefeats(long userId, long defeatsToAdd){
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            return;
+        }
+        User updateUser = user.get();
+        updateUser.setTotalDefeats(updateUser.getTotalDefeats()+defeatsToAdd);
+        userRepository.save(updateUser);
+        userRepository.flush();
+    }
+
+    public void saveGameTime(long userId, long minutesToAdd){
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            return;
+        }
+        User updateUser = user.get();
+        updateUser.setPlayTime(updateUser.getPlayTime()+minutesToAdd);
+        userRepository.save(updateUser);
+        userRepository.flush();
+    }
+
+    public void saveEarnedTokens(long userId, int tokensToAdd){
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()){
+            return;
+        }
+        User updateUser = user.get();
+        updateUser.setTotalTokens(updateUser.getTotalTokens()+tokensToAdd);
+        userRepository.save(updateUser);
+        userRepository.flush();
+
+    }
+
     /**
      * This is a helper method that will check the uniqueness criteria of the username and the name
      * defined in the User entity. The method will do nothing if the input is unique and throw an error otherwise.

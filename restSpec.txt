@@ -569,6 +569,9 @@ Result of Evaluation
     }
 	
 }
+**********EndGame*************
+SocketMessage to /game/end (must be host player!)
+{	"gameId":1}
 
 
 
