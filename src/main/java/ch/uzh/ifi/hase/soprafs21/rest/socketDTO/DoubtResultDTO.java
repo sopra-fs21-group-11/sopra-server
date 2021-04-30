@@ -2,12 +2,17 @@ package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DoubtResultDTO {
     private CardDTO referenceCard;
     private CardDTO doubtedCard;
     private boolean isDoubtRightous;
+    private List<Long> doubtedCardNeighbours;
 
     public CardDTO getReferenceCard() {
+        doubtedCardNeighbours = new ArrayList<>();
         return referenceCard;
     }
 
@@ -29,5 +34,13 @@ public class DoubtResultDTO {
 
     public void setDoubtRightous(boolean doubtRightous) {
         isDoubtRightous = doubtRightous;
+    }
+
+    public List<Long> getDoubtedCardNeighbours() {
+        return doubtedCardNeighbours;
+    }
+
+    public void setDoubtedCardNeighbours(List<Long> doubtedCardNeighbours) {
+        this.doubtedCardNeighbours = doubtedCardNeighbours;
     }
 }

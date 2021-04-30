@@ -186,10 +186,25 @@ public class GameService {
         resultDTO.setReferenceCard(CardMapper.ConvertEntityToCardDTO(referenceCard));
         resultDTO.setDoubtedCard(CardMapper.ConvertEntityToCardDTO(doubtedCard));
         resultDTO.setDoubtRightous(isDoubtRightous);
+        List<Long> neighbours = new ArrayList<>();
+        if(doubtedCard.getRightNeighbour()!=null){
+            neighbours.add(doubtedCard.getRightNeighbour().getCardId());
+        }
+        if(doubtedCard.getLeftNeighbour()!=null){
+            neighbours.add((doubtedCard.getLeftNeighbour().getCardId()));
+        }
+        if(doubtedCard.getHigherNeighbour()!=null){
+            neighbours.add(doubtedCard.getHigherNeighbour().getCardId());
+        }
+        if(doubtedCard.getLowerNeighbour()!=null){
+            neighbours.add(doubtedCard.getLowerNeighbour().getCardId());
+        }
+        resultDTO.setDoubtedCardNeighbours(neighbours);
 
         gameDoubtDTO.setDoubtResultDTO(resultDTO);
         gameDoubtDTO.setPlayersturn(userService.getUser(gameStateDTO.getPlayersturn().getId()));
         gameDoubtDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
+
         for(var userToSend: gameToSend.getPlayers()){
             String sessionId = userToSend.getValue();
             gameDoubtDTO.setPlayertokens(userToSend.getKey().getCurrentToken());
