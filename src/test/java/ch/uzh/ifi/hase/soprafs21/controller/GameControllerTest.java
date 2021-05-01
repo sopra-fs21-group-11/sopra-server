@@ -89,7 +89,9 @@ public class GameControllerTest {
 
         MockHttpServletRequestBuilder postRequest = post("/games").contentType(MediaType.APPLICATION_JSON);
         postRequest.header("Authorization", "Bearer "+authToken);
-
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", "");
+        postRequest.content(jsonObject.toString());
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated());
 

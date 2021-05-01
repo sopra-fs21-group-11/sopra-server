@@ -117,13 +117,13 @@ public class GameController {
         if(hostUser == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host user not found. Please reformat request.");
         }
-        if(gamePostDTO.getName() == ""){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be null.");
 
-        }
         GameLobby newGame = gameService.createNewGameLobby(hostUser);
-
-        newGame.setName(gamePostDTO.getName());
+        if(gamePostDTO.getName() == ""){
+            newGame.setName(Long.toString(newGame.getId()));
+        }else {
+            newGame.setName(gamePostDTO.getName());
+        }
 
         //String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newGame.getId()).toString();
         Map<String, String> location = new HashMap<String, String>();
