@@ -28,6 +28,7 @@ public class Game implements PropertyChangeListener {
     private Card nextCard;
     private ValueCategory horizontalValueCategory;
     private ValueCategory verticalValueCategory;
+    private boolean gameStarted;
 
     private final GameSettings currentSettings;
 
@@ -60,6 +61,7 @@ public class Game implements PropertyChangeListener {
         this.verticalValueCategory = lobby.getSettings().getVerticalValueCategory();
         this.horizontalValueCategory = lobby.getSettings().getHorizontalValueCategory();
 
+        this.gameStarted = false;
 
         this.deckStack = new Deck(currentSettings.getCardsBeforeEvaluation()*currentSettings.getNrOfEvaluations()+currentSettings.getNrOfEvaluations());//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
 
@@ -518,6 +520,10 @@ public class Game implements PropertyChangeListener {
         return winnerId;
     }
 
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
     /**
      * Can be accessed only once (At the start of the game).
      * Needs to be called because Host would take his turn twice because the currentPlayer has been initialized and the queue has host at the top.
@@ -528,6 +534,7 @@ public class Game implements PropertyChangeListener {
         //players.add(currentPlayer);
         //players.remove();
         //first cd handling:
+        this.gameStarted = true;
         currentPlayer = players.remove();
         players.add(currentPlayer);
         this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());

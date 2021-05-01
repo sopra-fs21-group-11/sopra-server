@@ -33,8 +33,10 @@ public class SocketController {
 
         User joiningUser = userService.getUser(joinGameDTO.getId());
         Game joinedGame = gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());
-        if(gameService.gameIsFull(joinGameDTO.getGameId())){
-            gameService.sendGameStateToUsers(joinedGame.getId()); //TODO: in Game is Full wird State geschickt und hier nochmal
+        if(!joinedGame.isGameStarted()) {
+            if (gameService.gameIsFull(joinGameDTO.getGameId())) {
+                gameService.sendGameStateToUsers(joinedGame.getId()); //TODO: in Game is Full wird State geschickt und hier nochmal
+            }
         }
     }
 
