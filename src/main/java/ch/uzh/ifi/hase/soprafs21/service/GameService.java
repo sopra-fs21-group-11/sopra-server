@@ -159,11 +159,11 @@ public class GameService {
                 userInGame = true;
             }
         }
+
         if(!userInGame){return;}
-        if(turningUser.getId().equals(game.getCurrentPlayer().getKey().getId())){// is it turningusers turn?
+        if(turningUser.getId().equals(game.getCurrentPlayer().getKey().getId())){// is it turning users turn?
             game.performTurn(turningUser.getId(), game.getNextCard(), placementIndex, axis);
         }
-        sendGameStateToUsers(gameId);
     }
 
     public GameLobby getOpenGameById(long id){

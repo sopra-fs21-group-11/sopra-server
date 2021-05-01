@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
+import ch.uzh.ifi.hase.soprafs21.constant.GameState;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
@@ -33,14 +34,14 @@ public class SocketController {
         User joiningUser = userService.getUser(joinGameDTO.getId());
         Game joinedGame = gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());
         if(gameService.gameIsFull(joinGameDTO.getGameId())){
-            gameService.sendGameStateToUsers(joinedGame.getId());
+            gameService.sendGameStateToUsers(joinedGame.getId()); //TODO: in Game is Full wird State geschickt und hier nochmal
         }
     }
 
     @MessageMapping("/game/turn")
     public void performTurn(@Header("simpSessionId") String sessionId, GameTurnDTO gameTurnDTO) throws Exception {
         gameService.incomingTurn(gameTurnDTO.getGameId(), sessionId, gameTurnDTO.getPlacementIndex(), gameTurnDTO.getAxis());
-        gameService.sendGameStateToUsers(gameTurnDTO.getGameId());
+
     }
 
     @MessageMapping("/game/doubt")
