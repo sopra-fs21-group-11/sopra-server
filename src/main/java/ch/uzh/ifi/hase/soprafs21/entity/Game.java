@@ -28,6 +28,7 @@ public class Game implements PropertyChangeListener {
     private Card nextCard;
     private ValueCategory horizontalValueCategory;
     private ValueCategory verticalValueCategory;
+    private boolean gameStarted;
 
     private final GameSettings currentSettings;
 
@@ -60,6 +61,7 @@ public class Game implements PropertyChangeListener {
         this.verticalValueCategory = lobby.getSettings().getVerticalValueCategory();
         this.horizontalValueCategory = lobby.getSettings().getHorizontalValueCategory();
 
+        this.gameStarted = false;
 
         this.deckStack = new Deck(currentSettings.getCardsBeforeEvaluation()*currentSettings.getNrOfEvaluations()+currentSettings.getNrOfEvaluations());//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
 
@@ -68,6 +70,11 @@ public class Game implements PropertyChangeListener {
         this.nextCard = deckStack.pop();
 
         this.players = new LinkedList<>();
+        //player List generation:
+        for(var player : lobby.getPlayers()){
+            var playerToAdd = new AbstractMap.SimpleEntry<>(player, "");
+            players.add(playerToAdd);
+        }
 
     }
 
@@ -80,28 +87,9 @@ public class Game implements PropertyChangeListener {
                return true;
            }
        }
-
-        boolean waitingFor = false;
-        for(User waitingForUser : this.waitingForPlayers){
-            if(waitingForUser.getId() == user.getId()){
-                waitingFor = true;
-                break;
-            }
-        }
-        if(!waitingFor) {
-            return false; //already joined or not in lobby
-        }
-
-        for(User waitingForUser : this.waitingForPlayers){
-            if(waitingForUser.getId() == user.getId()){
-                this.waitingForPlayers.remove(waitingForUser);
-                break;
-            }
-        }
         if(this.hostPlayerId == user.getId()){
             this.currentPlayer = new AbstractMap.SimpleEntry<>(user, sessionId); //host starts the game.
         }
-        this.players.add(new AbstractMap.SimpleEntry<User, String>(user, sessionId));//add token/user-combo to our players queue.
         return true;
     }
 
@@ -127,8 +115,11 @@ public class Game implements PropertyChangeListener {
             currentPlayer = players.remove(); //switch currentUser
             players.add(currentPlayer);
 
+
+
             if(deckStack.isEmpty()) {
                 //start evaluation:
+
                 activeState = GameState.EVALUATION;
                 gameService.sendGameStateToUsers(id);
                 this.evaluationCountdown = new WaitForGuessCountdown(currentSettings.getEvaluationCountdown(), this);
@@ -497,10 +488,6 @@ public class Game implements PropertyChangeListener {
         return nextCard;
     }
 
-    public List<User> getJoinedPlayer() {
-        return waitingForPlayers;
-    }
-
     public Queue<Map.Entry<User, String>> getPlayers() {
         return players;
     }
@@ -533,6 +520,10 @@ public class Game implements PropertyChangeListener {
         return winnerId;
     }
 
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
     /**
      * Can be accessed only once (At the start of the game).
      * Needs to be called because Host would take his turn twice because the currentPlayer has been initialized and the queue has host at the top.
@@ -540,9 +531,12 @@ public class Game implements PropertyChangeListener {
      */
     public void initializeGameWhenFull(){
         //rearrangement of player queue
-        players.add(currentPlayer);
-        players.remove();
+        //players.add(currentPlayer);
+        //players.remove();
         //first cd handling:
+        this.gameStarted = true;
+        currentPlayer = players.remove();
+        players.add(currentPlayer);
         this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
         turnCountdown.addPropertyChangeListener(this);
         turnCountdown.start();
