@@ -110,7 +110,7 @@ public class GameMapper {
     public static GameDoubtDTO ConvertGameStateDTOToGameDoubtDTO(GameStateDTO gameStateDTO){
         GameDoubtDTO gameDoubtDTO = new GameDoubtDTO();
         gameDoubtDTO.setLeft(gameStateDTO.getLeft());
-        gameDoubtDTO.setRight(gameDoubtDTO.getRight());
+        gameDoubtDTO.setRight(gameStateDTO.getRight());
         gameDoubtDTO.setTop(gameStateDTO.getTop());
         gameDoubtDTO.setBottom(gameStateDTO.getBottom());
 
