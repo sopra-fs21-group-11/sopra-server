@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -101,21 +102,23 @@ public class GameService {
         return gameToJoin;
     }
 
-    public boolean gameIsFull(long gameId){
+    public boolean gameIsFull(long gameId) {
         Game FullGame = getRunningGameById(gameId);
 
-        if(FullGame.getJoinedPlayer().size() != 0){
-            return false;
-        }else{
-            //the first time, the game is full, we share the starting tokens:
-            for(var user : FullGame.getPlayers()){
-                user.getKey().setCurrentToken(FullGame.getCurrentSettings().getNrOfStartingTokens());
+        for (var player : FullGame.getPlayers()) {
+            if (player.getValue().equals("")) {
+                return false;
             }
-            //when we start the game we have to rearrange the player queue because host would take a double turn:
-            FullGame.initializeGameWhenFull();
-            return true;
         }
+        //the first time, the game is full, we share the starting tokens:
+        for(var user : FullGame.getPlayers()){
+            user.getKey().setCurrentToken(FullGame.getCurrentSettings().getNrOfStartingTokens());
+        }
+        //when we start the game we have to rearrange the player queue because host would take a double turn:
+        FullGame.initializeGameWhenFull();
+        return true;
     }
+
 
     public void gameEnded(long gameId){
         Game gameToEnd = getRunningGameById(gameId);

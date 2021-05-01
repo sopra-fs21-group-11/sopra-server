@@ -68,6 +68,11 @@ public class Game implements PropertyChangeListener {
         this.nextCard = deckStack.pop();
 
         this.players = new LinkedList<>();
+        //player List generation:
+        for(var player : lobby.getPlayers()){
+            var playerToAdd = new AbstractMap.SimpleEntry<>(player, "");
+            players.add(playerToAdd);
+        }
 
     }
 
@@ -80,28 +85,9 @@ public class Game implements PropertyChangeListener {
                return true;
            }
        }
-
-        boolean waitingFor = false;
-        for(User waitingForUser : this.waitingForPlayers){
-            if(waitingForUser.getId() == user.getId()){
-                waitingFor = true;
-                break;
-            }
-        }
-        if(!waitingFor) {
-            return false; //already joined or not in lobby
-        }
-
-        for(User waitingForUser : this.waitingForPlayers){
-            if(waitingForUser.getId() == user.getId()){
-                this.waitingForPlayers.remove(waitingForUser);
-                break;
-            }
-        }
         if(this.hostPlayerId == user.getId()){
             this.currentPlayer = new AbstractMap.SimpleEntry<>(user, sessionId); //host starts the game.
         }
-        this.players.add(new AbstractMap.SimpleEntry<User, String>(user, sessionId));//add token/user-combo to our players queue.
         return true;
     }
 
@@ -131,7 +117,6 @@ public class Game implements PropertyChangeListener {
             if(!deckStack.isEmpty()) {
                 nextCard = deckStack.pop();
             } else{
-                //start evaluation:
                 //start evaluation
                 activeState = GameState.EVALUATION;
                 gameService.sendGameStateToUsers(id);
@@ -496,10 +481,6 @@ public class Game implements PropertyChangeListener {
         return nextCard;
     }
 
-    public List<User> getJoinedPlayer() {
-        return waitingForPlayers;
-    }
-
     public Queue<Map.Entry<User, String>> getPlayers() {
         return players;
     }
@@ -539,9 +520,10 @@ public class Game implements PropertyChangeListener {
      */
     public void initializeGameWhenFull(){
         //rearrangement of player queue
-        players.add(currentPlayer);
-        players.remove();
+        //players.add(currentPlayer);
+        //players.remove();
         //first cd handling:
+        currentPlayer = players.remove();
         this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
         turnCountdown.addPropertyChangeListener(this);
         turnCountdown.start();
