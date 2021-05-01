@@ -118,8 +118,6 @@ public class Game implements PropertyChangeListener {
             currentPlayer = players.remove(); //switch currentUser
             players.add(currentPlayer);
 
-
-
             if(deckStack.isEmpty()) {
                 //start evaluation:
 
@@ -237,6 +235,11 @@ public class Game implements PropertyChangeListener {
             //and now we send the last gamestate:
             activeState = GameState.GAMEEND;
             gameService.sendGameStateToUsers(id);
+
+            //clear SessionIds
+            for(var user : players){
+                user.setValue("");
+            }
         } catch(Exception ex){
 
         }
@@ -527,6 +530,10 @@ public class Game implements PropertyChangeListener {
 
     public boolean isGameStarted() {
         return gameStarted;
+    }
+
+    public void setEvaluation(Evaluation evaluation) {
+        this.evaluation = evaluation;
     }
 
     /**
