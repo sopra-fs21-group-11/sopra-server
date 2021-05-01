@@ -119,7 +119,7 @@ public class GameController {
         }
 
         GameLobby newGame = gameService.createNewGameLobby(hostUser);
-        if(gamePostDTO.getName() == ""){
+        if(gamePostDTO.getName().equals("")){
             newGame.setName(Long.toString(newGame.getId()));
         }else {
             newGame.setName(gamePostDTO.getName());
