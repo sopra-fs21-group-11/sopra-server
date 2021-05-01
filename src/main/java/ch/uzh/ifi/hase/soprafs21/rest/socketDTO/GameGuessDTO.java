@@ -1,14 +1,14 @@
 package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
 
 public class GameGuessDTO {
-    private int nrOfWrongPlacedCards;
+    private String nrOfWrongPlacedCards;
     private long gameId;
 
-    public int getNrOfWrongPlacedCards() {
+    public String getNrOfWrongPlacedCards() {
         return nrOfWrongPlacedCards;
     }
 
-    public void setNrOfWrongPlacedCards(int nrOfWrongPlacedCards) {
+    public void setNrOfWrongPlacedCards(String nrOfWrongPlacedCards) {
         this.nrOfWrongPlacedCards = nrOfWrongPlacedCards;
     }
 
