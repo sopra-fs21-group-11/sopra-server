@@ -371,7 +371,7 @@ public class Game implements PropertyChangeListener {
                 guessingUser = user.getKey();
             }
         }
-        boolean allGuessesCameIn = evaluation.addGuess(guessingUser,guess.getNrOfWrongPlacedCards());
+        boolean allGuessesCameIn = evaluation.addGuess(guessingUser,Integer.parseInt(guess.getNrOfWrongPlacedCards()));
         if(allGuessesCameIn){
             evaluationCountdown.doStop();//we stop the cd as soon as all guesses came in. -> onPropertyChange() handles the rest.
         }
@@ -379,7 +379,7 @@ public class Game implements PropertyChangeListener {
     public void performEvaluationAfterGuessPresentOrCdEnded(){
         //if this returns true, all guesses have came in. -> evaluate
         //evaluationCountdown.doStop();//no need to stop cd since this method only gets called when the cd has stopped anyway.
-        evaluation.shareTokens(nrOfWrongCards);
+        //evaluation.shareTokens(nrOfWrongCards);
         gameService.sendEvaluatedGameStateToUsers(id);
         activeBoard.setPlacedCard(0);
     }
@@ -476,6 +476,8 @@ public class Game implements PropertyChangeListener {
         evaluationState.setNextPlayer(DTOMapper.INSTANCE.convertEntityToUserGetDTO(((Map.Entry<User, String>)obj[0]).getKey()));
 
         evaluationState.setNextCardOnStack(CardMapper.ConvertEntityToCardDTO(this.nextCard));
+
+        this.evaluation.shareTokens(nrOfWrongCards);
         return evaluationState;
     }
 

@@ -36,6 +36,7 @@ public class Evaluation {
                 guess.getKey().setCurrentToken(guess.getKey().getCurrentToken()+tokensOnCorrectGuess);//add tokens to player
             }
         }
+        if(correct){return;}
         int distance = 99;
         List<Map.Entry<User, Integer>> nearestGuessList = new ArrayList<>();
         if(!correct){//no correct guess present -> continue with nearest:
