@@ -83,6 +83,9 @@ public class Game implements PropertyChangeListener {
        for(var player : players){
            if(player.getKey().getId() == user.getId()){
                //change sessionId such that the player gets the next gameState and return.
+               if(player.getValue() != ""){ //player has played before and lost connection -> we send an extra gamestate
+                   gameService.sendSeparateGameState(id, user.getId());
+               }
                player.setValue(sessionId);
                return true;
            }

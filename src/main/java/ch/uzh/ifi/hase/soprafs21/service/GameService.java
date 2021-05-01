@@ -197,6 +197,21 @@ public class GameService {
         gameToParseEvaluationGuess.parseEvaluationGuess(sessionId, guess);
     }
 
+    public void sendSeparateGameState(long gameId, long userId){
+        Game gameToSend = this.getRunningGameById(gameId);
+        for(var userToSend : gameToSend.getPlayers()) {
+            if(userToSend.getKey().getId() == userId){
+                GameStateDTO gameStateDTO = gameToSend.convertToDTO();
+                gameStateDTO.setPlayersturn(userService.getUser(gameStateDTO.getPlayersturn().getId()));
+                gameStateDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
+                gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken()); //nr of token is userspecific
+                this.template.convertAndSend("/topic/game/queue/specific-game-game"+userToSend.getValue(),gameStateDTO);
+            }
+        }
+
+
+    }
+
     public void sendGameStateToUsers(long id){
         Game gameToSend = this.getRunningGameById(id);
         for(var userToSend : gameToSend.getPlayers()){
