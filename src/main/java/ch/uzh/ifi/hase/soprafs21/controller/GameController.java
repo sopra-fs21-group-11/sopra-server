@@ -112,12 +112,18 @@ public class GameController {
     @PostMapping("/games")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity createGame(@RequestHeader("Authorization") String token) {
+    public ResponseEntity createGame(@RequestHeader("Authorization") String token, @RequestBody GamePostDTO gamePostDTO) {
         User hostUser = userService.getUserByToken(token);
         if(hostUser == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host user not found. Please reformat request.");
         }
+
         GameLobby newGame = gameService.createNewGameLobby(hostUser);
+        if(gamePostDTO.getName() == ""){
+            newGame.setName(Long.toString(newGame.getId()));
+        }else {
+            newGame.setName(gamePostDTO.getName());
+        }
 
         //String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newGame.getId()).toString();
         Map<String, String> location = new HashMap<String, String>();

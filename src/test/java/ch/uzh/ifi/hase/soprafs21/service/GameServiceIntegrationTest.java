@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
+import ch.uzh.ifi.hase.soprafs21.entity.Evaluation;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
@@ -10,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedGameStateDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameGuessDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import java.beans.PropertyChangeEvent;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -153,6 +157,7 @@ public class GameServiceIntegrationTest {
         long startingCardId = game.convertToDTO().getStartingCard().getId();
         float startingCardNCoord = game.convertToDTO().getStartingCard().getNcoord(); //for testing reason, we gonna cheat a little :)
         float startingCardECoord = game.convertToDTO().getStartingCard().getEcoord();
+
         if(startingCardECoord <= nextCard.getEwCoordinates()){//we place it on the right for a correct placement
             game.performTurn(host.getId(), nextCard,0, "right");
         }else {//we place it on the left for a correct placement
@@ -262,13 +267,25 @@ public class GameServiceIntegrationTest {
 
         }
 
-        /*GameStateDTO stateDTO = game.convertToDTO();
+        GameStateDTO stateDTO = game.convertToDTO();
         //now we have a neighbour on every side. Lets evaluate:
-        EvaluatedGameStateDTO evaluatedGameStateDTO =  game.evaluate();*/
+        //game.propertyChange(new PropertyChangeEvent());
+
+        //game.propertyChange(new PropertyChangeEvent(null, "DoubtCdEnded"+Long.toString(game.getId()),true, true));
+
+
+        /*Evaluation evaluation = new Evaluation(game.getPlayers(), game.getCurrentSettings().getTokenGainOnCorrectGuess(), game.getCurrentSettings().getTokenGainOnNearestGuess());
+        game.setEvaluation(evaluation);
+        String sessId = game.getCurrentPlayer().getValue();
+        GameGuessDTO guessDTO = new GameGuessDTO();
+        guessDTO.setGameId(game.getId());
+        guessDTO.setNrOfWrongPlacedCards("1");
+        gameService.parseEvaluationGuess(game.getId(), sessId, guessDTO);
+        EvaluatedGameStateDTO evaluatedGameStateDTO =  game.evaluate(); //evaluation Object missing.
         //all have to be correct
 
         //rewrite this guy :/
-        /*assertTrue(evaluatedGameStateDTO.getTop().get(0).isCorrect());
+        assertTrue(evaluatedGameStateDTO.getTop().get(0).isCorrect());
         assertTrue(evaluatedGameStateDTO.getBottom().get(0).isCorrect());
         assertTrue(evaluatedGameStateDTO.getLeft().get(0).isCorrect());
         assertTrue(evaluatedGameStateDTO.getRight().get(0).isCorrect());*/
