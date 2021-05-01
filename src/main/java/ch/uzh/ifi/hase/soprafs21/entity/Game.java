@@ -529,6 +529,7 @@ public class Game implements PropertyChangeListener {
         //players.remove();
         //first cd handling:
         currentPlayer = players.remove();
+        players.add(currentPlayer);
         this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
         turnCountdown.addPropertyChangeListener(this);
         turnCountdown.start();
