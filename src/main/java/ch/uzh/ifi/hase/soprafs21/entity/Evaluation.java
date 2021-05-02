@@ -8,6 +8,7 @@ public class Evaluation {
     private Queue<Map.Entry<User, String>> players;
     private int tokensOnNearestGuess;
     private int tokensOnCorrectGuess;
+    private boolean tokenShared = false;
 
     public Evaluation(Queue<Map.Entry<User, String>> _players, int correct, int nearest) {
         guesses = new ArrayList<>();
@@ -29,6 +30,7 @@ public class Evaluation {
     }
 
     public void shareTokens(int wrongCards){
+        if(tokenShared){return;}//we check if we already shared the tokens.
         boolean correct = false;
         for(var guess : guesses){
             if(wrongCards == guess.getValue()){
@@ -36,7 +38,8 @@ public class Evaluation {
                 guess.getKey().setCurrentToken(guess.getKey().getCurrentToken()+tokensOnCorrectGuess);//add tokens to player
             }
         }
-        if(correct){return;}
+        if(correct){tokenShared=true;
+        return;}
         int distance = 99;
         List<Map.Entry<User, Integer>> nearestGuessList = new ArrayList<>();
         if(!correct){//no correct guess present -> continue with nearest:
@@ -55,6 +58,7 @@ public class Evaluation {
                 guessToShareToken.getKey().setCurrentToken(guessToShareToken.getKey().getCurrentToken()+tokensOnNearestGuess);//add tokens to player
             }
         }
+        tokenShared=true;
     }
 
     private boolean evaluationContainsAllGuesses(){
