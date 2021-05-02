@@ -109,6 +109,9 @@ public class Game implements PropertyChangeListener {
         if(!senderProperty.endsWith(Long.toString(id))){ //if the id isnt ours, we skip.
             return;
         }
+        if(this.activeState == GameState.GAMEEND){
+            return;
+        }
         senderProperty = senderProperty.replaceAll("[0-9]", "");//remove all digits
         //DoubtCountdown ended whithout any doubt incoming -> next turn
         //Doubt Visible Countdown
@@ -226,6 +229,8 @@ public class Game implements PropertyChangeListener {
      */
     public void endGame(){
         try {
+            activeState = GameState.GAMEEND;
+            gameService.sendGameStateToUsers(id);
             //first we remove any countdown eventlistener. Not that we run into strange happenings...
             doubtCountdown.removePropertyChangeListener(this);
             visibleCountdown.removePropertyChangeListener(this);
@@ -233,8 +238,7 @@ public class Game implements PropertyChangeListener {
             evaluationCountdown.removePropertyChangeListener(this);
             evaluationVisibleCountdown.removePropertyChangeListener(this);
             //and now we send the last gamestate:
-            activeState = GameState.GAMEEND;
-            gameService.sendGameStateToUsers(id);
+
 
             //clear SessionIds
             for(var user : players){
