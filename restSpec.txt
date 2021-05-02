@@ -134,7 +134,8 @@ Response:
         "hostId": 2,
         "players": [
             2
-        ]
+        ],
+        "gameStarted": false
     },
 	    {
         "id": 2,
@@ -153,7 +154,8 @@ Response:
         "hostId": 2,
         "players": [
             2
-        ]
+        ],
+	"gameStarted": false
     }
 ]
 
@@ -178,10 +180,31 @@ Response:
     "horizontalValueCategoryId": 1,
     "verticalValueCategoryId": 2,
     "name": "New Game",
-    "hostId": 2,
+    "hostId": {
+	    "id": 1,
+    "username": "mb",
+    "totalWins": 0,
+    "totalDefeats": 0,
+    "creationDate": "2021-04-12T16:08:57.633+00:00",
+    "totalTokens": 0,
+    "playTime": 0,
+    "isPlaying": false,
+    "isOnline": false
+	},
     "players": [
-        2
-    ]
+	{
+            "id": 1,
+            "username": "mb",
+           "totalWins": 0,
+           "totalDefeats": 0,
+           "creationDate": "2021-04-12T16:08:57.633+00:00",
+           "totalTokens": 0,
+           "playTime": 0,
+           "isPlaying": false,
+           "isOnline": false
+       }
+    ],
+    "gameStarted": false
 }
 
 Description: The sending joins the game (Currently multiple joins possible I know...)
@@ -205,11 +228,30 @@ Response:
     "horizontalValueCategoryId": 1,
     "verticalValueCategoryId": 2,
     "name": "New Game",
-    "hostId": 2,
+    "hostId": {
+	    "id": 1,
+    "username": "mb",
+    "totalWins": 0,
+    "totalDefeats": 0,
+    "creationDate": "2021-04-12T16:08:57.633+00:00",
+    "totalTokens": 0,
+    "playTime": 0,
+    "isPlaying": false,
+    "isOnline": false
+	},
     "players": [
-        2,
-		2
-    ]
+	{
+            "id": 1,
+            "username": "mb",
+           "totalWins": 0,
+           "totalDefeats": 0,
+           "creationDate": "2021-04-12T16:08:57.633+00:00",
+           "totalTokens": 0,
+           "playTime": 0,
+           "isPlaying": false,
+           "isOnline": false
+       }
+    ],
 }
 
 Description: Kicks a player (Only host is allowed. Identified by token.)
@@ -235,10 +277,30 @@ Response:
     "horizontalValueCategoryId": 1,
     "verticalValueCategoryId": 2,
     "name": "New Game",
-    "hostId": 2,
+    "hostId": {
+	    "id": 1,
+    "username": "mb",
+    "totalWins": 0,
+    "totalDefeats": 0,
+    "creationDate": "2021-04-12T16:08:57.633+00:00",
+    "totalTokens": 0,
+    "playTime": 0,
+    "isPlaying": false,
+    "isOnline": false
+	},
     "players": [
-        2,
-    ]
+	{
+            "id": 1,
+            "username": "mb",
+           "totalWins": 0,
+           "totalDefeats": 0,
+           "creationDate": "2021-04-12T16:08:57.633+00:00",
+           "totalTokens": 0,
+           "playTime": 0,
+           "isPlaying": false,
+           "isOnline": false
+       }
+    ],
 }
 
 Description: Starts a game (Backend ready for websocket connection)
@@ -258,52 +320,258 @@ Response: (Might be edited because makes no sense...)
 The messages received by the server via websocket look the following:
 
 {
-    "cards": [{
-            "id": 54,
-            "lowerNeighbour": 22,
-            "higherNeighbour": 0,
-            "rightNeighbour": 0,
-            "leftNeighbour": 0,
-            "ncoord": 46.11,
-            "ecoord": 6.06,
-            "name": "Onex",
-            "population": 0,
-            "area": 0.0,
-            "height": 0,
-            "canton": null
-        },
-{
-            "id": 22,
-            "lowerNeighbour": 0,
-            "higherNeighbour": 54,
-            "rightNeighbour": 0,
-            "leftNeighbour": 0,
-            "ncoord": 45.50,
-            "ecoord": 7.06,
-            "name": "Zürich",
-            "population": 0,
-            "area": 0.0,
-            "height": 0,
-            "canton": null
-        }
-    ],
+    "left": [{
+		"id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 1
+	}, 
+	{	
+		 "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 0,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 2
+	}],
+    "right": [],
+    "top": [],
+    "bottom": [],
+    "startingCard": {
+        "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 0
+    },
     "playertokens": 4,
-    "playersturn": 1,
-    "gamestate": "CARDPLACEMENT",
+    "playersturn": {	
+		 "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 0,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 2
+	},
+    "nextPlayer": {	
+		 "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 0,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 2
+	},
+    "gamestate": CARDPLACEMENT,
     "nextCardOnStack": {
-        "id": 29,
+        "id": 68,
         "lowerNeighbour": 0,
         "higherNeighbour": 0,
         "rightNeighbour": 0,
         "leftNeighbour": 0,
-        "ncoord": 46.56,
-        "ecoord": 8.34,
-        "name": "Bauen",
+        "ncoord": 47.16,
+        "ecoord": 7.08,
+        "name": "Lajoux",
         "population": 0,
         "area": 0.0,
         "height": 0,
-        "canton": null
+        "canton": null,
+        "position": 0
     }
 }
+-----Doubting------
+Doubt:
+{
+	"placedCard": 68,
+	"doubtedCard": 49,
+	"gameId": 1
+}
+Result of Doubting:
+{
+	"referenceCard": {
+        "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 0
+    },
+	"doubtedCard": {
+        "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 0
+    },
+	"isDoubtRightous": true
+
+}
+
+
+
+-----Evaluation-----
+Guess:
+{
+	"nrOfWrongPlaceCards": 7,
+	"gameId": 1
+}
+
+Result of Evaluation
+{
+    "left": [{
+		"id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 1,
+	"correct": true
+	}, 
+	{	
+		 "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 0,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 2,
+	"correct": true
+	}],
+    "right": [],
+    "top": [],
+    "bottom": [],
+    "startingCard": {
+        "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 49,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 0
+    },
+    "playertokens": 4,
+    "playersturn": {	
+		 "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 0,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 2
+	},
+    "nextPlayer": {	
+		 "id": 49,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 49,
+        "leftNeighbour": 0,
+        "ncoord": 47.2,
+        "ecoord": 9.25,
+        "name": "Appenzell",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 2
+	},
+    "gamestate": EVALUATION
+    "nextCardOnStack": {
+        "id": 68,
+        "lowerNeighbour": 0,
+        "higherNeighbour": 0,
+        "rightNeighbour": 0,
+        "leftNeighbour": 0,
+        "ncoord": 47.16,
+        "ecoord": 7.08,
+        "name": "Lajoux",
+        "population": 0,
+        "area": 0.0,
+        "height": 0,
+        "canton": null,
+        "position": 0
+    }
+	
+}
+**********EndGame*************
+SocketMessage to /game/end (must be host player!)
+{	"gameId":1}
+
 
 

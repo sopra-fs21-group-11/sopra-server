@@ -6,6 +6,8 @@ import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameKickPutDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
@@ -75,24 +77,53 @@ public class GameController {
     }
 
 
+
     @GetMapping("/games/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameGetDTO getGameById(@PathVariable long id) {
-        GameLobby game = gameService.getOpenGameById(id);
+        GameLobby game = null;
+        if(gameService.openGameExists(id)) {
+            game = gameService.getOpenGameById(id);
+        }
+        GameGetDTO gameGetDTO = null;
+        if(game != null) {
+            gameGetDTO = GameMapper.ConvertEntityToGameGetDTO(game);
+            gameGetDTO.setHostId(DTOMapper.INSTANCE.convertEntityToUserGetDTO(userService.getUser(game.getHostId())));
+            List<UserGetDTO> playingUsers = new ArrayList<>();
+            for(var user : game.getPlayers()){
+                playingUsers.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
+            }
+            gameGetDTO.setPlayers(playingUsers);
+        } else {
+            Game runningGame = gameService.getRunningGameById(id);
+            gameGetDTO = GameMapper.ConvertRunningGameToGetDTO(runningGame);
+            gameGetDTO.setHostId(DTOMapper.INSTANCE.convertEntityToUserGetDTO(userService.getUser(runningGame.getHostPlayerId())));
+            List<UserGetDTO> playingUsers = new ArrayList<>();
+            for(var user : runningGame.getPlayers()){
+                playingUsers.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user.getKey()));
+            }
+            gameGetDTO.setPlayers(playingUsers);
+        }
 
-        return GameMapper.ConvertEntityToGameGetDTO(game);
+        return gameGetDTO;
     }
 
     @PostMapping("/games")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity createGame(@RequestHeader("Authorization") String token) {
+    public ResponseEntity createGame(@RequestHeader("Authorization") String token, @RequestBody GamePostDTO gamePostDTO) {
         User hostUser = userService.getUserByToken(token);
         if(hostUser == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host user not found. Please reformat request.");
         }
+
         GameLobby newGame = gameService.createNewGameLobby(hostUser);
+        if(gamePostDTO.getName().equals("")){
+            newGame.setName(Long.toString(newGame.getId()));
+        }else {
+            newGame.setName(gamePostDTO.getName());
+        }
 
         //String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newGame.getId()).toString();
         Map<String, String> location = new HashMap<String, String>();

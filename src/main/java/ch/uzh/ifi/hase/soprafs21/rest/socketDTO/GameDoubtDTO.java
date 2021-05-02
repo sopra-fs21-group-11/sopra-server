@@ -1,14 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
 
-
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameStateDTO {
-
+public class GameDoubtDTO { //Behaves like a gamestate with additional doubtdto in it.
     private List<CardDTO> left;
     private List<CardDTO> right;
     private List<CardDTO> top;
@@ -22,7 +19,9 @@ public class GameStateDTO {
     private String gamestate;
     private CardDTO nextCardOnStack;
 
-    public GameStateDTO() {
+    private DoubtResultDTO doubtResultDTO;
+
+    public GameDoubtDTO() {
 
         left = new ArrayList<>();
         right = new ArrayList<>();
@@ -126,5 +125,13 @@ public class GameStateDTO {
 
     public void setBottom(List<CardDTO> bottom) {
         this.bottom = bottom;
+    }
+
+    public DoubtResultDTO getDoubtResultDTO() {
+        return doubtResultDTO;
+    }
+
+    public void setDoubtResultDTO(DoubtResultDTO doubtResultDTO) {
+        this.doubtResultDTO = doubtResultDTO;
     }
 }

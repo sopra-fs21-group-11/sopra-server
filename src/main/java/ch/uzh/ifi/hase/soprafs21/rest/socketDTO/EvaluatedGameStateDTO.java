@@ -1,18 +1,42 @@
 package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
 
+import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class EvaluatedGameStateDTO {
     //We could use inheritance but stackoverflow said that this is bad design...
-    private List<EvaluatedCardDTO> cards;
+    private List<EvaluatedCardDTO> left;
+    private List<EvaluatedCardDTO> right;
+    private List<EvaluatedCardDTO> top;
+    private List<EvaluatedCardDTO> bottom;
+    private CardDTO startingCard;
     private int playertokens;
-    private long playersturn;
+    private UserGetDTO playersturn;
+    private UserGetDTO nextPlayer;
     private String gamestate;
     private CardDTO nextCardOnStack;
 
     public EvaluatedGameStateDTO() {
-        cards = new ArrayList<>();
+
+        left = new ArrayList<>();
+        right = new ArrayList<>();
+        top = new ArrayList<>();
+        bottom = new ArrayList<>();
+    }
+
+    public void addLeftCard(EvaluatedCardDTO card){
+        this.left.add(card);
+    }
+    public void addRightCard(EvaluatedCardDTO card){
+        this.right.add(card);
+    }
+    public void addTopCard(EvaluatedCardDTO card){
+        this.top.add(card);
+    }
+    public void addBottomCard(EvaluatedCardDTO card){
+        this.bottom.add(card);
     }
 
     public CardDTO getNextCardOnStack() {
@@ -23,16 +47,36 @@ public class EvaluatedGameStateDTO {
         this.nextCardOnStack = nextCardOnStack;
     }
 
-    public List<EvaluatedCardDTO> getCards() {
-        return cards;
+    public List<EvaluatedCardDTO> getLeft() {
+        return left;
     }
 
-    public void setCards(List<EvaluatedCardDTO> cards) {
-        this.cards = cards;
+    public void setLeft(List<EvaluatedCardDTO> left) {
+        this.left = left;
     }
 
-    public void addCard(EvaluatedCardDTO card){
-        this.cards.add(card);
+    public List<EvaluatedCardDTO> getRight() {
+        return right;
+    }
+
+    public void setRight(List<EvaluatedCardDTO> right) {
+        this.right = right;
+    }
+
+    public List<EvaluatedCardDTO> getTop() {
+        return top;
+    }
+
+    public void setTop(List<EvaluatedCardDTO> top) {
+        this.top = top;
+    }
+
+    public List<EvaluatedCardDTO> getBottom() {
+        return bottom;
+    }
+
+    public void setBottom(List<EvaluatedCardDTO> bottom) {
+        this.bottom = bottom;
     }
 
     public int getPlayertokens() {
@@ -43,11 +87,11 @@ public class EvaluatedGameStateDTO {
         this.playertokens = playertokens;
     }
 
-    public long getPlayersturn() {
+    public UserGetDTO getPlayersturn() {
         return playersturn;
     }
 
-    public void setPlayersturn(long playersturn) {
+    public void setPlayersturn(UserGetDTO playersturn) {
         this.playersturn = playersturn;
     }
 
@@ -57,5 +101,21 @@ public class EvaluatedGameStateDTO {
 
     public void setGamestate(String gamestate) {
         this.gamestate = gamestate;
+    }
+
+    public CardDTO getStartingCard() {
+        return startingCard;
+    }
+
+    public void setStartingCard(CardDTO startingCard) {
+        this.startingCard = startingCard;
+    }
+
+    public UserGetDTO getNextPlayer() {
+        return nextPlayer;
+    }
+
+    public void setNextPlayer(UserGetDTO nextPlayer) {
+        this.nextPlayer = nextPlayer;
     }
 }

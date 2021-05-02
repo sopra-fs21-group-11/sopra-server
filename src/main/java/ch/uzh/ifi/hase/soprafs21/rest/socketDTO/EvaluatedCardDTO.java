@@ -14,6 +14,7 @@ public class EvaluatedCardDTO {
     private float area;
     private long height;
     private String canton;
+    private int position;
 
     private boolean correct;
 
@@ -112,6 +113,14 @@ public class EvaluatedCardDTO {
 
     public void setCanton(String canton) {
         this.canton = canton;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public boolean isCorrect() {

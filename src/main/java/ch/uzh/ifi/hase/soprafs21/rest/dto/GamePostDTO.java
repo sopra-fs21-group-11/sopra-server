@@ -10,6 +10,8 @@ public class GamePostDTO {
     private int doubtCountdown;
     private int visibleAfterDoubtCountdown;
     private int playerTurnCountdown;
+    private int evaluationCountdown;
+    private int evaluationCountdownVisible;
     private int tokenGainOnCorrectGuess;
     private int tokenGainOnNearestGuess;
     private int nrOfStartingTokens;
@@ -138,5 +140,21 @@ public class GamePostDTO {
 
     public void setNrOfStartingTokens(int nrOfStartingTokens) {
         this.nrOfStartingTokens = nrOfStartingTokens;
+    }
+
+    public int getEvaluationCountdown() {
+        return evaluationCountdown;
+    }
+
+    public void setEvaluationCountdown(int evaluationCountdown) {
+        this.evaluationCountdown = evaluationCountdown;
+    }
+
+    public int getEvaluationCountdownVisible() {
+        return evaluationCountdownVisible;
+    }
+
+    public void setEvaluationCountdownVisible(int evaluationCountdownVisible) {
+        this.evaluationCountdownVisible = evaluationCountdownVisible;
     }
 }
