@@ -31,11 +31,13 @@ public class GameService {
 
     private SimpMessagingTemplate template;
     private UserService userService;
+    private DeckService deckService;
 
     @Autowired
-    public GameService(SimpMessagingTemplate template, UserService userService) {
+    public GameService(SimpMessagingTemplate template, UserService userService, DeckService deckService) {
          this.template = template;
          this.userService = userService;
+         this.deckService = deckService;
     }
 
 
@@ -48,7 +50,7 @@ public class GameService {
 
 
     public Game startGame(GameLobby gameToStart){
-        Game startedGame = gameToStart.StartGame();
+        Game startedGame = gameToStart.StartGame(deckService.makeDeckReadyToPlay(gameToStart.getSettings().getDeckId()));
         startedGame.setGameService(this);
         runningGames.add(startedGame);
         openGames.remove(gameToStart);

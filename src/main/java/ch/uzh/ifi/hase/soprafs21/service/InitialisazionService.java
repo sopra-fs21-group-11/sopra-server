@@ -16,5 +16,6 @@ public class InitialisazionService implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception{
         deckService.initializeValueCategories();
+        deckService.initializeDefaultDeck();
     }
 }

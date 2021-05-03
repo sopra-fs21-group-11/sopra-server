@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import org.hibernate.mapping.Value;
 
 import javax.persistence.*;
 import java.io.BufferedReader;
@@ -18,63 +19,9 @@ public class Deck extends Stack implements Serializable {
     private Stack<Card> cards;
     private List<ValueCategory> possibleComparisonStrategies;
 
-    public Deck(int totalCardsInDeck){
+    public Deck(){
         cards = new Stack<>();
-        List<Card> locationCards = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("src/bunzendataset.csv"))) {
-            String line;
 
-            int cardIdCounter = 0;
-            while ((line = br.readLine()) != null) {
-                cardIdCounter++;
-                String[] values = line.split(";");
-                //skip title row
-                if(values[0].equals("Locationname")){
-                    continue;
-                }
-
-                SwissLocationCard newCard = new SwissLocationCard();
-                newCard.setCardId(cardIdCounter);
-                newCard.setLocationName(values[0]);
-                //split coordinates
-                String toFloat = values[1].split(" ")[0]+"."+values[1].split(" ")[1];
-                newCard.setNsCoordinates(Float.parseFloat(toFloat));
-                toFloat = values[2].split(" ")[0]+"."+values[2].split(" ")[1];
-                newCard.setEwCoordinates(Float.parseFloat(toFloat));
-                if(values[3].length()==0){//Population
-                    continue;
-                }else{
-                    newCard.setPopulation(Integer.parseInt(values[3]));
-                }
-                if(values[4].length()==0){//Area
-                    continue;
-                }
-                else{
-                    newCard.setArea(Float.parseFloat(values[4]));
-                }
-                if(values[5].length()==0){//Height
-                    continue;
-                }else{
-                    newCard.setHeight(Integer.parseInt(values[5]));
-                }
-                //6: canton
-                //7: flag for sightseeing
-                //8: flag for River
-                //9: flag for Mountain
-                locationCards.add(newCard);
-            }
-        } catch (Exception ex){
-
-
-        }
-        for(int i = 0;i<=totalCardsInDeck;i++){//hardcoded: A deck contains 30 cards. TODO: change this according to gamesettings.
-            Random rand = new Random();
-            int index = rand.nextInt(locationCards.size()-1);
-            while(cards.contains(locationCards.get(rand.nextInt(locationCards.size()-1)))){
-                index = rand.nextInt(locationCards.size()-1);
-            }
-            cards.add(locationCards.get(index));//pick a random card out of the dataset
-        }
 
     }
 
@@ -86,6 +33,16 @@ public class Deck extends Stack implements Serializable {
     @Override
     public boolean isEmpty(){
         return cards.isEmpty();
+    }
+
+    public void setCards(Stack<Card> cards) {
+        this.cards = cards;
+    }
+    public void addValueCategory(ValueCategory category){
+        if(possibleComparisonStrategies == null){
+            possibleComparisonStrategies = new ArrayList<>();
+        }
+        possibleComparisonStrategies.add(category);
     }
 
     /**

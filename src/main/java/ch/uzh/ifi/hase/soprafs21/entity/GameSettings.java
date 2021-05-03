@@ -20,6 +20,7 @@ public class GameSettings {
     private ValueCategory horizontalValueCategoryId;
     private ValueCategory verticalValueCategoryId;
     private int nrOfStartingTokens;
+    private long deckId;
 
     public GameSettings() {
         //default settings:
@@ -38,6 +39,7 @@ public class GameSettings {
         this.horizontalValueCategoryId = new ECoordinateCategory();
         this.verticalValueCategoryId = new NCoordinateCategory();
         this.nrOfStartingTokens = 4;
+        this.deckId=1;
     }
 
 
@@ -153,5 +155,13 @@ public class GameSettings {
 
     public void setEvaluationCountdownVisible(int evaluationCountdownVisible) {
         this.evaluationCountdownVisible = evaluationCountdownVisible;
+    }
+
+    public long getDeckId() {
+        return deckId;
+    }
+
+    public void setDeckId(long deckId) {
+        this.deckId = deckId;
     }
 }

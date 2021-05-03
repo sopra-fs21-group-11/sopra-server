@@ -35,6 +35,7 @@ public class GameMapper {
         gameGetDTO.setGameStarted(false);
         gameGetDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
         gameGetDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
+        gameGetDTO.setDeckId(settings.getDeckId());
 
 
         List<Long> playerList = new ArrayList<>();
@@ -67,6 +68,7 @@ public class GameMapper {
         gameGetDTO.setGameStarted(false);
         gameGetDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
         gameGetDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
+        gameGetDTO.setDeckId(settings.getDeckId());
 
         List<Long> playerList = new ArrayList<>();
         for(Map.Entry<User, String>  user : game.getPlayers()){
@@ -97,6 +99,8 @@ public class GameMapper {
         gamePostDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
         gamePostDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
         gamePostDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
+        gamePostDTO.setDeckId(settings.getDeckId());
+
 
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){

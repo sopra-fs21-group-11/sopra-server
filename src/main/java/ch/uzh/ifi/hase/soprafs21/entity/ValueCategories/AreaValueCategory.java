@@ -34,16 +34,8 @@ public class AreaValueCategory implements ValueCategory{
             referenceValue = ((SwissLocationCard)referenceCard).getArea();
         }catch (Exception ex){}
         try{
-            referenceValue = ((NormalLocationCard)referenceCard).getArea();
-        }catch (Exception ex){}
-
-        try{
             questionValue = ((SwissLocationCard)cardInQuestion).getArea();
         }catch (Exception ex){}
-        try{
-            questionValue = ((NormalLocationCard)cardInQuestion).getArea();
-        }catch (Exception ex){}
-
         //we have to check if any left/right/higher/lower neighbour is null:
         if((referenceCard.getRightNeighbour() == null && referenceCard.getLeftNeighbour() == null) ||   // Either the referencecard or the card in question must not be a starting card.
                 cardInQuestion.getRightNeighbour() == null && cardInQuestion.getLeftNeighbour()==null){ // If one of the cards has no left/right neighbour, we are in vertical axis.

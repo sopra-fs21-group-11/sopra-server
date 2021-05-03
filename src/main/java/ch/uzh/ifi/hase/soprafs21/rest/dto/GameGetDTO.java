@@ -22,6 +22,7 @@ public class GameGetDTO {
     private UserGetDTO hostId;
     private List<UserGetDTO> players;
     private boolean gameStarted;
+    private long deckId;
 
     public int getTokenGainOnNearestGuess() {
         return tokenGainOnNearestGuess;
@@ -29,6 +30,14 @@ public class GameGetDTO {
 
     public void setTokenGainOnNearestGuess(int tokenGainOnNearestGuess) {
         this.tokenGainOnNearestGuess = tokenGainOnNearestGuess;
+    }
+
+    public long getDeckId() {
+        return deckId;
+    }
+
+    public void setDeckId(long deckId) {
+        this.deckId = deckId;
     }
 
     public List<UserGetDTO> getPlayers() {
