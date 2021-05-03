@@ -2,7 +2,8 @@ package ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "DECKS")
@@ -20,4 +21,77 @@ public class Deck implements Serializable{
     @Column(nullable = false)
     private String name;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "card_deck",
+    joinColumns = @JoinColumn(name="card_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name="deck_id",
+    referencedColumnName = "id"))
+    private List<Card> cards;
+
+    @Column
+    private String description;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "compareType_deck",
+    joinColumns = @JoinColumn(name="compareType_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name="deck_id", referencedColumnName = "id"))
+    private List<CompareType> compareTypes;
+
+    public Deck() {
+        size = 0L;
+        cards = new ArrayList<>();
+    }
+
+    public void addCard(Card card){
+        cards.add(card);
+        size++;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<CompareType> getCompareTypes() {
+        return compareTypes;
+    }
+
+    public void setCompareTypes(List<CompareType> compareTypes) {
+        this.compareTypes = compareTypes;
+    }
 }

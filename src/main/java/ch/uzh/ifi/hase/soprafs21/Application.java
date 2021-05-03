@@ -67,6 +67,7 @@ public class Application {
                     .antMatchers(HttpMethod.POST, "/users").permitAll()
                     .antMatchers(HttpMethod.POST, "/users/login").permitAll()
                     .antMatchers("/gs-guide-websocket").permitAll()
+                    .antMatchers(HttpMethod.GET, "/decks").permitAll()
                     .requestMatchers(CorsUtils::isCorsRequest).permitAll()
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     .anyRequest().authenticated();
