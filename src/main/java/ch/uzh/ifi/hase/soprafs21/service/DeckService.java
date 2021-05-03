@@ -13,6 +13,7 @@ import ch.uzh.ifi.hase.soprafs21.repository.CompareTypeRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.DeckRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.DeckPutDTO;
+import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -33,13 +34,16 @@ public class DeckService {
     private final CardRepository cardRepository;
     private final CompareTypeRepository compareTypeRepository;
 
+    private FetchingService fetchingService;
+
     @Autowired
     public DeckService(@Qualifier("deckRepository") DeckRepository deckRepository,
                        @Qualifier("cardRepository") CardRepository cardRepository,
-                       @Qualifier("compareTypeRepository") CompareTypeRepository compareTypeRepository){
+                       @Qualifier("compareTypeRepository") CompareTypeRepository compareTypeRepository, FetchingService fetchingService){
         this.cardRepository = cardRepository;
         this.compareTypeRepository = compareTypeRepository;
         this.deckRepository = deckRepository;
+        this.fetchingService = fetchingService;
     }
 
     //basically a converter that converts the repository object to a Entity objects that we can play with.
