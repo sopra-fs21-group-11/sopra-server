@@ -25,11 +25,23 @@ public class Card implements Serializable{
     @Column
     private float eCoordinate;
 
+    @Column
+    private long population;
+
     @Column(nullable = false)
     private String name;
 
 
     public Card() {
+    }
+
+
+    public long getPopulation() {
+        return population;
+    }
+
+    public void setPopulation(long population) {
+        this.population = population;
     }
 
     public Long getId() {

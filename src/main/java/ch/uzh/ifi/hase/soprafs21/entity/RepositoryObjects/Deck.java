@@ -16,7 +16,7 @@ public class Deck implements Serializable{
     private Long id;
 
     @Column(nullable = false)
-    private Long size;
+    private int size;
 
     @Column(nullable = false)
     private String name;
@@ -37,14 +37,25 @@ public class Deck implements Serializable{
     inverseJoinColumns = @JoinColumn(name="deck_id", referencedColumnName = "id"))
     private List<CompareType> compareTypes;
 
+    @Column
+    private boolean readyToPlay;
+
     public Deck() {
-        size = 0L;
+        size = 0;
         cards = new ArrayList<>();
     }
 
     public void addCard(Card card){
         cards.add(card);
         size++;
+    }
+
+    public boolean isReadyToPlay() {
+        return readyToPlay;
+    }
+
+    public void setReadyToPlay(boolean readyToPlay) {
+        this.readyToPlay = readyToPlay;
     }
 
     public Long getId() {
@@ -55,11 +66,11 @@ public class Deck implements Serializable{
         this.id = id;
     }
 
-    public Long getSize() {
+    public int getSize() {
         return size;
     }
 
-    public void setSize(Long size) {
+    public void setSize(int size) {
         this.size = size;
     }
 
@@ -94,4 +105,5 @@ public class Deck implements Serializable{
     public void setCompareTypes(List<CompareType> compareTypes) {
         this.compareTypes = compareTypes;
     }
+
 }

@@ -7,20 +7,29 @@ import java.util.List;
 public class DeckGetDTO {
 
     private Long id;
-
-
-
-
     private String name;
-
-
     private List<CardGetDTO> cards;
-
-
     private String description;
-
-
     private List<CompareTypeGetDTO> compareTypes;
+    private int size;
+    private boolean readyToPlay;
+
+
+    public boolean isReadyToPlay() {
+        return readyToPlay;
+    }
+
+    public void setReadyToPlay(boolean readyToPlay) {
+        this.readyToPlay = readyToPlay;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
 
     public Long getId() {
         return id;

@@ -11,7 +11,6 @@ public class CompareType implements Serializable {
 
 
     @Id
-    @GeneratedValue
     private long id;
 
     @Column(nullable = false)
