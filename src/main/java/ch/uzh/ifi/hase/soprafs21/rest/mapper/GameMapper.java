@@ -35,6 +35,7 @@ public class GameMapper {
         gameGetDTO.setGameStarted(false);
         gameGetDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
         gameGetDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
+        gameGetDTO.setDeckId(settings.getDeckId());
 
 
         List<Long> playerList = new ArrayList<>();
@@ -67,6 +68,7 @@ public class GameMapper {
         gameGetDTO.setGameStarted(false);
         gameGetDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
         gameGetDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
+        gameGetDTO.setDeckId(settings.getDeckId());
 
         List<Long> playerList = new ArrayList<>();
         for(Map.Entry<User, String>  user : game.getPlayers()){
@@ -97,6 +99,8 @@ public class GameMapper {
         gamePostDTO.setNrOfStartingTokens(settings.getNrOfStartingTokens());
         gamePostDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
         gamePostDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
+        gamePostDTO.setDeckId(settings.getDeckId());
+
 
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){
@@ -110,7 +114,7 @@ public class GameMapper {
     public static GameDoubtDTO ConvertGameStateDTOToGameDoubtDTO(GameStateDTO gameStateDTO){
         GameDoubtDTO gameDoubtDTO = new GameDoubtDTO();
         gameDoubtDTO.setLeft(gameStateDTO.getLeft());
-        gameDoubtDTO.setRight(gameDoubtDTO.getRight());
+        gameDoubtDTO.setRight(gameStateDTO.getRight());
         gameDoubtDTO.setTop(gameStateDTO.getTop());
         gameDoubtDTO.setBottom(gameStateDTO.getBottom());
 

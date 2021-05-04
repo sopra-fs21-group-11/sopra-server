@@ -7,6 +7,7 @@ import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -90,7 +89,9 @@ public class GameControllerTest {
 
         MockHttpServletRequestBuilder postRequest = post("/games").contentType(MediaType.APPLICATION_JSON);
         postRequest.header("Authorization", "Bearer "+authToken);
-
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", "");
+        postRequest.content(jsonObject.toString());
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated());
 
@@ -139,6 +140,27 @@ public class GameControllerTest {
         .andExpect((jsonPath("$.players[0]", is(user.getId().intValue()))))
         .andExpect((jsonPath("$.players[1]", is(joiningUser.getId().intValue()))));
 
+        //kick request
+        lobby.removePlayer(joiningUser);
+
+        MockHttpServletRequestBuilder putRequest = put("/games/1/kick").contentType(MediaType.APPLICATION_JSON);
+        putRequest.header("Authorization", "Bearer "+authToken);
+
+        //Initialize JSON Object:
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("kickPlayerId", joiningUser.getId());
+        putRequest.content(jsonObject.toString());
+
+        given(userService.getUserByToken(any(String.class))).willReturn(user);
+        given(userService.getUser(any(long.class))).willReturn(joiningUser);
+        given(gameService.kickPlayer(any(User.class), any(User.class), any(long.class))).willReturn(lobby);
+
+
+        mockMvc.perform(putRequest)
+                .andExpect(jsonPath("$.players", hasSize(1)));
+
+        //join again
+        lobby.addPlayer(joiningUser);
         Game game = new Game(lobby);
         given(userService.getUserByToken(any(String.class))).willReturn(user);//we need hostuser for comparison check
         given(gameService.getOpenGameById(any(long.class))).willReturn(lobby);

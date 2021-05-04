@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
@@ -30,11 +31,13 @@ public class GameService {
 
     private SimpMessagingTemplate template;
     private UserService userService;
+    private DeckService deckService;
 
     @Autowired
-    public GameService(SimpMessagingTemplate template, UserService userService) {
+    public GameService(SimpMessagingTemplate template, UserService userService, DeckService deckService) {
          this.template = template;
          this.userService = userService;
+         this.deckService = deckService;
     }
 
 
@@ -47,7 +50,7 @@ public class GameService {
 
 
     public Game startGame(GameLobby gameToStart){
-        Game startedGame = gameToStart.StartGame();
+        Game startedGame = gameToStart.StartGame(deckService.makeDeckReadyToPlay(gameToStart.getSettings().getDeckId()));
         startedGame.setGameService(this);
         runningGames.add(startedGame);
         openGames.remove(gameToStart);
@@ -195,6 +198,21 @@ public class GameService {
     public void parseEvaluationGuess(long id, String sessionId, GameGuessDTO guess){
         Game gameToParseEvaluationGuess = this.getRunningGameById(id);
         gameToParseEvaluationGuess.parseEvaluationGuess(sessionId, guess);
+    }
+
+    public void sendSeparateGameState(long gameId, long userId){
+        Game gameToSend = this.getRunningGameById(gameId);
+        for(var userToSend : gameToSend.getPlayers()) {
+            if(userToSend.getKey().getId() == userId){
+                GameStateDTO gameStateDTO = gameToSend.convertToDTO();
+                gameStateDTO.setPlayersturn(userService.getUser(gameStateDTO.getPlayersturn().getId()));
+                gameStateDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
+                gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken()); //nr of token is userspecific
+                this.template.convertAndSend("/topic/game/queue/specific-game-game"+userToSend.getValue(),gameStateDTO);
+            }
+        }
+
+
     }
 
     public void sendGameStateToUsers(long id){

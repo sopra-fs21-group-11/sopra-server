@@ -7,8 +7,10 @@ import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
+import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.countdown.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.beans.PropertyChangeEvent;
@@ -28,14 +30,15 @@ public class Game implements PropertyChangeListener {
     private Card nextCard;
     private ValueCategory horizontalValueCategory;
     private ValueCategory verticalValueCategory;
+    private boolean gameStarted;
 
     private final GameSettings currentSettings;
 
     //private SimpMessagingTemplate template;
+    private GameService gameService;
 
     private Date startTime;
 
-    private GameService gameService;
 
     private CountdownHelper doubtCountdown;
     private CountdownHelper visibleCountdown;
@@ -49,7 +52,7 @@ public class Game implements PropertyChangeListener {
     private long winnerId;
 
 
-    public Game(GameLobby lobby){
+    public Game(GameLobby lobby, Deck deckToPlay){
         //set up the game-object with all details of the lobby:
         this.waitingForPlayers = lobby.getPlayers();
         this.currentSettings = lobby.getSettings();
@@ -60,11 +63,12 @@ public class Game implements PropertyChangeListener {
         this.verticalValueCategory = lobby.getSettings().getVerticalValueCategory();
         this.horizontalValueCategory = lobby.getSettings().getHorizontalValueCategory();
 
+        this.gameStarted = false;
 
-        this.deckStack = new Deck(currentSettings.getCardsBeforeEvaluation()*currentSettings.getNrOfEvaluations()+currentSettings.getNrOfEvaluations());//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
+        this.deckStack = deckToPlay;//new Deck(currentSettings.getCardsBeforeEvaluation()*currentSettings.getNrOfEvaluations()+currentSettings.getNrOfEvaluations());//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
 
-        //We set the starting-card and the nextCard right away:
-        this.activeBoard = new Board(deckStack.pop());
+                //We set the starting-card and the nextCard right away:
+                this.activeBoard = new Board(deckStack.pop());
         this.nextCard = deckStack.pop();
 
         this.players = new LinkedList<>();
@@ -78,13 +82,16 @@ public class Game implements PropertyChangeListener {
 
     public boolean joinGame(User user, String sessionId){
         //we check if the player was already in the game with a different sessionId:
-       for(var player : players){
-           if(player.getKey().getId() == user.getId()){
-               //change sessionId such that the player gets the next gameState and return.
-               player.setValue(sessionId);
-               return true;
-           }
-       }
+        for(var player : players){
+            if(player.getKey().getId() == user.getId()){
+                //change sessionId such that the player gets the next gameState and return.
+                if(player.getValue() != ""){ //player has played before and lost connection -> we send an extra gamestate
+                    gameService.sendSeparateGameState(id, user.getId());
+                }
+                player.setValue(sessionId);
+                return true;
+            }
+        }
         if(this.hostPlayerId == user.getId()){
             this.currentPlayer = new AbstractMap.SimpleEntry<>(user, sessionId); //host starts the game.
         }
@@ -104,6 +111,9 @@ public class Game implements PropertyChangeListener {
         if(!senderProperty.endsWith(Long.toString(id))){ //if the id isnt ours, we skip.
             return;
         }
+        if(this.activeState == GameState.GAMEEND){
+            return;
+        }
         senderProperty = senderProperty.replaceAll("[0-9]", "");//remove all digits
         //DoubtCountdown ended whithout any doubt incoming -> next turn
         //Doubt Visible Countdown
@@ -112,8 +122,6 @@ public class Game implements PropertyChangeListener {
         {
             currentPlayer = players.remove(); //switch currentUser
             players.add(currentPlayer);
-
-
 
             if(deckStack.isEmpty()) {
                 //start evaluation:
@@ -223,6 +231,8 @@ public class Game implements PropertyChangeListener {
      */
     public void endGame(){
         try {
+            activeState = GameState.GAMEEND;
+            gameService.sendGameStateToUsers(id);
             //first we remove any countdown eventlistener. Not that we run into strange happenings...
             doubtCountdown.removePropertyChangeListener(this);
             visibleCountdown.removePropertyChangeListener(this);
@@ -230,8 +240,12 @@ public class Game implements PropertyChangeListener {
             evaluationCountdown.removePropertyChangeListener(this);
             evaluationVisibleCountdown.removePropertyChangeListener(this);
             //and now we send the last gamestate:
-            activeState = GameState.GAMEEND;
-            gameService.sendGameStateToUsers(id);
+
+
+            //clear SessionIds
+            for(var user : players){
+                user.setValue("");
+            }
         } catch(Exception ex){
 
         }
@@ -366,7 +380,7 @@ public class Game implements PropertyChangeListener {
                 guessingUser = user.getKey();
             }
         }
-        boolean allGuessesCameIn = evaluation.addGuess(guessingUser,guess.getNrOfWrongPlacedCards());
+        boolean allGuessesCameIn = evaluation.addGuess(guessingUser,Integer.parseInt(guess.getNrOfWrongPlacedCards()));
         if(allGuessesCameIn){
             evaluationCountdown.doStop();//we stop the cd as soon as all guesses came in. -> onPropertyChange() handles the rest.
         }
@@ -374,7 +388,7 @@ public class Game implements PropertyChangeListener {
     public void performEvaluationAfterGuessPresentOrCdEnded(){
         //if this returns true, all guesses have came in. -> evaluate
         //evaluationCountdown.doStop();//no need to stop cd since this method only gets called when the cd has stopped anyway.
-        evaluation.shareTokens(nrOfWrongCards);
+        //evaluation.shareTokens(nrOfWrongCards);
         gameService.sendEvaluatedGameStateToUsers(id);
         activeBoard.setPlacedCard(0);
     }
@@ -471,6 +485,8 @@ public class Game implements PropertyChangeListener {
         evaluationState.setNextPlayer(DTOMapper.INSTANCE.convertEntityToUserGetDTO(((Map.Entry<User, String>)obj[0]).getKey()));
 
         evaluationState.setNextCardOnStack(CardMapper.ConvertEntityToCardDTO(this.nextCard));
+
+        this.evaluation.shareTokens(nrOfWrongCards);
         return evaluationState;
     }
 
@@ -518,6 +534,14 @@ public class Game implements PropertyChangeListener {
         return winnerId;
     }
 
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
+    public void setEvaluation(Evaluation evaluation) {
+        this.evaluation = evaluation;
+    }
+
     /**
      * Can be accessed only once (At the start of the game).
      * Needs to be called because Host would take his turn twice because the currentPlayer has been initialized and the queue has host at the top.
@@ -528,6 +552,7 @@ public class Game implements PropertyChangeListener {
         //players.add(currentPlayer);
         //players.remove();
         //first cd handling:
+        this.gameStarted = true;
         currentPlayer = players.remove();
         players.add(currentPlayer);
         this.turnCountdown = new PlayersTurnCountdown(currentSettings.getPlayerTurnCountdown(), this, currentPlayer.getKey());
