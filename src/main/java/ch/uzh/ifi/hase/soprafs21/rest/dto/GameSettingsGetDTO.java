@@ -4,7 +4,7 @@ import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 public class GameSettingsGetDTO {
     private int playersMin;
     private int playersMax;
-    private int cardsBeforeEvaluation;
+    //private int cardsBeforeEvaluation;
     private int nrOfEvaluations;
     private int doubtCountdown;
     private int visibleAfterDoubtCountdown;
@@ -40,9 +40,9 @@ public class GameSettingsGetDTO {
         this.playersMax = playersMax;
     }
 
-    public int getCardsBeforeEvaluation() { return cardsBeforeEvaluation; }
+    //public int getCardsBeforeEvaluation() { return cardsBeforeEvaluation; }
 
-    public void setCardsBeforeEvaluation(int cardsBeforeEvaluation) { this.cardsBeforeEvaluation = cardsBeforeEvaluation; }
+    //public void setCardsBeforeEvaluation(int cardsBeforeEvaluation) { this.cardsBeforeEvaluation = cardsBeforeEvaluation; }
 
     public int getNrOfEvaluations() {
         return nrOfEvaluations;

@@ -53,7 +53,7 @@ public class GameMapper {
         GameSettingsGetDTO gameSettingsGetDTO = new GameSettingsGetDTO();
         gameSettingsGetDTO.setPlayersMin(gameSettings.getPlayersMin());
         gameSettingsGetDTO.setPlayersMax(gameSettings.getPlayersMax());
-        gameSettingsGetDTO.setCardsBeforeEvaluation(gameSettings.getCardsBeforeEvaluation());
+        //gameSettingsGetDTO.setCardsBeforeEvaluation(gameSettings.getCardsBeforeEvaluation());
         gameSettingsGetDTO.setNrOfEvaluations(gameSettings.getNrOfEvaluations());
         gameSettingsGetDTO.setDoubtCountdown(gameSettings.getDoubtCountdown());
         gameSettingsGetDTO.setVisibleAfterDoubtCountdown(gameSettings.getVisibleAfterDoubtCountdown());
@@ -65,6 +65,7 @@ public class GameMapper {
         gameSettingsGetDTO.setHorizontalValueCategoryId(gameSettings.getHorizontalValueCategory());
         gameSettingsGetDTO.setVerticalValueCategoryId(gameSettings.getVerticalValueCategory());
         gameSettingsGetDTO.setNrOfStartingTokens(gameSettings.getNrOfStartingTokens());
+        gameSettingsGetDTO.setDeckId(gameSettings.getDeckId());
 
         return gameSettingsGetDTO;
     }
