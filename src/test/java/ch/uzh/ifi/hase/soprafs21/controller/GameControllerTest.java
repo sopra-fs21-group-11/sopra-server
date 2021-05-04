@@ -161,7 +161,7 @@ public class GameControllerTest {
 
         //join again
         lobby.addPlayer(joiningUser);
-        Game game = new Game(lobby);
+        Game game = new Game(null);
         given(userService.getUserByToken(any(String.class))).willReturn(user);//we need hostuser for comparison check
         given(gameService.getOpenGameById(any(long.class))).willReturn(lobby);
         given(gameService.startGame(any(GameLobby.class))).willReturn(game);

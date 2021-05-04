@@ -132,14 +132,6 @@ public class GameSettings {
         this.verticalValueCategoryId = verticalValueCategoryId;
     }
 
-    //public int getCardsBeforeEvaluation() {
-    //    return cardsBeforeEvaluation;
-    //}
-
-    //public void setCardsBeforeEvaluation(int cardsBeforeEvaluation) {
-    //    this.cardsBeforeEvaluation = cardsBeforeEvaluation;
-    //}
-
     public int getEvaluationCountdown() {
         return evaluationCountdown;
     }

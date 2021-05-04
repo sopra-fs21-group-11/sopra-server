@@ -21,6 +21,14 @@ public class DeckController {
         this.deckService = deckService;
     }
 
+    @GetMapping("/decks/{id}/fetch")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public DeckGetDTO fetchDeck(@PathVariable long id, @RequestParam String querry, @RequestParam long population){
+        Deck fetchedDeck = deckService.fetchDeck(id, querry, population);
+        return DeckMapper.INSTANCE.map(fetchedDeck);
+    }
+
 
     @PutMapping("/decks/{id}")
     @ResponseStatus(HttpStatus.OK)

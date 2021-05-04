@@ -1,3 +1,37 @@
+GET: ./decks/{id}/fetch
+PARAMS: population, querry
+Whatch out for 429. you can send a GET to http://overpass-api.de/api/status to check how long you have to wait for the next free slot.
+Example: .decks/83/fetch?population=500000&querry=Italy -> results in a Deck with size 6. 100'000 results in a full Deck with size 45.
+Response:
+{
+    "id": 1,
+    "name": "testDeck",
+    "cards": [
+        {
+            "id": 2,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22
+        },
+        {
+            "id": 3,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22
+        },
+        {
+            "id": 4,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22
+        }
+    ],
+    "description": "testDeck",
+    "compareTypes": [],
+    "size": 3,
+    "readyToPlay": false
+}
+
 PUT: ./decks/1 -> edit a deck (add cards)
 ReqBody:
 {
