@@ -24,7 +24,7 @@ public class GameSettings {
 
     public GameSettings() {
         //default settings:
-        this.playersMin = 1;//TODO: I took 1 because of postman testing use. Default should be 2.
+        this.playersMin = 2;
         this.playersMax = 6;
         this.cardsBeforeEvaluation = 4;
         this.nrOfEvaluations = 2;
