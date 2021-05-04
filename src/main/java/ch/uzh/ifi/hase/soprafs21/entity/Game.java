@@ -7,8 +7,10 @@ import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
+import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.countdown.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.beans.PropertyChangeEvent;
@@ -33,10 +35,10 @@ public class Game implements PropertyChangeListener {
     private final GameSettings currentSettings;
 
     //private SimpMessagingTemplate template;
+    private GameService gameService;
 
     private Date startTime;
 
-    private GameService gameService;
 
     private CountdownHelper doubtCountdown;
     private CountdownHelper visibleCountdown;
@@ -50,7 +52,7 @@ public class Game implements PropertyChangeListener {
     private long winnerId;
 
 
-    public Game(GameLobby lobby){
+    public Game(GameLobby lobby, Deck deckToPlay){
         //set up the game-object with all details of the lobby:
         this.waitingForPlayers = lobby.getPlayers();
         this.currentSettings = lobby.getSettings();
@@ -63,10 +65,10 @@ public class Game implements PropertyChangeListener {
 
         this.gameStarted = false;
 
-        this.deckStack = new Deck(currentSettings.getCardsBeforeEvaluation()*currentSettings.getNrOfEvaluations()+currentSettings.getNrOfEvaluations());//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
+        this.deckStack = deckToPlay;//new Deck(currentSettings.getCardsBeforeEvaluation()*currentSettings.getNrOfEvaluations()+currentSettings.getNrOfEvaluations());//Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
 
-        //We set the starting-card and the nextCard right away:
-        this.activeBoard = new Board(deckStack.pop());
+                //We set the starting-card and the nextCard right away:
+                this.activeBoard = new Board(deckStack.pop());
         this.nextCard = deckStack.pop();
 
         this.players = new LinkedList<>();
@@ -80,16 +82,16 @@ public class Game implements PropertyChangeListener {
 
     public boolean joinGame(User user, String sessionId){
         //we check if the player was already in the game with a different sessionId:
-       for(var player : players){
-           if(player.getKey().getId() == user.getId()){
-               //change sessionId such that the player gets the next gameState and return.
-               if(player.getValue() != ""){ //player has played before and lost connection -> we send an extra gamestate
-                   gameService.sendSeparateGameState(id, user.getId());
-               }
-               player.setValue(sessionId);
-               return true;
-           }
-       }
+        for(var player : players){
+            if(player.getKey().getId() == user.getId()){
+                //change sessionId such that the player gets the next gameState and return.
+                if(player.getValue() != ""){ //player has played before and lost connection -> we send an extra gamestate
+                    gameService.sendSeparateGameState(id, user.getId());
+                }
+                player.setValue(sessionId);
+                return true;
+            }
+        }
         if(this.hostPlayerId == user.getId()){
             this.currentPlayer = new AbstractMap.SimpleEntry<>(user, sessionId); //host starts the game.
         }
@@ -139,7 +141,7 @@ public class Game implements PropertyChangeListener {
 
             //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
             //check if we need to go in evaluation:
-            if (activeBoard.getPlacedCard() == currentSettings.getCardsBeforeEvaluation()) {
+            if (activeBoard.getPlacedCard() == 4) { //TODO: cardsBeforeEvaluation logic
                 //start evaluation
                 activeState = GameState.EVALUATION;
                 gameService.sendGameStateToUsers(id);

@@ -23,8 +23,8 @@ public class GameLobby {
 
     }
 
-    public Game StartGame(){
-        Game newGame = new Game(this);
+    public Game StartGame(Deck deck ){
+        Game newGame = new Game(this, deck);
         return newGame;
     }
 

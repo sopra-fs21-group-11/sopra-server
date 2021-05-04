@@ -42,7 +42,7 @@ public class HeightValueCategory implements ValueCategory {
             referenceValue = ((SwissLocationCard)referenceCard).getHeight();
         }catch (Exception ex){}
         try{
-            referenceValue = ((NormalLocationCard)referenceCard).getHeight();
+            //referenceValue = ((NormalLocationCard)referenceCard).getHeight();
         }catch (Exception ex){}
         try{
             referenceValue = ((MountainCard)referenceCard).getHeight();
@@ -52,7 +52,7 @@ public class HeightValueCategory implements ValueCategory {
             questionValue = ((SwissLocationCard)cardInQuestion).getHeight();
         }catch (Exception ex){}
         try{
-            questionValue = ((NormalLocationCard)cardInQuestion).getHeight();
+            //questionValue = ((NormalLocationCard)cardInQuestion).getHeight();
         }catch (Exception ex){}
         try{
             questionValue = ((MountainCard)cardInQuestion).getHeight();

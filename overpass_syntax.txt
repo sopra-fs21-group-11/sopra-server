@@ -1,0 +1,76 @@
+**all cities of a country**:
+
+{{geocodeArea:"Italy"}}->.searchArea;
+(
+  node["place"="city"](area.searchArea);
+);
+out body;
+>;
+out skel qt;
+
+
+-> 
+Query body for http://overpass-api.de/api/interpreter:
+<osm-script>
+  <query into="searchArea" type="area">
+    <id-query type="area" ref="3600051477" into="searchArea"/> <-- *****paste the result below here. The number has to be 10stellig and start with 36. 
+  </query>
+  <union into="_">
+    <query into="_" type="node">
+      <has-kv k="population" modv="" v=""/>
+      <has-kv k="ISO3166-1" modv="not" regv=".*"/>
+      <filter>
+        <eval-greater>
+          <eval-value>
+            <eval-fixed v="population"/>
+          </eval-value>
+          <eval-fixed v="100000"/> <- minimal population
+        </eval-greater>
+      </filter>
+      <area-query from="searchArea"/>
+    </query>
+  </union>
+  <print e="" from="_" geometry="skeleton" ids="yes" limit="" mode="body" n="" order="id" s="" w=""/>
+</osm-script>
+
+
+***get the first osm_id from the following querry:
+GET: https://nominatim.openstreetmap.org/search?q=Switzerland&format=json
+Returns:
+[
+    {
+        "place_id": 258549371,
+        "licence": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "relation",
+        "osm_id": 51701, <- *******This one.
+        "boundingbox": [
+            "45.817995",
+            "47.8084648",
+            "5.9559113",
+            "10.4922941"
+        ],
+        "lat": "46.813331250000005",
+        "lon": "8.444947437939408",
+        "display_name": "Schweiz/Suisse/Svizzera/Svizra",
+        "class": "boundary",
+        "type": "administrative",
+        "importance": 0.8264851715752518,
+        "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+    },
+    {
+        "place_id": 307635654,
+        "licence": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "node",
+        "osm_id": 1504546320,
+        "boundingbox": [
+            "39.7985624",
+            "53.7985624",
+            "1.2319736",
+            "15.2319736"
+        ],
+        "lat": "46.7985624",
+        "lon": "8.2319736",
+        "display_name": "Schweiz/Suisse/Svizzera/Svizra",
+        "class": "place",
+        "type": "country",
+        "importance": 0.8264851715752518

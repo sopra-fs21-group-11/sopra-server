@@ -2,11 +2,9 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
+import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GameKickPutDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
@@ -119,7 +117,7 @@ public class GameController {
         }
 
         GameLobby newGame = gameService.createNewGameLobby(hostUser);
-        if(gamePostDTO.getName() == ""){
+        if(gamePostDTO.getName().equals("")){
             newGame.setName(Long.toString(newGame.getId()));
         }else {
             newGame.setName(gamePostDTO.getName());
@@ -158,5 +156,14 @@ public class GameController {
         GameLobby kickedGame = gameService.kickPlayer(hostUser, userToKick, id);
         return GameMapper.ConvertEntityToGamePostDTO(kickedGame);
 
+    }
+
+    @GetMapping("/games/settings")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameSettingsGetDTO getDefaultGameSettings() {
+        GameSettings defaultGameSettings = new GameSettings();
+
+        return GameMapper.ConvertEntityToGameSettingsGetDTO(defaultGameSettings);
     }
 }

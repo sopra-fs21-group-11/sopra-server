@@ -1,13 +1,14 @@
 package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
+import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPutDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 /**
  * DTOMapper
@@ -19,6 +20,7 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper
 public interface DTOMapper {
+
 
     DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
@@ -42,3 +44,4 @@ public interface DTOMapper {
     User convertEntityToUserPutDTO(UserPutDTO userPutDTO);
 
 }
+

@@ -1,11 +1,10 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 
-import java.util.List;
-
-public class GameGetDTO {
-    private long id;
+public class GameSettingsGetDTO {
     private int playersMin;
     private int playersMax;
+    //private int cardsBeforeEvaluation;
     private int nrOfEvaluations;
     private int doubtCountdown;
     private int visibleAfterDoubtCountdown;
@@ -14,47 +13,16 @@ public class GameGetDTO {
     private int evaluationCountdownVisible;
     private int tokenGainOnCorrectGuess;
     private int tokenGainOnNearestGuess;
+    private ValueCategory horizontalValueCategoryId;
+    private ValueCategory verticalValueCategoryId;
     private int nrOfStartingTokens;
-
-    private long horizontalValueCategoryId;
-    private long verticalValueCategoryId;
-    private String name;
-    private UserGetDTO hostId;
-    private List<UserGetDTO> players;
-    private boolean gameStarted;
     private long deckId;
 
     public int getTokenGainOnNearestGuess() {
         return tokenGainOnNearestGuess;
     }
 
-    public void setTokenGainOnNearestGuess(int tokenGainOnNearestGuess) {
-        this.tokenGainOnNearestGuess = tokenGainOnNearestGuess;
-    }
-
-    public long getDeckId() {
-        return deckId;
-    }
-
-    public void setDeckId(long deckId) {
-        this.deckId = deckId;
-    }
-
-    public List<UserGetDTO> getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(List<UserGetDTO> players) {
-        this.players = players;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
+    public void setTokenGainOnNearestGuess(int tokenGainOnNearestGuess) { this.tokenGainOnNearestGuess = tokenGainOnNearestGuess; }
 
     public int getPlayersMin() {
         return playersMin;
@@ -71,6 +39,10 @@ public class GameGetDTO {
     public void setPlayersMax(int playersMax) {
         this.playersMax = playersMax;
     }
+
+    //public int getCardsBeforeEvaluation() { return cardsBeforeEvaluation; }
+
+    //public void setCardsBeforeEvaluation(int cardsBeforeEvaluation) { this.cardsBeforeEvaluation = cardsBeforeEvaluation; }
 
     public int getNrOfEvaluations() {
         return nrOfEvaluations;
@@ -92,9 +64,7 @@ public class GameGetDTO {
         return visibleAfterDoubtCountdown;
     }
 
-    public void setVisibleAfterDoubtCountdown(int visibleAfterDoubtCountdown) {
-        this.visibleAfterDoubtCountdown = visibleAfterDoubtCountdown;
-    }
+    public void setVisibleAfterDoubtCountdown(int visibleAfterDoubtCountdown) { this.visibleAfterDoubtCountdown = visibleAfterDoubtCountdown; }
 
     public int getPlayerTurnCountdown() {
         return playerTurnCountdown;
@@ -108,41 +78,19 @@ public class GameGetDTO {
         return tokenGainOnCorrectGuess;
     }
 
-    public void setTokenGainOnCorrectGuess(int tokenGainOnCorrectGuess) {
-        this.tokenGainOnCorrectGuess = tokenGainOnCorrectGuess;
-    }
+    public void setTokenGainOnCorrectGuess(int tokenGainOnCorrectGuess) { this.tokenGainOnCorrectGuess = tokenGainOnCorrectGuess; }
 
-    public long getHorizontalValueCategoryId() {
+    public ValueCategory getHorizontalValueCategoryId() {
         return horizontalValueCategoryId;
     }
 
-    public void setHorizontalValueCategoryId(long horizontalValueCategoryId) {
-        this.horizontalValueCategoryId = horizontalValueCategoryId;
-    }
+    public void setHorizontalValueCategoryId(ValueCategory horizontalValueCategoryId) { this.horizontalValueCategoryId = horizontalValueCategoryId; }
 
-    public long getVerticalValueCategoryId() {
+    public ValueCategory getVerticalValueCategoryId() {
         return verticalValueCategoryId;
     }
 
-    public void setVerticalValueCategoryId(long verticalValueCategoryId) {
-        this.verticalValueCategoryId = verticalValueCategoryId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public UserGetDTO getHostId() {
-        return hostId;
-    }
-
-    public void setHostId(UserGetDTO hostId) {
-        this.hostId = hostId;
-    }
+    public void setVerticalValueCategoryId(ValueCategory verticalValueCategoryId) { this.verticalValueCategoryId = verticalValueCategoryId; }
 
     public int getNrOfStartingTokens() {
         return nrOfStartingTokens;
@@ -150,14 +98,6 @@ public class GameGetDTO {
 
     public void setNrOfStartingTokens(int nrOfStartingTokens) {
         this.nrOfStartingTokens = nrOfStartingTokens;
-    }
-
-    public boolean isGameStarted() {
-        return gameStarted;
-    }
-
-    public void setGameStarted(boolean gameStarted) {
-        this.gameStarted = gameStarted;
     }
 
     public int getEvaluationCountdown() {
@@ -172,7 +112,13 @@ public class GameGetDTO {
         return evaluationCountdownVisible;
     }
 
-    public void setEvaluationCountdownVisible(int evaluationCountdownVisible) {
-        this.evaluationCountdownVisible = evaluationCountdownVisible;
+    public void setEvaluationCountdownVisible(int evaluationCountdownVisible) { this.evaluationCountdownVisible = evaluationCountdownVisible; }
+
+    public long getDeckId() {
+        return deckId;
+    }
+
+    public void setDeckId(long deckId) {
+        this.deckId = deckId;
     }
 }

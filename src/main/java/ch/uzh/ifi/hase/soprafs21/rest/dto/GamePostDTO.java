@@ -21,6 +21,7 @@ public class GamePostDTO {
     private String name;
     private long hostId;
     private List<Long> players;
+    private long deckId;
 
     public int getTokenGainOnNearestGuess() {
         return tokenGainOnNearestGuess;
@@ -156,5 +157,13 @@ public class GamePostDTO {
 
     public void setEvaluationCountdownVisible(int evaluationCountdownVisible) {
         this.evaluationCountdownVisible = evaluationCountdownVisible;
+    }
+
+    public long getDeckId() {
+        return deckId;
+    }
+
+    public void setDeckId(long deckId) {
+        this.deckId = deckId;
     }
 }
