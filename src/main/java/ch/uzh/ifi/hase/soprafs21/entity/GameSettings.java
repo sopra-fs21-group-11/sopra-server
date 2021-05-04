@@ -8,7 +8,7 @@ import org.hibernate.mapping.Value;
 public class GameSettings {
     private int playersMin;
     private int playersMax;
-    private int cardsBeforeEvaluation;
+    //private int cardsBeforeEvaluation;
     private int nrOfEvaluations;
     private int doubtCountdown;
     private int visibleAfterDoubtCountdown;
@@ -24,9 +24,8 @@ public class GameSettings {
 
     public GameSettings() {
         //default settings:
-        this.playersMin = 1;//TODO: I took 1 because of postman testing use. Default should be 2.
+        this.playersMin = 2;
         this.playersMax = 6;
-        this.cardsBeforeEvaluation = 4;
         this.nrOfEvaluations = 2;
         this.doubtCountdown = 10;
         this.visibleAfterDoubtCountdown = 5;
@@ -39,7 +38,7 @@ public class GameSettings {
         this.horizontalValueCategoryId = new ECoordinateCategory();
         this.verticalValueCategoryId = new NCoordinateCategory();
         this.nrOfStartingTokens = 4;
-        this.deckId=1;
+        this.deckId = 1L;
     }
 
 
@@ -133,13 +132,13 @@ public class GameSettings {
         this.verticalValueCategoryId = verticalValueCategoryId;
     }
 
-    public int getCardsBeforeEvaluation() {
-        return cardsBeforeEvaluation;
-    }
+    //public int getCardsBeforeEvaluation() {
+    //    return cardsBeforeEvaluation;
+    //}
 
-    public void setCardsBeforeEvaluation(int cardsBeforeEvaluation) {
-        this.cardsBeforeEvaluation = cardsBeforeEvaluation;
-    }
+    //public void setCardsBeforeEvaluation(int cardsBeforeEvaluation) {
+    //    this.cardsBeforeEvaluation = cardsBeforeEvaluation;
+    //}
 
     public int getEvaluationCountdown() {
         return evaluationCountdown;

@@ -141,7 +141,7 @@ public class Game implements PropertyChangeListener {
 
             //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
             //check if we need to go in evaluation:
-            if (activeBoard.getPlacedCard() == currentSettings.getCardsBeforeEvaluation()) {
+            if (activeBoard.getPlacedCard() == 4) { //TODO: cardsBeforeEvaluation logic
                 //start evaluation
                 activeState = GameState.EVALUATION;
                 gameService.sendGameStateToUsers(id);
