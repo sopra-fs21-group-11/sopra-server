@@ -1,12 +1,15 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.CompareType;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.CardPostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.DeckPostDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.DeckPutDTO;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.hibernate.collection.internal.PersistentList;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -24,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -142,6 +146,15 @@ public class DeckControllerTest {
                 .andExpect(jsonPath("$.nCoordinate", equalTo((double)cardToAdd.getnCoordinate())))
                 .andExpect(jsonPath("$.eCoordinate", equalTo((double)cardToAdd.geteCoordinate())));
 
+        given(deckService.getCard(any(Long.class))).willReturn(cardToAdd);
+        getRequest = get("/cards/1");
+        postRequest.header("Authorization", "Bearer "+authToken);
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(cardToAdd.getName())))
+                .andExpect(jsonPath("$.nCoordinate", equalTo((double)cardToAdd.getnCoordinate())))
+                .andExpect(jsonPath("$.eCoordinate", equalTo((double)cardToAdd.geteCoordinate())));
+
         List<Card> cardList = new ArrayList<>();
         cardList.add(cardToAdd);
         given(deckService.getAllCards()).willReturn(cardList);
@@ -152,8 +165,58 @@ public class DeckControllerTest {
                 .andExpect(jsonPath("$[0].name", is(cardToAdd.getName())))
                 .andExpect(jsonPath("$[0].nCoordinate", equalTo((double)cardToAdd.getnCoordinate())))
                 .andExpect(jsonPath("$[0].eCoordinate", equalTo((double)cardToAdd.geteCoordinate())));
+    }
 
+    @Test
+    public void editDeck() throws Exception {
+        Deck newDeck = new Deck();
+        newDeck.setName("TestDeck");
+        newDeck.setDescription("TestDescription");
+        newDeck.setId(1L);
 
+        Card cardToAdd = new Card();
+        cardToAdd.setName("testCard");
+        cardToAdd.setPopulation(100L);
+        cardToAdd.seteCoordinate(1.00F);
+        cardToAdd.setnCoordinate(2.00F);
+        cardToAdd.setId(1L);
 
+        newDeck.addCard(cardToAdd);
+        newDeck.addCard(cardToAdd);
+
+        List<Card> cardList = new ArrayList<>();
+        cardList.add(cardToAdd);
+        cardList.add(cardToAdd);
+        newDeck.setCards(cardList);
+        newDeck.setSize(2);
+
+        given(deckService.editDeck(any(long.class), any(DeckPutDTO.class))).willReturn(newDeck);
+        MockHttpServletRequestBuilder putRequest = put("/decks/1").contentType(MediaType.APPLICATION_JSON);
+        putRequest.content("{\"cards\":[1, 1],\"name\":\"TestDeck\",\"description\":\"testDescription\"}");
+        putRequest.header("Authorization", "Bearer "+authToken);
+
+        mockMvc.perform(putRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(newDeck.getName())))
+                .andExpect(jsonPath("$.description", is(newDeck.getDescription())))
+                .andExpect(jsonPath("$.cards[0].name", is("testCard")))
+                .andExpect(jsonPath("$.cards[1].name", is("testCard")));
+    }
+    @Test
+    public void getCompareTypes() throws Exception {
+
+        List<CompareType> types = new ArrayList<>();
+        CompareType type = new CompareType();
+        type.setId(1L);
+        type.setName("Longitude Compare Type");
+        type.setDescription("Compare each card with its longitude.");
+        types.add(type);
+        given(deckService.getCompareTypes()).willReturn(types);
+
+        MockHttpServletRequestBuilder getRequest = get("/decks/comparetypes");
+        getRequest.header("Authorization", "Bearer "+authToken);
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name", is("Longitude Compare Type")));
     }
 }

@@ -157,7 +157,23 @@ public class DeckService {
         validateDeck(deckToFetch.getId());
         return deckToFetch;
     }
-
+    public String fetchingAvailable(){
+        String response = fetchingService.fetchingAvailable();
+        if(response.contains("slots available now")){
+            return "true";
+        }else{
+            String[] lines = response.split("\n");
+            for(String line : lines){
+                if(line.startsWith("Slot available after"));
+                if(line.length()<=49){
+                    continue;
+                }
+                response = line.substring(47,49);
+                return response;
+            }
+        }
+        return response;
+    }
 
     //This is the main initializer for the valueCategories(=CompareTypes):
     //this method gets called only at startup.

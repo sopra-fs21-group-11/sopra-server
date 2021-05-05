@@ -36,6 +36,22 @@ public class FetchingService {
         builder = WebClient.builder();
     }
 
+    public String fetchingAvailable(){
+        String response = "";
+        try{
+            response = builder
+                    .build()
+                    .get()
+                    .uri("http://overpass-api.de/api/status")
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        }catch (Exception ex){
+
+        }
+        return response;
+    }
+
     public List<Card> fetchCardsFromCountry(String country, long population){
         if(overpassBuilder==""){
             this.overpassBuilder = readOverpassFile();

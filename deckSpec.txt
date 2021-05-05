@@ -1,3 +1,8 @@
+GET: ./decks/{id}/fetch/available
+Response: 
+"true" -> fetching is currently possible
+"34" -> wait 34 seconds untill next free slot..
+
 GET: ./decks/{id}/fetch
 PARAMS: population, querry
 Whatch out for 429. you can send a GET to http://overpass-api.de/api/status to check how long you have to wait for the next free slot.

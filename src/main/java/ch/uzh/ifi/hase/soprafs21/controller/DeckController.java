@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DeckMapper;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -55,6 +56,13 @@ public class DeckController {
             typeList.add(DeckMapper.INSTANCE.ConvertEntityToCompareTypeGetDTO(type));
         }
         return typeList;
+    }
+    @GetMapping("/decks/{id}/fetch/available")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity fetchingAvailable(){
+        String response = deckService.fetchingAvailable();
+        return ResponseEntity.status(200).body(response);
     }
 
 
