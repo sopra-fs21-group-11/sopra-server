@@ -125,6 +125,7 @@ public class GameFlowTest {
         settings.setEvaluationCountdownVisible(5);
         settings.setEvaluationCountdown(5);
 
+
         lobby.setSettings(settings);
     }
 
@@ -188,10 +189,15 @@ public class GameFlowTest {
         axis[1]="bottom";
         axis[2]="left";
         axis[3]="right";
+        int j = 0;
         while(!game.convertToDTO().getGamestate().equals("EVALUATION")){//place cards until evaluation starts
-            int randomIndex = ThreadLocalRandom.current().nextInt(0,4);
-            game.performTurn(game.getCurrentPlayer().getKey().getId(), game.getNextCard(), 0, axis[randomIndex]);
+            game.performTurn(game.getCurrentPlayer().getKey().getId(), game.getNextCard(), 0, axis[j]);
             Thread.sleep(6000);
+            if(j==3){
+                j=0;
+            }else{
+                j++;
+            }
         }
         assertEquals(game.convertToDTO().getGamestate(), "EVALUATION");
         GameGuessDTO dto = new GameGuessDTO();
