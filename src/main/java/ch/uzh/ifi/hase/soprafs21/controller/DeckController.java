@@ -78,6 +78,7 @@ public class DeckController {
     public DeckGetDTO getDeck(@PathVariable long id){
         return DeckMapper.INSTANCE.map(deckService.getDeck(id));
     }
+
     @PostMapping("/decks")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
