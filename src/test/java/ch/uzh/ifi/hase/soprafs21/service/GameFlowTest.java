@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 //@WebAppConfiguration
@@ -180,8 +183,14 @@ public class GameFlowTest {
         }
         assertNotEquals(intArray[0], intArray[1]); //a token sharing must have happened.
         Thread.sleep(6000);//wait for the visibleCd.
+        String[] axis = new String[4]; //we place the card on all axis randomly
+        axis[0]="top";
+        axis[1]="bottom";
+        axis[2]="left";
+        axis[3]="right";
         while(!game.convertToDTO().getGamestate().equals("EVALUATION")){//place cards until evaluation starts
-            game.performTurn(game.getCurrentPlayer().getKey().getId(), game.getNextCard(), 0, "right");
+            int randomIndex = ThreadLocalRandom.current().nextInt(0,4);
+            game.performTurn(game.getCurrentPlayer().getKey().getId(), game.getNextCard(), 0, axis[randomIndex]);
             Thread.sleep(6000);
         }
         assertEquals(game.convertToDTO().getGamestate(), "EVALUATION");
