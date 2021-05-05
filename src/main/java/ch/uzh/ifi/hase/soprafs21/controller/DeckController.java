@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DeckMapper;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,6 +20,14 @@ public class DeckController {
 
     DeckController(DeckService deckService){
         this.deckService = deckService;
+    }
+
+    @GetMapping("/decks/{id}/fetch")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public DeckGetDTO fetchDeck(@PathVariable long id, @RequestParam String querry, @RequestParam long population){
+        Deck fetchedDeck = deckService.fetchDeck(id, querry, population);
+        return DeckMapper.INSTANCE.map(fetchedDeck);
     }
 
 
@@ -48,6 +57,13 @@ public class DeckController {
         }
         return typeList;
     }
+    @GetMapping("/decks/{id}/fetch/available")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity fetchingAvailable(){
+        String response = deckService.fetchingAvailable();
+        return ResponseEntity.status(200).body(response);
+    }
 
 
 
@@ -70,6 +86,7 @@ public class DeckController {
     public DeckGetDTO getDeck(@PathVariable long id){
         return DeckMapper.INSTANCE.map(deckService.getDeck(id));
     }
+
     @PostMapping("/decks")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody

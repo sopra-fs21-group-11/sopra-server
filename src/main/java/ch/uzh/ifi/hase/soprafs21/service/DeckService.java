@@ -142,8 +142,38 @@ public class DeckService {
         deckRepository.flush();
         return deckToEdit;
     }
-
-
+    public Deck fetchDeck(long id, String querry, long population){
+        Deck deckToFetch = getDeck(id);
+        deckToFetch.setCards(new ArrayList<>());//we empty our deck.
+        List<Card> cardsToFetch = fetchingService.fetchCardsFromCountry(querry, population);
+        int cardsAdded = 0;
+        for(int i=0;  i<45 && i<cardsToFetch.size() ;i++){
+            deckToFetch.addCard(createNewCard(cardsToFetch.get(i)));
+            cardsAdded++;
+        }
+        deckToFetch.setSize(cardsAdded);
+        deckToFetch = deckRepository.save(deckToFetch);
+        deckRepository.flush();
+        validateDeck(deckToFetch.getId());
+        return deckToFetch;
+    }
+    public String fetchingAvailable(){
+        String response = fetchingService.fetchingAvailable();
+        if(response.contains("slots available now")){
+            return "true";
+        }else{
+            String[] lines = response.split("\n");
+            for(String line : lines){
+                if(line.startsWith("Slot available after"));
+                if(line.length()<=49){
+                    continue;
+                }
+                response = line.substring(47,49);
+                return response;
+            }
+        }
+        return response;
+    }
 
     //This is the main initializer for the valueCategories(=CompareTypes):
     //this method gets called only at startup.

@@ -51,6 +51,8 @@ public class Game implements PropertyChangeListener {
 
     private long winnerId;
 
+    private int cardsBeforeEvaluation = 15;
+
 
     public Game(GameLobby lobby, Deck deckToPlay){
         //set up the game-object with all details of the lobby:
@@ -141,7 +143,7 @@ public class Game implements PropertyChangeListener {
 
             //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
             //check if we need to go in evaluation:
-            if (activeBoard.getPlacedCard() == 4) { //TODO: cardsBeforeEvaluation logic
+            if (activeBoard.getPlacedCard() == cardsBeforeEvaluation) {
                 //start evaluation
                 activeState = GameState.EVALUATION;
                 gameService.sendGameStateToUsers(id);
