@@ -79,10 +79,10 @@ public class GameService {
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldnt find game with id: "+gameId);
         }
-        if(game.getHost() != host){
+        if(game.getHost().getId() != host.getId()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the host is allowed to kick players.");
         }
-        game.removePlayer(userToKick);
+        game = game.removePlayer(userToKick);
         return game;
     }
 
@@ -92,8 +92,11 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. Game is full");
         }
         if(gameToJoin.getPlayers().contains(user)){
-            //TODO: multiple joins are still possible. Needs fix...
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. User is already in the game");
+            for(var player : gameToJoin.getPlayers()){
+                if(player.getId() == user.getId()){
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. User is already in the game");
+                }
+            }
         }
         gameToJoin.addPlayer(user);
         return gameToJoin;
