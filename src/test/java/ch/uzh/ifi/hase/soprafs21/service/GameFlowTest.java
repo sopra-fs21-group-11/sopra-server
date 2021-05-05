@@ -220,7 +220,11 @@ public class GameFlowTest {
             }
         }
         assertTrue(hostToken +1 == currentHostToken || hostToken+2 == currentHostToken);
+        assertEquals(game.convertToDTO().getGamestate(), "EVALUATIONVISIBLE");
+        Thread.sleep(6000);
+
         gameService.gameEnded(lobbyId);
+        assertEquals(game.convertToDTO().getGamestate(), "GAMEEND");
         assertTrue(gameService.getAllRunningGames().size()==0);
     }
 
