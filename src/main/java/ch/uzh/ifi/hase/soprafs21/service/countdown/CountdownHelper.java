@@ -47,7 +47,8 @@ public abstract class CountdownHelper extends Thread{
 
     @Override
     public void run() {
-        Application.logger.info(this.gameId+":\t"+this.getClass()+" started.");
+        String[] classNames = this.getClass().toString().split(".",0);
+        Application.logger.info(this.gameId+":\t"+classNames[classNames.length-1]+" started.");
         long now = System.currentTimeMillis();
         long countdown = now + time * 1000;
         while (now <= countdown) {
