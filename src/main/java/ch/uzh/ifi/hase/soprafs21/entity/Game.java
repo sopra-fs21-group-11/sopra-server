@@ -258,6 +258,7 @@ public class Game implements PropertyChangeListener {
         gameEndDTO.setScoreboard(scoreboardList);
         gameEndDTO.setGameId(id);
 
+        //TODO: wer gewinnt bei spielabbruch durch host?
         if(winnerIds == null){
             gameEndDTO.setWinnerIds(winnerIds);
         }
