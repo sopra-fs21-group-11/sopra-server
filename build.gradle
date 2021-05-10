@@ -69,7 +69,8 @@ bootJar {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnit()
+    maxHeapSize("2G")
     testLogging.showStandardStreams = true
     maxParallelForks = 1
     forkEvery = 1
