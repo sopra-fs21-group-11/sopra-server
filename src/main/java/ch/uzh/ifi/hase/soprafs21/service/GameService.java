@@ -4,9 +4,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
-import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
@@ -15,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -128,30 +125,38 @@ public class GameService {
 
     public void gameEnded(long gameId){
         Game gameToEnd = getRunningGameById(gameId);
-        gameToEnd.endGame();//remove propertyChangeListeners
-        //save earned tokens:
-        for(var user : gameToEnd.getPlayers()){
-            if(gameToEnd.hasWinner()) {
+        gameToEnd.removeAllPropertyListener();//remove propertyChangeListeners
+
+        GameEndDTO gameEndDTO = gameToEnd.createGameEndDTO();
+
+        if(gameEndDTO.getGameMinutes()<=3){
+            //Game does not count towards statistic
+            for(var user : gameToEnd.getPlayers()) {
+                // SendGameEndDTO (every user gets the same) but game does not count was too short!
+                this.template.convertAndSend("/topic/game/queue/specific-game-game" + user.getValue(), gameEndDTO);
+            }
+        }
+        else {
+            //iterate over each player who played the game
+            for(var user : gameToEnd.getPlayers()){
                 //set wins
-                if(user.getKey().getId() == gameToEnd.getWinnerId()){
+                if(gameToEnd.getWinnerId().contains(user.getKey().getId())) {
                     userService.saveWins(user.getKey().getId(), 1); //add 1 win
                 }
                 //set defeats
-                if(user.getKey().getId() != gameToEnd.getWinnerId()){
+                else{
                     userService.saveDefeats(user.getKey().getId(), 1);//add 1 defeat
                 }
-            }
-            //set playtime:
-            long diffInMillies = Math.abs((new Date()).getTime() - gameToEnd.getStartTime().getTime());
-            long minutesPlayed = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
-            //playtime and token are only set if a game lasted longer than 3 min.
-            if(minutesPlayed >=3){
                 //set tokens
                 userService.saveEarnedTokens(user.getKey().getId(), user.getKey().getCurrentToken());
                 //set playtime:
-                userService.saveGameTime(user.getKey().getId(), minutesPlayed);
+                userService.saveGameTime(user.getKey().getId(), gameEndDTO.getGameMinutes());
+
+                //sendGameEndDTO (every user gets the same)
+                this.template.convertAndSend("/topic/game/queue/specific-game-game"+user.getValue(),gameEndDTO);
             }
         }
+        gameToEnd.clearSessionIds();
         //after saving values we have to remove the game from the list.
         runningGames.remove(gameToEnd);
     }
@@ -227,7 +232,6 @@ public class GameService {
             gameStateDTO.setNextPlayer(userService.getUser(gameStateDTO.getNextPlayer().getId()));
             gameStateDTO.setPlayertokens(userToSend.getKey().getCurrentToken()); //nr of token is userspecific
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId,gameStateDTO);
-
         }
     }
 
@@ -293,6 +297,7 @@ public class GameService {
         }
         return false;
     }
+
     /**
      * Helper method for assigning the gameId
      * @return the next free gameid.

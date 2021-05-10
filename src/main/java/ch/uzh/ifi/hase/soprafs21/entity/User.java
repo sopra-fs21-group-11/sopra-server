@@ -55,7 +55,6 @@ public class User extends UserGetDTO implements Serializable {
 
     @Column int currentToken;
 
-
     public int getCurrentToken() {
         return currentToken;
     }
@@ -65,9 +64,7 @@ public class User extends UserGetDTO implements Serializable {
     }
 
     @Override
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     @Override
     public void setId(Long id) {
