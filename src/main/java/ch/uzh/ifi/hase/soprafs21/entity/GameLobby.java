@@ -28,8 +28,14 @@ public class GameLobby {
         return newGame;
     }
 
-    public void removePlayer(User player){
-        this.players.remove(player);
+    public GameLobby removePlayer(User player){
+        for(User user : players){
+            if(user.getId() == player.getId()){
+                players.remove(user);
+                return this;
+            }
+        }
+        return this;
     }
 
     public String getName() {

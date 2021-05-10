@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.rest.fetch;
 
+import java.util.List;
+
 public class NominatimResponse {
     private long place_id;
     private long osm_id;

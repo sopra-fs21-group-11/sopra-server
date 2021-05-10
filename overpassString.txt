@@ -1,0 +1,21 @@
+<osm-script>
+  <query into="searchArea" type="area">
+    <id-query type="area" ref="####" into="searchArea"/>
+  </query>
+  <union into="_">
+    <query into="_" type="node">
+      <has-kv k="population" modv="" v=""/>
+      <has-kv k="ISO3166-1" modv="not" regv=".*"/>
+      <filter>
+        <eval-greater>
+          <eval-value>
+            <eval-fixed v="population"/>
+          </eval-value>
+          <eval-fixed v="&&&&"/>
+        </eval-greater>
+      </filter>
+      <area-query from="searchArea"/>
+    </query>
+  </union>
+  <print e="" from="_" geometry="skeleton" ids="yes" limit="" mode="body" n="" order="id" s="" w=""/>
+</osm-script>

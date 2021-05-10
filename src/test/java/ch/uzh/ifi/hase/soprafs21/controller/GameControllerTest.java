@@ -1,8 +1,14 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
+import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
+import ch.uzh.ifi.hase.soprafs21.entity.Deck;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import io.jsonwebtoken.Jwts;
@@ -21,6 +27,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.Date;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
@@ -44,6 +51,8 @@ public class GameControllerTest {
 
     @MockBean
     GameService gameService;
+    @MockBean
+    DeckService deckService;
 
     //example token...
     private static String authToken;
@@ -161,7 +170,17 @@ public class GameControllerTest {
 
         //join again
         lobby.addPlayer(joiningUser);
-        Game game = new Game(lobby);
+        //create Deck
+        Deck deck = new Deck();
+        Card card1 = new NormalLocationCard();
+        Card card2 = new NormalLocationCard();
+        Stack<Card> stack = new Stack<>();
+        stack.add(card1);
+        stack.add(card2);
+        deck.setCards(stack);;
+        deck.addValueCategory(new NCoordinateCategory());
+        deck.addValueCategory(new ECoordinateCategory());
+        Game game = new Game(lobby, deck);
         given(userService.getUserByToken(any(String.class))).willReturn(user);//we need hostuser for comparison check
         given(gameService.getOpenGameById(any(long.class))).willReturn(lobby);
         given(gameService.startGame(any(GameLobby.class))).willReturn(game);
