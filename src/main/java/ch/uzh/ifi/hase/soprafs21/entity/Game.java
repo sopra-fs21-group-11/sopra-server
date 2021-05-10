@@ -21,7 +21,6 @@ public class Game implements PropertyChangeListener {
     private Board activeBoard;
     private Map.Entry<User, String> currentPlayer;
     private GameState activeState;
-    private boolean hasWinner = false; //TODO: immer false?
     private Deck deckStack;
     private long hostPlayerId;
     private List<User> waitingForPlayers;
@@ -46,9 +45,9 @@ public class Game implements PropertyChangeListener {
     private Evaluation evaluation;
     private int nrOfWrongCards;
 
-    private List<Long> winnerId;
+    private List<Long> winnerIds = new ArrayList<>();
 
-    private int cardsBeforeEvaluation = 15;
+    private int cardsBeforeEvaluation = 3;
 
     public Game(GameLobby lobby, Deck deckToPlay){
         //set up the game-object with all details of the lobby:
@@ -195,7 +194,7 @@ public class Game implements PropertyChangeListener {
                 int winnerTokens = 0;
                 for(var player:players){
                     if(player.getKey().currentToken>=winnerTokens){
-                        winnerId.add(player.getKey().getId());
+                        this.winnerIds.add(player.getKey().getId());
                         winnerTokens = player.getKey().currentToken;
                     }
                 }
@@ -226,7 +225,7 @@ public class Game implements PropertyChangeListener {
         try {
             activeState = GameState.GAMEEND;
             //gameService.sendGameStateToUsers(id);
-            //first we remove any countdown eventlistener. Not that we run into strange happenings...
+            //first we remove any countdown eventListener. Not that we run into strange happenings...
             doubtCountdown.removePropertyChangeListener(this);
             visibleCountdown.removePropertyChangeListener(this);
             turnCountdown.removePropertyChangeListener(this);
@@ -258,10 +257,21 @@ public class Game implements PropertyChangeListener {
         GameEndDTO gameEndDTO = new GameEndDTO();
         gameEndDTO.setScoreboard(scoreboardList);
         gameEndDTO.setGameId(id);
+
+        if(winnerIds == null){
+            gameEndDTO.setWinnerIds(winnerIds);
+        }
+
         //set playtime:
         long diffInMillis = Math.abs((new Date()).getTime() - startTime.getTime());
         long minutesPlayed = TimeUnit.MINUTES.convert(diffInMillis, TimeUnit.MILLISECONDS);
         gameEndDTO.setGameMinutes(minutesPlayed);
+        if(minutesPlayed<1){
+            gameEndDTO.setGameTooShort(true);
+        }
+        else{
+            gameEndDTO.setGameTooShort(false);
+        }
         return gameEndDTO;
     }
 
@@ -383,7 +393,7 @@ public class Game implements PropertyChangeListener {
 
     public void parseEvaluationGuess(String sessionId, GameGuessDTO guess){
         if(!evaluationCountdown.isAlive()) {
-            //if cd isnt alive anymore, we do nothing
+            //if cd is not alive anymore, we do nothing
             return;
         }
         User guessingUser = null;
@@ -536,16 +546,12 @@ public class Game implements PropertyChangeListener {
         return hostPlayerId;
     }
 
-    public boolean hasWinner() {
-        return hasWinner;
-    }
-
     public Date getStartTime() {
         return startTime;
     }
 
     public List<Long> getWinnerId() {
-        return winnerId;
+        return winnerIds;
     }
 
     public boolean isGameStarted() {
@@ -554,6 +560,10 @@ public class Game implements PropertyChangeListener {
 
     public void setEvaluation(Evaluation evaluation) {
         this.evaluation = evaluation;
+    }
+
+    public void setWinnerId(List<Long> winnerIds) {
+        this.winnerIds = winnerIds;
     }
 
     /**

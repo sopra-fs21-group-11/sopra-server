@@ -129,7 +129,7 @@ public class GameService {
 
         GameEndDTO gameEndDTO = gameToEnd.createGameEndDTO();
 
-        if(gameEndDTO.getGameMinutes()<=3){
+        if(gameEndDTO.getGameTooShort()){
             //Game does not count towards statistic
             for(var user : gameToEnd.getPlayers()) {
                 // SendGameEndDTO (every user gets the same) but game does not count was too short!

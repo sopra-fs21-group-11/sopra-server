@@ -3,7 +3,6 @@ package ch.uzh.ifi.hase.soprafs21.entity.ValueCategories;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +28,6 @@ public class PopulationValueCategory implements ValueCategory{
             return false;
         }
     }
-
 
     public boolean isPlacementCorrect(Card referenceCard, Card cardInQuestion) throws Exception{
 
@@ -66,10 +64,8 @@ public class PopulationValueCategory implements ValueCategory{
             }
             catch (Exception e) {
             }
-
             //cards are not next to each other:
                 throw new Exception("Questionable cards are not next to each other.");
-
         }
 
         if((referenceCard.getLowerNeighbour() == null && referenceCard.getHigherNeighbour() == null) ||
@@ -77,11 +73,9 @@ public class PopulationValueCategory implements ValueCategory{
             try {
                 if(referenceCard.getRightNeighbour().getCardId()== cardInQuestion.getCardId()){//reference card is placed left to card in question
                     return (referenceValue <= questionValue);
-
                 }
             }
             catch (Exception e) {
-
             }
             try {
                 if(referenceCard.getLeftNeighbour().getCardId()== cardInQuestion.getCardId()){ //reference card is placed right to card in question
@@ -92,17 +86,12 @@ public class PopulationValueCategory implements ValueCategory{
             }
             //cards are not next to each other:
                 throw new Exception("Questionable cards are not next to each other.");
-
-
         }
         throw new Exception("No valid compare request. (Two startingcards?)");
-
     }
-
 
     public String getDescription() {
         try{this.isPlacementCorrect(null, null);} catch (Exception ex ){}
-
         return description;
     }
 

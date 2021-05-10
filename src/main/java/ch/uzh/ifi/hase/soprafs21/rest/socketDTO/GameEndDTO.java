@@ -8,7 +8,9 @@ import java.util.*;
 public class GameEndDTO {
     private long gameId;
     private List<UserGetDTO> scoreboard;
+    private List<Long> winnerIds;
     private long gameMinutes;
+    private Boolean gameTooShort;
 
     public long getGameId() {
         return gameId;
@@ -26,6 +28,10 @@ public class GameEndDTO {
         this.scoreboard = scoreboard;
     }
 
+    public List<Long> getWinnerIds() { return winnerIds; }
+
+    public void setWinnerIds(List<Long> winnerId) { this.winnerIds = winnerId; }
+
     public long getGameMinutes() {
         return gameMinutes;
     }
@@ -33,4 +39,8 @@ public class GameEndDTO {
     public void setGameMinutes(long gameMinutes) {
         this.gameMinutes = gameMinutes;
     }
+
+    public Boolean getGameTooShort() { return gameTooShort; }
+
+    public void setGameTooShort(Boolean gameTooShort) { this.gameTooShort = gameTooShort; }
 }

@@ -1,7 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
-import ch.uzh.ifi.hase.soprafs21.service.GameService;
-
 import java.util.ArrayList;
 import java.util.List;
 
