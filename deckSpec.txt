@@ -1,0 +1,225 @@
+GET: ./decks/{id}/fetch/available
+Response: 
+"true" -> fetching is currently possible
+"34" -> wait 34 seconds untill next free slot..
+
+GET: ./decks/{id}/fetch
+PARAMS: population, querry
+Whatch out for 429. you can send a GET to http://overpass-api.de/api/status to check how long you have to wait for the next free slot.
+Example: .decks/83/fetch?population=500000&querry=Italy -> results in a Deck with size 6. 100'000 results in a full Deck with size 45.
+Response:
+{
+    "id": 1,
+    "name": "testDeck",
+    "cards": [
+        {
+            "id": 2,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22
+        },
+        {
+            "id": 3,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22
+        },
+        {
+            "id": 4,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22
+        }
+    ],
+    "description": "testDeck",
+    "compareTypes": [],
+    "size": 3,
+    "readyToPlay": false
+}
+
+PUT: ./decks/1 -> edit a deck (add cards)
+ReqBody:
+{
+	"name":"changedDeck",
+	"description":"changedDeck",
+    "cards":[2,3,4]
+}
+Response:
+{
+    "id": 1,
+    "name": "testDeck",
+    "cards": [
+        {
+            "id": 2,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22
+        },
+        {
+            "id": 3,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22
+        },
+        {
+            "id": 4,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22
+        }
+    ],
+    "description": "testDeck",
+    "compareTypes": [],
+    "size": 3,
+    "readyToPlay": false
+}
+
+
+GET: ./decks -> returns a list of all decks.
+[
+    {
+        "id": 2,
+        "name": "TestDeck",
+        "cards": [
+            {
+                "id": 1,
+                "name": "testCard",
+                "nCoordinate": 2.0,
+                "eCoordinate": 1.0
+            }
+        ],
+        "description": "This is a testdeck",
+        "compareTypes": null,
+        "size": 1,
+	"readyToPlay": false
+    }
+]
+GET ./decks/1:
+{
+    "id": 1,
+    "name": "testName",
+    "cards": [],
+    "description": "This is a new testDeck",
+    "compareTypes": null,
+    "size": 0,
+    "readyToPlay": false
+}
+
+Post: ./decks -> initialize a new empty deck
+Body:
+{
+	"name":"testName",
+	"description":"This is a new testDeck"
+}
+Response (created Deck):
+{
+    "id": 1,
+    "name": "testName",
+    "cards": [],
+    "description": "This is a new testDeck",
+    "compareTypes": null,
+    "size": 0,
+    "readyToPlay": false
+}
+
+GET: ./decks/1/validate -> (validates a deck: adds CompareTypes and sets readyToPlay=true if 2 types are valid.)
+{
+    "id": 1,
+    "name": "testDeck",
+    "cards": [
+        {
+            "id": 2,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22,
+            "population": 0
+        },
+        {
+            "id": 3,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22,
+            "population": 0
+        },
+        {
+            "id": 4,
+            "name": "testCard",
+            "nCoordinate": 1.02,
+            "eCoordinate": 2.22,
+            "population": 0
+        }
+    ],
+    "description": "testDeck",
+    "compareTypes": [
+        {
+            "id": 1,
+            "name": "Longitude Compare Type",
+            "description": "Compare each card with its longitude."
+        },
+        {
+            "id": 2,
+            "name": "Latitude Compare Type",
+            "description": "Compare each card with its latitude."
+        }
+    ],
+    "size": 3,
+    "readyToPlay": true
+}
+
+GET: ./decks/comparetypes (Gets a list of all possible comparetypes):
+[
+    {
+        "id": 1,
+        "name": "Longitude Compare Type",
+        "description": "Compare each card with its longitude."
+    },
+    {
+        "id": 2,
+        "name": "Latitude Compare Type",
+        "description": "Compare each card with its latitude."
+    },
+    {
+        "id": 3,
+        "name": "Population Compare Type",
+        "description": "Compare each card with its population."
+    }
+]
+
+
+Post: ./cards
+Body:
+{
+	"name":"testCard",
+	"nCoordinate":1.05,
+    "eCoordinate":2.77
+}Response (created Card):
+{
+    "id": 1,
+    "name": "testCard",
+    "nCoordinate": 1.05,
+    "eCoordinate": 2.77
+}
+GET ./cards
+[
+    {
+        "id": 1,
+        "name": "testCard",
+        "nCoordinate": 1.05,
+        "eCoordinate": 2.77
+    },
+    {
+        "id": 2,
+        "name": "testCard",
+        "nCoordinate": 1.05,
+        "eCoordinate": 2.77
+    }
+]
+
+GET ./cards/1:
+{
+    "id": 1,
+    "name": "testCard",
+    "nCoordinate": 1.05,
+    "eCoordinate": 2.77
+}
+

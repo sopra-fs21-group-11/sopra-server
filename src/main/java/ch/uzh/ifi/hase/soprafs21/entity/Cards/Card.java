@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.entity.Cards;
 
+
 public abstract class Card {
     private float nsCoordinates;
     private float ewCoordinates;

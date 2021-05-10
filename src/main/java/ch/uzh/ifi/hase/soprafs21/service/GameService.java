@@ -4,6 +4,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
+import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
@@ -31,11 +32,13 @@ public class GameService {
 
     private SimpMessagingTemplate template;
     private UserService userService;
+    private DeckService deckService;
 
     @Autowired
-    public GameService(SimpMessagingTemplate template, UserService userService) {
+    public GameService(SimpMessagingTemplate template, UserService userService, DeckService deckService) {
          this.template = template;
          this.userService = userService;
+         this.deckService = deckService;
     }
 
 
@@ -48,7 +51,7 @@ public class GameService {
 
 
     public Game startGame(GameLobby gameToStart){
-        Game startedGame = gameToStart.StartGame();
+        Game startedGame = gameToStart.StartGame(deckService.makeDeckReadyToPlay(gameToStart.getSettings().getDeckId()));
         startedGame.setGameService(this);
         runningGames.add(startedGame);
         openGames.remove(gameToStart);
@@ -76,10 +79,10 @@ public class GameService {
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldnt find game with id: "+gameId);
         }
-        if(game.getHost() != host){
+        if(game.getHost().getId() != host.getId()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the host is allowed to kick players.");
         }
-        game.removePlayer(userToKick);
+        game = game.removePlayer(userToKick);
         return game;
     }
 
@@ -89,8 +92,11 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. Game is full");
         }
         if(gameToJoin.getPlayers().contains(user)){
-            //TODO: multiple joins are still possible. Needs fix...
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. User is already in the game");
+            for(var player : gameToJoin.getPlayers()){
+                if(player.getId() == user.getId()){
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. User is already in the game");
+                }
+            }
         }
         gameToJoin.addPlayer(user);
         return gameToJoin;
@@ -119,7 +125,6 @@ public class GameService {
         FullGame.initializeGameWhenFull();
         return true;
     }
-
 
     public void gameEnded(long gameId){
         Game gameToEnd = getRunningGameById(gameId);
@@ -150,6 +155,7 @@ public class GameService {
         //after saving values we have to remove the game from the list.
         runningGames.remove(gameToEnd);
     }
+
     public void incomingTurn(long gameId, String sessionId, int placementIndex, String axis){
         Game game = getRunningGameById(gameId);
         User turningUser = new User(); //need to assign. Else the condition turninguser.getid... doesnt work.
@@ -175,6 +181,7 @@ public class GameService {
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No game with id "+id+" found.");
     }
+
     public boolean openGameExists(long id){
         for(GameLobby game : this.getAllOpenGames()){
             if(game.getId() == id){
@@ -209,8 +216,6 @@ public class GameService {
                 this.template.convertAndSend("/topic/game/queue/specific-game-game"+userToSend.getValue(),gameStateDTO);
             }
         }
-
-
     }
 
     public void sendGameStateToUsers(long id){
@@ -225,6 +230,7 @@ public class GameService {
 
         }
     }
+
     public void sendDoubtResultDTO(long gameId, Card referenceCard, Card doubtedCard, boolean isDoubtRightous){
         Game gameToSend = this.getRunningGameById(gameId);
         GameStateDTO gameStateDTO = gameToSend.convertToDTO();//get gamestate and convert it to gameDoubtDTO
@@ -259,7 +265,6 @@ public class GameService {
 
             this.template.convertAndSend("/topic/game/queue/specific-game-game"+sessionId, gameDoubtDTO);
         }
-
     }
 
     public void sendEvaluatedGameStateToUsers(long id){
@@ -308,5 +313,4 @@ public class GameService {
         }
         return retId;
     }
-
 }

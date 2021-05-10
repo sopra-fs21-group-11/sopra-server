@@ -23,13 +23,19 @@ public class GameLobby {
 
     }
 
-    public Game StartGame(){
-        Game newGame = new Game(this);
+    public Game StartGame(Deck deck ){
+        Game newGame = new Game(this, deck);
         return newGame;
     }
 
-    public void removePlayer(User player){
-        this.players.remove(player);
+    public GameLobby removePlayer(User player){
+        for(User user : players){
+            if(user.getId() == player.getId()){
+                players.remove(user);
+                return this;
+            }
+        }
+        return this;
     }
 
     public String getName() {
