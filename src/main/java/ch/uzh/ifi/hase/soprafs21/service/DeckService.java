@@ -147,7 +147,7 @@ public class DeckService {
         deckToFetch.setCards(new ArrayList<>());//we empty our deck.
         List<Card> cardsToFetch = fetchingService.fetchCardsFromCountry(querry, population);
         int cardsAdded = 0;
-        for(int i=0;  i<45 && i<cardsToFetch.size() ;i++){
+        for(int i=0;  i<60 && i<cardsToFetch.size() ;i++){
             deckToFetch.addCard(createNewCard(cardsToFetch.get(i)));
             cardsAdded++;
         }
@@ -244,6 +244,12 @@ public class DeckService {
             int index = rand.nextInt(32-1);
             while(definitiveDeck.contains(cardsToAddToDeck.get(rand.nextInt(32-1)))){
                 index = rand.nextInt(cardsToAddToDeck.size()-1);
+            }
+            for(var card : definitiveDeck){
+                if(cardsToAddToDeck.get(index).getId() == card.getId()){
+                    i--;
+                    continue;
+                }
             }
             definitiveDeck.add(cardsToAddToDeck.get(index));//pick a random card out of the dataset
         }

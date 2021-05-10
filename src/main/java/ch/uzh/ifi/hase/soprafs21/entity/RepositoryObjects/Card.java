@@ -28,7 +28,7 @@ public class Card implements Serializable{
     @Column
     private long population;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
 
