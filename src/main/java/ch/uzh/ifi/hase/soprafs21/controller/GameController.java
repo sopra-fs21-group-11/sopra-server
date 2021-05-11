@@ -12,9 +12,7 @@ import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,19 +139,6 @@ public class GameController {
         return GameMapper.ConvertEntityToGamePostDTO(joinedGame);
     }
 
-    //TODO: check if ok
-    @PutMapping("/games/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public GamePostDTO changeSettings(@PathVariable long id, @RequestHeader("Authorization") String token, @RequestBody GamePostDTO gamePostDTO) {
-        User hostUser = userService.getUserByToken(token);
-        if(hostUser == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host could not be identified by token.");
-        }
-        GameLobby changedGame = gameService.changeSettings(hostUser, id, gamePostDTO);
-        return GameMapper.ConvertEntityToGamePostDTO(changedGame);
-    }
-
     @PutMapping("/games/{id}/kick")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -171,9 +156,22 @@ public class GameController {
     @GetMapping("/games/settings")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameSettingsGetDTO getDefaultGameSettings() {
+    public GameSettingsDTO getDefaultGameSettings() {
         GameSettings defaultGameSettings = new GameSettings();
 
-        return GameMapper.ConvertEntityToGameSettingsGetDTO(defaultGameSettings);
+        return GameMapper.ConvertEntityToGameSettingsDTO(defaultGameSettings);
+    }
+
+    //TODO: check if ok
+    @PutMapping("/games/settings/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameSettingsDTO changeSettings(@PathVariable long id, @RequestHeader("Authorization") String token, @RequestBody GameSettingsDTO gameSettingsDTO) {
+        User hostUser = userService.getUserByToken(token);
+        if(hostUser == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host could not be identified by token.");
+        }
+        GameLobby changedGameLobby = gameService.changeSettings(hostUser, id, gameSettingsDTO);
+        return GameMapper.ConvertEntityToGameSettingsDTO(changedGameLobby.getSettings());
     }
 }

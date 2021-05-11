@@ -6,7 +6,7 @@ import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GameSettingsGetDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameDoubtDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
 
@@ -48,25 +48,41 @@ public class GameMapper {
         return gameGetDTO;
     }
 
-    public static GameSettingsGetDTO ConvertEntityToGameSettingsGetDTO(GameSettings gameSettings){
+    public static GameSettingsDTO ConvertEntityToGameSettingsDTO(GameSettings gameSettings){
+        GameSettingsDTO gameSettingsDTO = new GameSettingsDTO();
+        gameSettingsDTO.setPlayersMin(gameSettings.getPlayersMin());
+        gameSettingsDTO.setPlayersMax(gameSettings.getPlayersMax());
+        gameSettingsDTO.setNrOfEvaluations(gameSettings.getNrOfEvaluations());
+        gameSettingsDTO.setDoubtCountdown(gameSettings.getDoubtCountdown());
+        gameSettingsDTO.setVisibleAfterDoubtCountdown(gameSettings.getVisibleAfterDoubtCountdown());
+        gameSettingsDTO.setPlayerTurnCountdown(gameSettings.getPlayerTurnCountdown());
+        gameSettingsDTO.setEvaluationCountdown(gameSettings.getEvaluationCountdown());
+        gameSettingsDTO.setEvaluationCountdownVisible(gameSettings.getEvaluationCountdownVisible());
+        gameSettingsDTO.setTokenGainOnCorrectGuess(gameSettings.getTokenGainOnCorrectGuess());
+        gameSettingsDTO.setTokenGainOnNearestGuess(gameSettings.getTokenGainOnNearestGuess());
+        gameSettingsDTO.setHorizontalValueCategoryId(gameSettings.getHorizontalValueCategory());
+        gameSettingsDTO.setVerticalValueCategoryId(gameSettings.getVerticalValueCategory());
+        gameSettingsDTO.setNrOfStartingTokens(gameSettings.getNrOfStartingTokens());
+        gameSettingsDTO.setDeckId(gameSettings.getDeckId());
 
-        GameSettingsGetDTO gameSettingsGetDTO = new GameSettingsGetDTO();
-        gameSettingsGetDTO.setPlayersMin(gameSettings.getPlayersMin());
-        gameSettingsGetDTO.setPlayersMax(gameSettings.getPlayersMax());
-        gameSettingsGetDTO.setNrOfEvaluations(gameSettings.getNrOfEvaluations());
-        gameSettingsGetDTO.setDoubtCountdown(gameSettings.getDoubtCountdown());
-        gameSettingsGetDTO.setVisibleAfterDoubtCountdown(gameSettings.getVisibleAfterDoubtCountdown());
-        gameSettingsGetDTO.setPlayerTurnCountdown(gameSettings.getPlayerTurnCountdown());
-        gameSettingsGetDTO.setEvaluationCountdown(gameSettings.getEvaluationCountdown());
-        gameSettingsGetDTO.setEvaluationCountdownVisible(gameSettings.getEvaluationCountdownVisible());
-        gameSettingsGetDTO.setTokenGainOnCorrectGuess(gameSettings.getTokenGainOnCorrectGuess());
-        gameSettingsGetDTO.setTokenGainOnNearestGuess(gameSettings.getTokenGainOnNearestGuess());
-        gameSettingsGetDTO.setHorizontalValueCategoryId(gameSettings.getHorizontalValueCategory());
-        gameSettingsGetDTO.setVerticalValueCategoryId(gameSettings.getVerticalValueCategory());
-        gameSettingsGetDTO.setNrOfStartingTokens(gameSettings.getNrOfStartingTokens());
-        gameSettingsGetDTO.setDeckId(gameSettings.getDeckId());
+        return gameSettingsDTO;
+    }
 
-        return gameSettingsGetDTO;
+    public static GameSettings ConvertGameSettingsDTOToEntity(GameSettingsDTO gameSettingsDTO){
+        GameSettings gameSettings = new GameSettings();
+        gameSettings.setPlayersMin(gameSettingsDTO.getPlayersMin());
+        gameSettings.setPlayersMax(gameSettingsDTO.getPlayersMax());
+        gameSettings.setNrOfEvaluations(gameSettingsDTO.getNrOfEvaluations());
+        gameSettings.setDoubtCountdown(gameSettingsDTO.getDoubtCountdown());
+        gameSettings.setVisibleAfterDoubtCountdown(gameSettingsDTO.getVisibleAfterDoubtCountdown());
+        gameSettings.setPlayerTurnCountdown(gameSettingsDTO.getPlayerTurnCountdown());
+        gameSettings.setEvaluationCountdown(gameSettingsDTO.getEvaluationCountdown());
+        gameSettings.setEvaluationCountdownVisible(gameSettingsDTO.getEvaluationCountdownVisible());
+        gameSettings.setTokenGainOnCorrectGuess(gameSettingsDTO.getTokenGainOnCorrectGuess());
+        gameSettings.setTokenGainOnNearestGuess(gameSettingsDTO.getTokenGainOnNearestGuess());
+        gameSettings.setNrOfStartingTokens(gameSettingsDTO.getNrOfStartingTokens());
+        gameSettings.setDeckId(gameSettingsDTO.getDeckId());
+        return gameSettings;
     }
 
     public static GameGetDTO ConvertRunningGameToGetDTO(Game game){

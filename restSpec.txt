@@ -316,6 +316,105 @@ Response: (Might be edited because makes no sense...)
     "id": "1"
 }
 
+Description: Gets the default settings
+Endpoint: /games/settings
+Request Type: GET
+Authorization: None
+Body:
+{}
+Response:
+{
+    "playersMin": 2,
+    "playersMax": 6,
+    "nrOfEvaluations": 2,
+    "doubtCountdown": 10,
+    "visibleAfterDoubtCountdown": 5,
+    "playerTurnCountdown": 30,
+    "evaluationCountdown": 30,
+    "evaluationCountdownVisible": 30,
+    "tokenGainOnCorrectGuess": 2,
+    "tokenGainOnNearestGuess": 1,
+    "horizontalValueCategoryId": {
+        "name": "EW-Coordinates",
+        "description": "Compares the cards with their East-West coordinate value.",
+        "id": 1
+    },
+    "verticalValueCategoryId": {
+        "name": "NS-Coordinates",
+        "description": "Compares the cards with their North-South coordinate value.",
+        "id": 2
+    },
+    "nrOfStartingTokens": 4,
+    "deckId": 1
+}
+
+Description: Gets the default settings
+Endpoint: /games/settings/{id}
+Request Type: GET
+Authorization: Bearer Token
+Body:
+{
+    "playersMin": 2,
+    "playersMax": 5,
+    "nrOfEvaluations": 5,
+    "doubtCountdown": 300,
+    "visibleAfterDoubtCountdown": 5,
+    "playerTurnCountdown": 30,
+    "evaluationCountdown": 30,
+    "evaluationCountdownVisible": 30,
+    "tokenGainOnCorrectGuess": 3,
+    "tokenGainOnNearestGuess": 1,
+    "nrOfStartingTokens": 4,
+    "deckId": 1
+}
+Response:
+{
+    "playersMin": 2,
+    "playersMax": 5,
+    "nrOfEvaluations": 5,
+    "doubtCountdown": 300,
+    "visibleAfterDoubtCountdown": 5,
+    "playerTurnCountdown": 30,
+    "evaluationCountdown": 30,
+    "evaluationCountdownVisible": 30,
+    "tokenGainOnCorrectGuess": 3,
+    "tokenGainOnNearestGuess": 1,
+    "horizontalValueCategoryId": {
+        "name": "EW-Coordinates",
+        "description": "Compares the cards with their East-West coordinate value.",
+        "id": 1
+    },
+    "verticalValueCategoryId": {
+        "name": "NS-Coordinates",
+        "description": "Compares the cards with their North-South coordinate value.",
+        "id": 2
+    },
+    "nrOfStartingTokens": 4,
+    "deckId": 1
+}
+
+Constraints:
+Settings Constraints (-> if settings are not valid all the settings stay the same)
+
+check if game is  existing					ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find gameLobby with id: "+gameId)
+check if token is from host					ResponseStatusException(HttpStatus.FORBIDDEN, "Only the host is allowed to change settings.")
+check if deck is ready to play					ResponseStatusException(HttpStatus.CONFLICT, "Deck is not ready to play.")
+check if at least 5 cards per evaluation is possible		ResponseStatusException(HttpStatus.CONFLICT, "Deck is to small to play with this settings")
+check if 1 <= NrOfEvaluations <= 5				ResponseStatusException(HttpStatus.CONFLICT, "Number of evaluation is invalid.")
+check if 300 >= DoubtCountdown >= 1				ResponseStatusException(HttpStatus.CONFLICT, "DoubtCountdown is invalid.")
+check if 300 >= VisibleAfterDoubtCountdown >= 1			ResponseStatusException(HttpStatus.CONFLICT, "VisibleAfterDoubtCountdown is invalid.")
+check if 300 >= EvaluationCountdown >= 1			ResponseStatusException(HttpStatus.CONFLICT, "EvaluationCountdown is invalid.")
+check if 300 >= PlayerTurnCountdown >= 1			ResponseStatusException(HttpStatus.CONFLICT, "PlayerTurnCountdown is invalid.")
+check if 300 >= evaluationCountdownVisible >= 1			ResponseStatusException(HttpStatus.CONFLICT, evaluationCountdownVisible is invalid.")
+check if 2 <= PlayersMax <= 6					ResponseStatusException(HttpStatus.CONFLICT, "PlayersMax is invalid.")
+check if 2 <= PlayersMin <= 6					ResponseStatusException(HttpStatus.CONFLICT, "PlayersMin is invalid.")
+check if 1 <= NrOfStartingTokens <= 20				ResponseStatusException(HttpStatus.CONFLICT, "NrOfStartingTokens is invalid.")	
+check if 0 <= TokenGainOnCorrectGuess <= 5			ResponseStatusException(HttpStatus.CONFLICT, "TokenGainOnCorrectGuess is invalid.")
+check if 0 <= TokenGainOnNearestGuess <= 5		 	ResponseStatusException(HttpStatus.CONFLICT, "TokenGainOnNearestGuess is invalid.")
+
+
+
+
 **********************************GameState****************************
 The messages received by the server via websocket look the following:
 

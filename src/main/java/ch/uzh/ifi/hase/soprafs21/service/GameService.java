@@ -4,8 +4,10 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
+import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
@@ -79,75 +81,47 @@ public class GameService {
     }
 
     //TODO: tb under construction
-    public GameLobby changeSettings(User host, long gameId, GamePostDTO gamePostDTO){
-        GameLobby game = this.getOpenGameById(gameId);
-        if(game == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find game with id: "+gameId);
+    public GameLobby changeSettings(User host, long gameId, GameSettingsDTO gameSettingsDTO){
+        GameLobby gameLobby = this.getOpenGameById(gameId);
+        if(gameLobby == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find gameLobby with id: "+gameId);
         }
-        if(game.getHost().getId() != host.getId()){
+        if(gameLobby.getHost().getId() != host.getId()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the host is allowed to change settings.");
         }
+        GameSettings gameSettingsToCheck = GameMapper.ConvertGameSettingsDTOToEntity(gameSettingsDTO);
+        gameSettingsToCheck.validateSettings();
+
+        if(!gameSettingsToCheck.isSettingsValid()){
+            //settings are not valid! return conflict and do not change the lobby settings
+            throw new ResponseStatusException(HttpStatus.CONFLICT, gameSettingsToCheck.getRemark());
+        }
         //check if deck is ready to play
-        if(!deckService.getDeck(gamePostDTO.getDeckId()).isReadyToPlay()){
+        if(!deckService.getDeck(gameSettingsToCheck.getDeckId()).isReadyToPlay()){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is not ready to play.");
         }
-        if(1 <= gamePostDTO.getNrOfEvaluations() && gamePostDTO.getNrOfEvaluations() <= 4){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Number of evaluation is invalid.");
-        }
         //check if minimum cards per evaluation is ok
-        int numberOfCardsBeforeEvaluation = deckService.getDeck(gamePostDTO.getDeckId()).getSize() / gamePostDTO.getNrOfEvaluations();
-        if(numberOfCardsBeforeEvaluation<5) {
+        int numberOfCardsBeforeEvaluation = deckService.getDeck(gameSettingsToCheck.getDeckId()).getSize() / gameSettingsToCheck.getNrOfEvaluations();
+        if(numberOfCardsBeforeEvaluation<=5) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is to small to play with this settings");
         }
-        if(!(1 <= gamePostDTO.getNrOfEvaluations() && gamePostDTO.getNrOfEvaluations() <= 4)){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Number of evaluation is invalid.");
-        }
-        if(!(1 <= gamePostDTO.getDoubtCountdown())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "DoubtCountdown is too short.");
-        }
-        if(!(1 <= gamePostDTO.getVisibleAfterDoubtCountdown())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "VisibleAfterDoubtCountdown is too short.");
-        }
-        if(!(1 <= gamePostDTO.getEvaluationCountdown())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "EvaluationCountdown is too short.");
-        }
-        if(!(1 <= gamePostDTO.getPlayerTurnCountdown())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "PlayerTurnCountdown is too short.");
-        }
 
-        if(!(2 <= gamePostDTO.getPlayersMax() && gamePostDTO.getPlayersMax() <= 6)){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "PlayersMax is invalid.");
-        }
-        if(!(2 <= gamePostDTO.getPlayersMax() && gamePostDTO.getPlayersMin() <= 6)){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "PlayersMin is invalid.");
-        }
+        gameLobby.getSettings().setDeckId(gameSettingsToCheck.getDeckId());
+        gameLobby.getSettings().setDoubtCountdown(gameSettingsToCheck.getDoubtCountdown());
+        gameLobby.getSettings().setVisibleAfterDoubtCountdown(gameSettingsToCheck.getVisibleAfterDoubtCountdown());
+        gameLobby.getSettings().setEvaluationCountdown(gameSettingsToCheck.getEvaluationCountdown());
+        gameLobby.getSettings().setEvaluationCountdownVisible(gameSettingsToCheck.getEvaluationCountdownVisible());
+        gameLobby.getSettings().setPlayerTurnCountdown(gameSettingsToCheck.getPlayerTurnCountdown());
+        gameLobby.getSettings().setNrOfEvaluations(gameSettingsToCheck.getNrOfEvaluations());
+        //gameLobby.getSettings().setHorizontalValueCategory(gameSettingsToCheck.getHorizontalValueCategoryId());
+        //gameLobby.getSettings().setVerticalValueCategory(gameSettingsToCheck.getVerticalValueCategoryId());
+        gameLobby.getSettings().setPlayersMax(gameSettingsToCheck.getPlayersMax());
+        gameLobby.getSettings().setPlayersMin(gameSettingsToCheck.getPlayersMin());
+        gameLobby.getSettings().setNrOfStartingTokens(gameSettingsToCheck.getNrOfStartingTokens());
+        gameLobby.getSettings().setTokenGainOnCorrectGuess(gameSettingsToCheck.getTokenGainOnCorrectGuess());
+        gameLobby.getSettings().setTokenGainOnNearestGuess(gameSettingsToCheck.getTokenGainOnNearestGuess());
 
-        if(!(1 <= gamePostDTO.getNrOfStartingTokens())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "NrOfStartingTokens is invalid.");
-        }
-        if(!(0 <= gamePostDTO.getTokenGainOnCorrectGuess())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "TokenGainOnCorrectGuess is invalid.");
-        }
-        if(!(0 <= gamePostDTO.getTokenGainOnNearestGuess())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "TokenGainOnNearestGuess is invalid.");
-        }
-
-        game.getSettings().setDeckId(gamePostDTO.getDeckId());
-        game.getSettings().setDoubtCountdown(gamePostDTO.getDoubtCountdown());
-        game.getSettings().setVisibleAfterDoubtCountdown(gamePostDTO.getVisibleAfterDoubtCountdown());
-        game.getSettings().setEvaluationCountdown(gamePostDTO.getEvaluationCountdown());
-        game.getSettings().setEvaluationCountdownVisible(gamePostDTO.getEvaluationCountdownVisible());
-        game.getSettings().setPlayerTurnCountdown(gamePostDTO.getPlayerTurnCountdown());
-        game.getSettings().setNrOfEvaluations(gamePostDTO.getNrOfEvaluations());
-        //game.getSettings().setHorizontalValueCategory(gamePostDTO.getHorizontalValueCategoryId());
-        //game.getSettings().setVerticalValueCategory(gamePostDTO.getVerticalValueCategoryId());
-        game.getSettings().setPlayersMax(gamePostDTO.getPlayersMax());
-        game.getSettings().setPlayersMin(gamePostDTO.getPlayersMin());
-        game.getSettings().setNrOfStartingTokens(gamePostDTO.getNrOfStartingTokens());
-        game.getSettings().setTokenGainOnCorrectGuess(gamePostDTO.getTokenGainOnCorrectGuess());
-        game.getSettings().setTokenGainOnNearestGuess(gamePostDTO.getTokenGainOnNearestGuess());
-
-        return game;
+        return gameLobby;
     }
 
     public GameLobby joinGameLobby(User user, long gameId){
