@@ -4,7 +4,10 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
+import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
@@ -16,9 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
@@ -38,14 +39,13 @@ public class GameService {
          this.deckService = deckService;
     }
 
-
     public List<GameLobby> getAllOpenGames(){
         return openGames;
     }
+
     public List<Game> getAllRunningGames(){
         return runningGames;
     }
-
 
     public Game startGame(GameLobby gameToStart){
         Game startedGame = gameToStart.StartGame(deckService.makeDeckReadyToPlay(gameToStart.getSettings().getDeckId()));
@@ -64,23 +64,64 @@ public class GameService {
 
     public Game doubtAction(long gameId, int placedCard, int doubtedCard, String sessionId){
         Game doubtGame = getRunningGameById(gameId);
-
         doubtGame.performDoubt(sessionId, placedCard, doubtedCard);
-
-
         return doubtGame;
     }
 
     public GameLobby kickPlayer(User host, User userToKick, long gameId){
         GameLobby game = this.getOpenGameById(gameId);
         if(game == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldnt find game with id: "+gameId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find game with id: "+gameId);
         }
         if(game.getHost().getId() != host.getId()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the host is allowed to kick players.");
         }
         game = game.removePlayer(userToKick);
         return game;
+    }
+
+    //TODO: tb under construction
+    public GameLobby changeSettings(User host, long gameId, GameSettingsDTO gameSettingsDTO){
+        GameLobby gameLobby = this.getOpenGameById(gameId);
+        if(gameLobby == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find gameLobby with id: "+gameId);
+        }
+        if(gameLobby.getHost().getId() != host.getId()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the host is allowed to change settings.");
+        }
+        GameSettings gameSettingsToCheck = GameMapper.ConvertGameSettingsDTOToEntity(gameSettingsDTO);
+        gameSettingsToCheck.validateSettings();
+
+        if(!gameSettingsToCheck.isSettingsValid()){
+            //settings are not valid! return conflict and do not change the lobby settings
+            throw new ResponseStatusException(HttpStatus.CONFLICT, gameSettingsToCheck.getRemark());
+        }
+        //check if deck is ready to play
+        if(!deckService.getDeck(gameSettingsToCheck.getDeckId()).isReadyToPlay()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is not ready to play.");
+        }
+        //check if minimum cards per evaluation is ok
+        int numberOfCardsBeforeEvaluation = deckService.getDeck(gameSettingsToCheck.getDeckId()).getSize() / gameSettingsToCheck.getNrOfEvaluations();
+        if(numberOfCardsBeforeEvaluation<=5) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is to small to play with this settings");
+        }
+
+        gameLobby.getSettings().setDeckId(gameSettingsToCheck.getDeckId());
+        gameLobby.getSettings().setDoubtCountdown(gameSettingsToCheck.getDoubtCountdown());
+        gameLobby.getSettings().setVisibleAfterDoubtCountdown(gameSettingsToCheck.getVisibleAfterDoubtCountdown());
+        gameLobby.getSettings().setEvaluationCountdown(gameSettingsToCheck.getEvaluationCountdown());
+        gameLobby.getSettings().setEvaluationCountdownVisible(gameSettingsToCheck.getEvaluationCountdownVisible());
+        gameLobby.getSettings().setPlayerTurnCountdown(gameSettingsToCheck.getPlayerTurnCountdown());
+        gameLobby.getSettings().setNrOfEvaluations(gameSettingsToCheck.getNrOfEvaluations());
+        //gameLobby.getSettings().setHorizontalValueCategory(gameSettingsToCheck.getHorizontalValueCategoryId());
+        //gameLobby.getSettings().setVerticalValueCategory(gameSettingsToCheck.getVerticalValueCategoryId());
+        gameLobby.getSettings().setPlayersMax(gameSettingsToCheck.getPlayersMax());
+        gameLobby.getSettings().setPlayersMin(gameSettingsToCheck.getPlayersMin());
+        gameLobby.getSettings().setNrOfStartingTokens(gameSettingsToCheck.getNrOfStartingTokens());
+        gameLobby.getSettings().setTokenGainOnCorrectGuess(gameSettingsToCheck.getTokenGainOnCorrectGuess());
+        gameLobby.getSettings().setTokenGainOnNearestGuess(gameSettingsToCheck.getTokenGainOnNearestGuess());
+
+        return gameLobby;
     }
 
     public GameLobby joinGameLobby(User user, long gameId){

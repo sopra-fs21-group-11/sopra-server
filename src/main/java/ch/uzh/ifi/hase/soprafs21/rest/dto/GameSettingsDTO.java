@@ -1,10 +1,9 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 
-public class GameSettingsGetDTO {
+public class GameSettingsDTO {
     private int playersMin;
     private int playersMax;
-    //private int cardsBeforeEvaluation;
     private int nrOfEvaluations;
     private int doubtCountdown;
     private int visibleAfterDoubtCountdown;
@@ -16,7 +15,7 @@ public class GameSettingsGetDTO {
     private ValueCategory horizontalValueCategoryId;
     private ValueCategory verticalValueCategoryId;
     private int nrOfStartingTokens;
-    private long deckId;
+    private Long deckId;
 
     public int getTokenGainOnNearestGuess() {
         return tokenGainOnNearestGuess;
@@ -39,10 +38,6 @@ public class GameSettingsGetDTO {
     public void setPlayersMax(int playersMax) {
         this.playersMax = playersMax;
     }
-
-    //public int getCardsBeforeEvaluation() { return cardsBeforeEvaluation; }
-
-    //public void setCardsBeforeEvaluation(int cardsBeforeEvaluation) { this.cardsBeforeEvaluation = cardsBeforeEvaluation; }
 
     public int getNrOfEvaluations() {
         return nrOfEvaluations;
@@ -114,11 +109,9 @@ public class GameSettingsGetDTO {
 
     public void setEvaluationCountdownVisible(int evaluationCountdownVisible) { this.evaluationCountdownVisible = evaluationCountdownVisible; }
 
-    public long getDeckId() {
-        return deckId;
-    }
+    public Long getDeckId() { return deckId; }
 
-    public void setDeckId(long deckId) {
+    public void setDeckId(Long deckId) {
         this.deckId = deckId;
     }
 }
