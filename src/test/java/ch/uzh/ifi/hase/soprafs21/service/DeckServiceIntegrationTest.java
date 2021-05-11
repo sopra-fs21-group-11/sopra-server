@@ -103,14 +103,14 @@ public class DeckServiceIntegrationTest {
 
         //fetch Deck:
         //fetch deck with switzerland and >= 100'000 population.
-        Deck fetchedDeck = deckService.fetchDeck(validatedDeck.getId(), "Switzerland", 100000);
+        Deck fetchedDeck = deckService.fetchDeck(validatedDeck.getId(), "Italy", 500000);
         //if the population of the swiss cities dont change, the result should stay the same:
         //7 cards with bern on top.
         while(!deckService.fetchingAvailable().equals("true")){//wait for free slot
             Thread.sleep(1000);
         }
-        assertTrue(fetchedDeck.getCards().size()==7);
-        assertTrue(fetchedDeck.getCards().get(0).getName().equals("Bern"));
+        assertTrue(fetchedDeck.getCards().size()==24);
+        assertTrue(fetchedDeck.getCards().get(0).getName().equals("Milan"));
         assertTrue(fetchedDeck.isReadyToPlay());
 
     }

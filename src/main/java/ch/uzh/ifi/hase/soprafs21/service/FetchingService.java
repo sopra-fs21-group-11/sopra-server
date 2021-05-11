@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.rest.fetch.NominatimResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +33,9 @@ public class FetchingService {
     private  WebClient.Builder builder;
     private String overpassBuilder = "";
 
+
+    private List<Card> allCards;
+
     public FetchingService(){
         builder = WebClient.builder();
     }
@@ -52,7 +56,8 @@ public class FetchingService {
         return response;
     }
 
-    public List<Card> fetchCardsFromCountry(String country, long population){
+    public List<Card> fetchCardsFromCountry(String country, long population, List<Card> allCards){
+        this.allCards = allCards;
         if(overpassBuilder==""){
             this.overpassBuilder = readOverpassFile();
         }
@@ -150,7 +155,17 @@ public class FetchingService {
             }
             //validate every card attribute and if not valid, we skip the card.
             if(newCard.getPopulation()!=0 && newCard.getnCoordinate()!=0 && newCard.geteCoordinate()!=0 && newCard.getName()!="") {
-                cardList.add(newCard);
+                boolean flag = false;
+                for(Card existingCard : this.allCards){
+                    if(newCard.getName().equals(existingCard.getName())){
+                        flag = true;
+                    }
+                }
+                if(flag){
+                    continue;
+                }else {
+                    cardList.add(newCard);
+                }
             }
 
         }

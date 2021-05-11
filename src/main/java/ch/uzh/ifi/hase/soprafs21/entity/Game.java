@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
+import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.constant.GameState;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
@@ -113,6 +114,8 @@ public class Game implements PropertyChangeListener {
         //either the doubt is finished or noone has doubted.
         if(senderProperty.equals("DoubtCdEnded")||senderProperty.equals("DoubtVisibleCdEnded"))//which property has changed?
         {
+            Application.logger.info(Long.toString(id)+":\t"+senderProperty);
+
             currentPlayer = players.remove(); //switch currentUser
             players.add(currentPlayer);
 
@@ -153,6 +156,8 @@ public class Game implements PropertyChangeListener {
             }
         }
         if(senderProperty.equals("DoubtCdStopped")) {//Doubt incoming. we start visiblecd:
+            Application.logger.info(Long.toString(id)+":\tDoubtCdStopped");
+
             activeState=GameState.DOUBTVISIBLE;
             this.visibleCountdown = new DoubtVisibleCountdown(currentSettings.getVisibleAfterDoubtCountdown(), this);
             visibleCountdown.addPropertyChangeListener(this);
@@ -162,6 +167,7 @@ public class Game implements PropertyChangeListener {
         //EvaluationCountdown ended. Evaluate even not all guesses are here & start visiblecd
         //the same goes for when the guesscd has stopped.
         if(senderProperty.equals("GuessCdEnded")|| senderProperty.equals("GuessCdStopped")) {
+            Application.logger.info(Long.toString(id)+":\tGuessCdStopped");
             performEvaluationAfterGuessPresentOrCdEnded();
             activeState = GameState.EVALUATIONVISIBLE;
             gameService.sendEvaluatedGameStateToUsers(id);
@@ -171,6 +177,7 @@ public class Game implements PropertyChangeListener {
         }
         //start next turn
         if(senderProperty.equals("PlayerTurnCdEnded")) {
+            Application.logger.info(Long.toString(id)+":\tPlayerTurnCdEnded");
             //PlayerCountdown has ended -> next players turn.
             currentPlayer = players.remove();
             players.add(currentPlayer);
@@ -181,6 +188,7 @@ public class Game implements PropertyChangeListener {
             turnCountdown.start();
         }
         if(senderProperty.equals("PlayerTurnCdStopped")) {//A player performed a turn -> goto doubtingPhase
+            Application.logger.info(Long.toString(id)+":\tPlayerTurnCdStopped");
             this.activeState = GameState.DOUBTINGPHASE;
             gameService.sendGameStateToUsers(id);
             this.doubtCountdown = new DoubtCountdown(currentSettings.getDoubtCountdown(), this, currentPlayer.getKey());
@@ -188,6 +196,7 @@ public class Game implements PropertyChangeListener {
             doubtCountdown.start();
         }
         if(senderProperty.equals("EvaluationVisibleCdEnded")) {
+            Application.logger.info(Long.toString(id)+":\tEvaluationVisibleCdEnded");
             //check if deck is empty. if so, game is finished.
             if(deckStack.isEmpty()){
                 //game ended and we have a regular winner:
