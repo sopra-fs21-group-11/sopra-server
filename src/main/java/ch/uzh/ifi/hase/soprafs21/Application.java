@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21;
 
 import ch.uzh.ifi.hase.soprafs21.rest.JWTAuthorizationFilter;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,11 +18,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.slf4j.Logger;
+
 
 @RestController
 @SpringBootApplication
 public class Application {
 
+    public static final Logger logger = LoggerFactory.getLogger(Application.class);
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
@@ -47,17 +51,6 @@ public class Application {
     @EnableWebSecurity
     @Configuration
     class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-        @Bean
-        @Profile("test")
-        public WebSecurityConfigurerAdapter securityDisabled() {
-            return new WebSecurityConfigurerAdapter() {
-                @Override
-                protected void configure(HttpSecurity http) throws Exception {
-                    http.authorizeRequests().anyRequest().permitAll();
-                }
-            };
-        }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {

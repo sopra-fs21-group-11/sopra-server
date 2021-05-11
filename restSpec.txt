@@ -17,7 +17,7 @@ Description: Get list of all users
 Endpoint: /users/
 Request Type: GET
 Authorization: Bearer Token
-Body:
+Body: 
 {}
 Response:
 [

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.service.countdown;
 
+import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 
@@ -46,6 +47,9 @@ public abstract class CountdownHelper extends Thread{
 
     @Override
     public void run() {
+        String className = this.getClass().toString();
+        String[] classNames = className.split("\\.");
+        Application.logger.info(this.gameId+":\t"+classNames[classNames.length-1]+" started.");
         long now = System.currentTimeMillis();
         long countdown = now + time * 1000;
         while (now <= countdown) {
