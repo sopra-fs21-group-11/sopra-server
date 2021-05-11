@@ -127,6 +127,7 @@ public class GameFlowTest {
 
 
         lobby.setSettings(settings);
+
     }
 
     @Test

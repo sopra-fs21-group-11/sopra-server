@@ -96,6 +96,7 @@ public class Game implements PropertyChangeListener {
         if (currentPlayer.getKey().getId() != userid) {
             return;
         }
+        Application.logger.info("Perform turn with nextCard: "+nextCard.getLocationName());
         activeBoard.placeCard(cardToPlace, placementIndex, axis);
         this.turnCountdown.doStop();
     }
@@ -132,7 +133,10 @@ public class Game implements PropertyChangeListener {
                 return;
             }
             else{
+                Application.logger.info("old nextCard: "+nextCard.getLocationName());
                 nextCard = deckStack.pop();
+                Application.logger.info("new nextCard: "+nextCard.getLocationName());
+
             }
 
             //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
