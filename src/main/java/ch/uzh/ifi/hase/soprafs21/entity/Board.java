@@ -6,15 +6,12 @@ import java.util.LinkedList;
 import java.util.Locale;
 
 public class Board {
-    //private LinkedList<Card> horizontalAxis;
-    //private LinkedList<Card> verticalAxis;
     private LinkedList<Card> topList;
     private LinkedList<Card> bottomList;
     private LinkedList<Card> leftList;
     private LinkedList<Card> rightList;
     private Card startingCard;
-    //private int startingCardIndexVertical=0;
-    //private int startingCardIndexHorizontal=0;
+
 
     private int placedCard;
 

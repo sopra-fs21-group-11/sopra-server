@@ -25,3 +25,6 @@ jobs:
 
       - name: Test with Gradle
         run: ./gradlew test
+        
+      - name: Clean Workspace
+        uses: AutoModality/action-clean@v1
