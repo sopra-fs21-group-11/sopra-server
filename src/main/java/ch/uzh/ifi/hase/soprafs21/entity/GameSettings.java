@@ -8,7 +8,6 @@ import org.hibernate.mapping.Value;
 public class GameSettings {
     private int playersMin;
     private int playersMax;
-    //private int cardsBeforeEvaluation;
     private int nrOfEvaluations;
     private int doubtCountdown;
     private int visibleAfterDoubtCountdown;
@@ -21,6 +20,8 @@ public class GameSettings {
     private ValueCategory verticalValueCategoryId;
     private int nrOfStartingTokens;
     private long deckId;
+    private boolean settingsValid;
+    private String remark;
 
     public GameSettings() {
         //default settings:
@@ -39,18 +40,66 @@ public class GameSettings {
         this.verticalValueCategoryId = new NCoordinateCategory();
         this.nrOfStartingTokens = 4;
         this.deckId = 1L;
+        this.validateSettings();
     }
 
-
+    public boolean validateSettings(){
+        if(6 < playersMin || playersMin < 2){
+            settingsValid = false;
+            remark = "playersMin is invalid.";
+        }
+        else if(6 < playersMax || playersMax < 2){
+            settingsValid = false;
+            remark = "playersMax is invalid.";
+        }
+        else if(5 < nrOfEvaluations || nrOfEvaluations < 1){
+            settingsValid = false;
+            remark = "nrOfEvaluations is invalid.";
+        }
+        else if(300 < doubtCountdown || doubtCountdown < 1){
+            settingsValid = false;
+            remark = "doubtCountdown is invalid.";
+        }
+        else if(300 < visibleAfterDoubtCountdown || visibleAfterDoubtCountdown < 1){
+            settingsValid = false;
+            remark = "visibleAfterDoubtCountdown is invalid.";
+        }
+        else if(300 < playerTurnCountdown || playerTurnCountdown < 1){
+            settingsValid = false;
+            remark = "playerTurnCountdown is invalid.";
+        }
+        else if(300 < evaluationCountdown || evaluationCountdown < 1){
+            settingsValid = false;
+            remark = "evaluationCountdown is invalid.";
+        }
+        else if(300 < evaluationCountdownVisible || evaluationCountdownVisible < 1){
+            settingsValid = false;
+            remark = "evaluationCountdownVisible is invalid.";
+        }
+        else if(5 < tokenGainOnCorrectGuess || tokenGainOnCorrectGuess < 0){
+            settingsValid = false;
+            remark = "tokenGainOnCorrectGuess is invalid.";
+        }
+        else if(5 < tokenGainOnNearestGuess || tokenGainOnNearestGuess < 0){
+            settingsValid = false;
+            remark = "tokenGainOnNearestGuess is invalid.";
+        }
+        else if(20 < nrOfStartingTokens || nrOfStartingTokens < 1){
+            settingsValid = false;
+            remark = "nrOfStartingTokens is invalid.";
+        }
+        else{
+            settingsValid = true;
+            remark = "";
+        }
+        return settingsValid;
+    }
 
     public int getTokenGainOnNearestGuess() {
         return tokenGainOnNearestGuess;
     }
 
-    public void setTokenGainOnNearestGuess(int tokenGainOnNearestGuess) {
-        this.tokenGainOnNearestGuess = tokenGainOnNearestGuess;
-    }
-
+    public void setTokenGainOnNearestGuess(int tokenGainOnNearestGuess) { this.tokenGainOnNearestGuess = tokenGainOnNearestGuess; }
 
     public int getPlayersMin() {
         return playersMin;
@@ -153,4 +202,17 @@ public class GameSettings {
     public void setDeckId(long deckId) {
         this.deckId = deckId;
     }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public boolean isSettingsValid() {
+        return settingsValid;
+    }
 }
+
