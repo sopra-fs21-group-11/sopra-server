@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
 
-
 import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
@@ -24,13 +23,10 @@ public class GameStateDTO {
     private CardDTO nextCardOnStack;
 
     public GameStateDTO() {
-
         left = new ArrayList<>();
         right = new ArrayList<>();
         top = new ArrayList<>();
         bottom = new ArrayList<>();
-
-
     }
 
     public UserGetDTO getNextPlayer() {
@@ -57,8 +53,6 @@ public class GameStateDTO {
         this.nextCardOnStack = nextCardOnStack;
     }
 
-
-
     public void addLeftCard(CardDTO card){
         try {
             this.left.add(card);
@@ -66,25 +60,27 @@ public class GameStateDTO {
             Application.logger.error(card.getName()+"\\n"+ ex.toString());
         }
     }
+
     public void addRightCard(CardDTO card){
         try{this.right.add(card);
         } catch (Exception ex){
             Application.logger.error(card.getName()+"\\n"+ ex.toString());
         }
     }
+
     public void addTopCard(CardDTO card){
         try{this.top.add(card);
         } catch (Exception ex){
             Application.logger.error(card.getName()+"\\n"+ ex.toString());
         }
     }
+
     public void addBottomCard(CardDTO card){
         try{this.bottom.add(card);
         } catch (Exception ex){
             Application.logger.error(card.getName()+"\\n"+ ex.toString());
         }
     }
-
 
     public int getPlayertokens() {
         return playertokens;

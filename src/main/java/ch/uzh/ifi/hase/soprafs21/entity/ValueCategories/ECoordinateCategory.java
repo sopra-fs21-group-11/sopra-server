@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.entity.ValueCategories;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.*;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;

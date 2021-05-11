@@ -4,8 +4,6 @@ import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.MountainCard;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
-import org.hibernate.mapping.Value;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +19,6 @@ public class HeightValueCategory implements ValueCategory {
             SwissLocationCard.class,
             NormalLocationCard.class,
             MountainCard.class
-
     ));
 
 
@@ -32,7 +29,6 @@ public class HeightValueCategory implements ValueCategory {
             return false;
         }
     }
-
 
     public boolean isPlacementCorrect(Card referenceCard, Card cardInQuestion) throws Exception{
 
@@ -77,7 +73,6 @@ public class HeightValueCategory implements ValueCategory {
             }
             //cards are not next to each other:
                 throw new Exception("Questionable cards are not next to each other.");
-
         }
 
         if((referenceCard.getLowerNeighbour() == null && referenceCard.getHigherNeighbour() == null) ||
@@ -85,7 +80,6 @@ public class HeightValueCategory implements ValueCategory {
             try {
                 if(referenceCard.getRightNeighbour().getCardId()== cardInQuestion.getCardId()){//reference card is placed left to card in question
                     return (referenceValue <= questionValue);
-
                 }
             }
             catch (Exception e) {
@@ -99,17 +93,17 @@ public class HeightValueCategory implements ValueCategory {
             }
             //cards are not next to each other:
                 throw new Exception("Questionable cards are not next to each other.");
-
-
         }
         throw new Exception("No valid compare request. (Two startingcards?)");
     }
     public String getDescription() {
         return description;
     }
+
     public String getName() {
         return name;
     }
+
     public long getId() {
         return id;
     }

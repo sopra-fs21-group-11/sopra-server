@@ -9,6 +9,7 @@ public class UserGetDTO {
     private Long totalWins;
     private Long totalDefeats;
     private Date creationDate;
+    private int currentToken;
     private Long totalTokens;
     private Long playTime;
     private boolean isPlaying;
@@ -53,6 +54,10 @@ public class UserGetDTO {
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
+
+    public int getCurrentToken() { return currentToken; }
+
+    public void setCurrentToken(int currentToken) { this.currentToken = currentToken; }
 
     public Long getTotalTokens() {
         return totalTokens;

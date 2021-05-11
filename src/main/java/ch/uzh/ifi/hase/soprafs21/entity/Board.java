@@ -2,11 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
-
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
 public class Board {

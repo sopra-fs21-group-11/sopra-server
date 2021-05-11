@@ -68,9 +68,7 @@ public class GameSettings {
         this.playersMax = playersMax;
     }
 
-    public int getNrOfEvaluations() {
-        return nrOfEvaluations;
-    }
+    public int getNrOfEvaluations() { return nrOfEvaluations; }
 
     public void setNrOfEvaluations(int nrOfEvaluations) {
         this.nrOfEvaluations = nrOfEvaluations;
