@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
+import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
@@ -145,9 +146,9 @@ public class DeckService {
     public Deck fetchDeck(long id, String querry, long population){
         Deck deckToFetch = getDeck(id);
         deckToFetch.setCards(new ArrayList<>());//we empty our deck.
-        List<Card> cardsToFetch = fetchingService.fetchCardsFromCountry(querry, population);
+        List<Card> cardsToFetch = fetchingService.fetchCardsFromCountry(querry, population, this.getAllCards());
         int cardsAdded = 0;
-        for(int i=0;  i<45 && i<cardsToFetch.size() ;i++){
+        for(int i=0;  i<60 && i<cardsToFetch.size() ;i++){
             deckToFetch.addCard(createNewCard(cardsToFetch.get(i)));
             cardsAdded++;
         }
@@ -200,59 +201,62 @@ public class DeckService {
 
     //this method initializes our default deck that gets loaded from our .csv
     public void initializeDefaultDeck() {
-        Deck defaultDeck = new Deck();
-        defaultDeck.setName("Default Deck");
-        defaultDeck.setDescription("This is a default deck with swiss location cards like the original game.");
-        defaultDeck = createEmptyDeck(defaultDeck);
-        List<Card> cardsToSave = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("src/bunzendataset.csv"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(";");
-                //skip title row
-                if (values[0].equals("Locationname")) {
-                    continue;
+        try {
+            Deck defaultDeck = new Deck();
+            defaultDeck.setName("Default Deck");
+            defaultDeck.setDescription("This is a default deck with swiss location cards like the original game.");
+            defaultDeck = createEmptyDeck(defaultDeck);
+            List<Card> cardsToSave = new ArrayList<>();
+            try (BufferedReader br = new BufferedReader(new FileReader("src/bunzendataset.csv"))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] values = line.split(";");
+                    //skip title row
+                    if (values[0].equals("Locationname")) {
+                        continue;
+                    }
+                    Card newCard = new Card();
+                    newCard.setName(values[0]);
+                    //split coordinates
+                    String toFloat = values[1].split(" ")[0] + "." + values[1].split(" ")[1];
+                    newCard.setnCoordinate(Float.parseFloat(toFloat));
+                    toFloat = values[2].split(" ")[0] + "." + values[2].split(" ")[1];
+                    newCard.seteCoordinate(Float.parseFloat(toFloat));
+                    if (values[3].length() == 0) {//Population
+                        continue;
+                    }
+                    else {
+                        newCard.setPopulation(Integer.parseInt(values[3]));
+                    }
+                    cardsToSave.add(newCard);
                 }
-                Card newCard = new Card();
-                newCard.setName(values[0]);
-                //split coordinates
-                String toFloat = values[1].split(" ")[0] + "." + values[1].split(" ")[1];
-                newCard.setnCoordinate(Float.parseFloat(toFloat));
-                toFloat = values[2].split(" ")[0] + "." + values[2].split(" ")[1];
-                newCard.seteCoordinate(Float.parseFloat(toFloat));
-                if (values[3].length() == 0) {//Population
-                    continue;
-                }
-                else {
-                    newCard.setPopulation(Integer.parseInt(values[3]));
-                }
-                cardsToSave.add(newCard);
             }
-        }
-        catch (Exception ex) {
-        }
-        List<Card> cardsToAddToDeck = new ArrayList<>();
-        //save all cards:
-        for(Card cardToSave : cardsToSave){
-            cardsToAddToDeck.add(cardRepository.save(cardToSave));
-        }
-        cardRepository.flush();
-        List<Card> definitiveDeck = new ArrayList<>();
-        //default deck has 32 cards in it and 3 evaluation happen:
-        for(int i = 0;i<=32;i++){
-            Random rand = new Random();
-            int index = rand.nextInt(32-1);
-            while(definitiveDeck.contains(cardsToAddToDeck.get(rand.nextInt(32-1)))){
-                index = rand.nextInt(cardsToAddToDeck.size()-1);
+            catch (Exception ex) {
             }
-            definitiveDeck.add(cardsToAddToDeck.get(index));//pick a random card out of the dataset
+            List<Card> cardsToAddToDeck = new ArrayList<>();
+            //save all cards:
+            for (Card cardToSave : cardsToSave) {
+                cardsToAddToDeck.add(cardRepository.save(cardToSave));
+            }
+            cardRepository.flush();
+            if(cardsToAddToDeck.size()<=32){
+                return;
+            }
+            List<Card> definitiveDeck = new ArrayList<>();
+            //default deck has 32 cards in it and 3 evaluation happen:
+            for (int i = 0; i <= 32; i++) {
+                definitiveDeck.add(cardsToAddToDeck.get(i));
+            }
+            //add list to deck:
+            defaultDeck.setCards(definitiveDeck);
+            defaultDeck.setSize(definitiveDeck.size());
+            defaultDeck = deckRepository.save(defaultDeck);
+            deckRepository.flush();
+            validateDeck(defaultDeck.getId());
+        } catch (Exception ex){
+            Application.logger.error("************************************");
+            Application.logger.error(ex.toString());
         }
-        //add list to deck:
-        defaultDeck.setCards(definitiveDeck);
-        defaultDeck.setSize(definitiveDeck.size());
-        defaultDeck = deckRepository.save(defaultDeck);
-        deckRepository.flush();
-        validateDeck(defaultDeck.getId());
 
     }
 

@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -55,7 +54,6 @@ public class User extends UserGetDTO implements Serializable {
 
     @Column int currentToken;
 
-
     public int getCurrentToken() {
         return currentToken;
     }
@@ -65,9 +63,7 @@ public class User extends UserGetDTO implements Serializable {
     }
 
     @Override
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     @Override
     public void setId(Long id) {

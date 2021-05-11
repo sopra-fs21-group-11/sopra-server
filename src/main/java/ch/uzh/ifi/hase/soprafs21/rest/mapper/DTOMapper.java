@@ -1,14 +1,9 @@
 package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 
-import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
 
 /**
  * DTOMapper
@@ -21,7 +16,6 @@ import java.util.List;
 @Mapper
 public interface DTOMapper {
 
-
     DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
     @Mapping(source = "username", target = "username")
@@ -33,6 +27,7 @@ public interface DTOMapper {
     @Mapping(source = "totalWins", target = "totalWins")
     @Mapping(source = "totalDefeats", target = "totalDefeats")
     @Mapping(source = "creationDate", target = "creationDate")
+    @Mapping(source = "currentToken", target = "currentToken")
     @Mapping(source = "totalTokens", target = "totalTokens")
     @Mapping(source = "isPlaying", target = "isPlaying")
     @Mapping(source = "playTime", target = "playTime")

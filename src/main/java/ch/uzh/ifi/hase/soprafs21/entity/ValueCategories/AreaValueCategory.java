@@ -3,7 +3,6 @@ package ch.uzh.ifi.hase.soprafs21.entity.ValueCategories;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +54,6 @@ public class AreaValueCategory implements ValueCategory{
             }
             //cards are not next to each other:
                 throw new Exception("Questionable cards are not next to each other.");
-
         }
 
         if((referenceCard.getLowerNeighbour() == null && referenceCard.getHigherNeighbour() == null) ||
@@ -63,7 +61,6 @@ public class AreaValueCategory implements ValueCategory{
             try {
                 if(referenceCard.getRightNeighbour().getCardId()== cardInQuestion.getCardId()){//reference card is placed left to card in question
                     return (referenceValue <= questionValue);
-
                 }
             }
             catch (Exception e) {
@@ -77,8 +74,6 @@ public class AreaValueCategory implements ValueCategory{
             }
             //cards are not next to each other:
                 throw new Exception("Questionable cards are not next to each other.");
-
-
         }
         throw new Exception("No valid compare request. (Two startingcards?)");
     }
@@ -86,9 +81,11 @@ public class AreaValueCategory implements ValueCategory{
     public String getDescription() {
         return description;
     }
+
     public String getName() {
         return name;
     }
+
     public long getId() {
         return id;
     }

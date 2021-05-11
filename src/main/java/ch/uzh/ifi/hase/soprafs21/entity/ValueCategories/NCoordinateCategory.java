@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.entity.ValueCategories;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.*;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +19,6 @@ public class NCoordinateCategory implements ValueCategory {
             SightSeeingCard.class,
             SwissLocationCard.class
             //extendable with more types.
-
     ));
 
 
@@ -51,9 +49,11 @@ public class NCoordinateCategory implements ValueCategory {
     public String getDescription() {
         return description;
     }
+
     public String getName() {
         return name;
     }
+
     public long getId() {
         return id;
     }

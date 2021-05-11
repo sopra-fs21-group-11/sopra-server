@@ -1,23 +1,17 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
+import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
-
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
 public class Board {
-    //private LinkedList<Card> horizontalAxis;
-    //private LinkedList<Card> verticalAxis;
     private LinkedList<Card> topList;
     private LinkedList<Card> bottomList;
     private LinkedList<Card> leftList;
     private LinkedList<Card> rightList;
     private Card startingCard;
-    //private int startingCardIndexVertical=0;
-    //private int startingCardIndexHorizontal=0;
+
 
     private int placedCard;
 
@@ -31,6 +25,7 @@ public class Board {
     }
     public void placeCard(Card cardToPlace, int index, String axis){
         placedCard++;
+        Application.logger.info("Placing Card: "+ cardToPlace.getLocationName()+", "+index+", "+axis);
         if(axis.toLowerCase(Locale.ROOT).contains("top")){
             //lower neighbour is starting card
             if(index == 0){
