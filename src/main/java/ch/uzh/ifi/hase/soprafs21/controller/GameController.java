@@ -103,7 +103,6 @@ public class GameController {
             }
             gameGetDTO.setPlayers(playingUsers);
         }
-
         return gameGetDTO;
     }
 
@@ -128,7 +127,6 @@ public class GameController {
         location.put("id", Long.toString(newGame.getId()) );
         // convert internal representation of user back to API
         return ResponseEntity.status(201).body(location);
-
     }
 
     @PostMapping("/games/{id}")
@@ -141,7 +139,19 @@ public class GameController {
         }
         GameLobby joinedGame = gameService.joinGameLobby(userService.getUserByToken(token), id);
         return GameMapper.ConvertEntityToGamePostDTO(joinedGame);
+    }
 
+    //TODO: check if ok
+    @PutMapping("/games/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GamePostDTO changeSettings(@PathVariable long id, @RequestHeader("Authorization") String token, @RequestBody GamePostDTO gamePostDTO) {
+        User hostUser = userService.getUserByToken(token);
+        if(hostUser == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host could not be identified by token.");
+        }
+        GameLobby changedGame = gameService.changeSettings(hostUser, id, gamePostDTO);
+        return GameMapper.ConvertEntityToGamePostDTO(changedGame);
     }
 
     @PutMapping("/games/{id}/kick")
@@ -151,7 +161,7 @@ public class GameController {
         User hostUser = userService.getUserByToken(token);
         User userToKick = userService.getUser(gameKickPutDTO.getKickPlayerId());
         if(hostUser == null || userToKick == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host or user to kick couldn't be found.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host or user to kick could not be found.");
         }
         GameLobby kickedGame = gameService.kickPlayer(hostUser, userToKick, id);
         return GameMapper.ConvertEntityToGamePostDTO(kickedGame);
