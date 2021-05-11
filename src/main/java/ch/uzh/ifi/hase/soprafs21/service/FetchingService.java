@@ -33,12 +33,11 @@ public class FetchingService {
     private  WebClient.Builder builder;
     private String overpassBuilder = "";
 
-    @Autowired
-    private DeckService deckService;
 
-    public FetchingService(DeckService deckService){
+    private List<Card> allCards;
+
+    public FetchingService(){
         builder = WebClient.builder();
-        this.deckService = deckService;
     }
 
     public String fetchingAvailable(){
@@ -57,7 +56,8 @@ public class FetchingService {
         return response;
     }
 
-    public List<Card> fetchCardsFromCountry(String country, long population){
+    public List<Card> fetchCardsFromCountry(String country, long population, List<Card> allCards){
+        this.allCards = allCards;
         if(overpassBuilder==""){
             this.overpassBuilder = readOverpassFile();
         }
@@ -156,7 +156,7 @@ public class FetchingService {
             //validate every card attribute and if not valid, we skip the card.
             if(newCard.getPopulation()!=0 && newCard.getnCoordinate()!=0 && newCard.geteCoordinate()!=0 && newCard.getName()!="") {
                 boolean flag = false;
-                for(Card existingCard : deckService.getAllCards()){
+                for(Card existingCard : this.allCards){
                     if(newCard.getName().equals(existingCard.getName())){
                         flag = true;
                     }

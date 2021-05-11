@@ -145,7 +145,7 @@ public class DeckService {
     public Deck fetchDeck(long id, String querry, long population){
         Deck deckToFetch = getDeck(id);
         deckToFetch.setCards(new ArrayList<>());//we empty our deck.
-        List<Card> cardsToFetch = fetchingService.fetchCardsFromCountry(querry, population);
+        List<Card> cardsToFetch = fetchingService.fetchCardsFromCountry(querry, population, this.getAllCards());
         int cardsAdded = 0;
         for(int i=0;  i<60 && i<cardsToFetch.size() ;i++){
             deckToFetch.addCard(createNewCard(cardsToFetch.get(i)));
