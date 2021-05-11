@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clean Workspace
-        uses: AutoModality/action-clean@v1.1.0
+      - uses: AutoModality/action-clean@v1
+      - uses: actions/checkout@v2
+      - run: echo Workspace cleared.
     
       - name: checkout repository code
         uses: actions/checkout@v1
