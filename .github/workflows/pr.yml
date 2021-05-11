@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Clean Workspace
+        uses: AutoModality/action-clean@v1.1.0
+    
       - name: checkout repository code
         uses: actions/checkout@v1
 
