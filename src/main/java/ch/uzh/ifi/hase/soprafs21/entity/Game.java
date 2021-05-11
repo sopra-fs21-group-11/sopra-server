@@ -98,6 +98,7 @@ public class Game implements PropertyChangeListener {
         }
         if(!turnCountdown.isAlive()){
             Application.logger.info("Perform turn rejected: Userid: "+Long.toString(userid));
+            return;
         }
         Application.logger.info("Perform turn with nextCard: "+nextCard.getLocationName());
         activeBoard.placeCard(cardToPlace, placementIndex, axis);
