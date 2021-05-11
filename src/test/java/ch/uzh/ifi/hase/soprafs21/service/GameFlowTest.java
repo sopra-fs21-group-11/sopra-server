@@ -193,7 +193,7 @@ public class GameFlowTest {
         int j = 0;
         while(!game.convertToDTO().getGamestate().equals("EVALUATION")){//place cards until evaluation starts
             game.performTurn(game.getCurrentPlayer().getKey().getId(), game.getNextCard(), 0, axis[j]);
-            Thread.sleep(6000);
+            Thread.sleep(1000);
             if(j==3){
                 j=0;
             }else{
