@@ -201,6 +201,7 @@ public class GameFlowTest {
             }
         }
         assertEquals(game.convertToDTO().getGamestate(), "EVALUATION");
+        Thread.sleep(100);
         GameGuessDTO dto = new GameGuessDTO();
         int hostToken = 0;
         for(var player : game.getPlayers()){
