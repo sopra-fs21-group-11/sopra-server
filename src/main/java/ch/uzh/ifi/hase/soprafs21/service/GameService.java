@@ -141,11 +141,28 @@ public class GameService {
 
     }
 
+    public GameLobby leaveGameLobby(User leavingUser, long id) {
+        GameLobby lobby = getOpenGameById(id);
+        if(lobby == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby with id "+id+" not found.");
+        }
+        if(leavingUser.getId() == lobby.getHostId()){//host is in game -> remove game
+            this.openGames.remove(lobby);
+        }
+        lobby.removePlayer(leavingUser);
+        if(lobby.getPlayers().size()==0){//remove lobby from list because there is no player in it.
+            this.openGames.remove(lobby);
+        }
+        return lobby;
+    }
+
     public Game joinRunningGame(User user, String sessionId, long gameId){
         Game gameToJoin = getRunningGameById(gameId);
         gameToJoin.joinGame(user, sessionId);
         return gameToJoin;
     }
+
+
 
     public boolean gameIsFull(long gameId) {
         Game FullGame = getRunningGameById(gameId);
@@ -359,4 +376,6 @@ public class GameService {
         }
         return retId;
     }
+
+
 }

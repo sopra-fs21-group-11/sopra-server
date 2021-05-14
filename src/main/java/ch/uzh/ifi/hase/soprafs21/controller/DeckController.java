@@ -2,11 +2,13 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
+import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DeckMapper;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
+import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,8 @@ import java.util.List;
 public class DeckController {
     private final DeckService deckService;
 
-    DeckController(DeckService deckService){
+    DeckController( DeckService deckService)
+    {
         this.deckService = deckService;
     }
 
@@ -83,16 +86,35 @@ public class DeckController {
     @GetMapping("/decks/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public DeckGetDTO getDeck(@PathVariable long id){
+    public DeckGetDTO getCardsNotInDeck(@PathVariable long id){
         return DeckMapper.INSTANCE.map(deckService.getDeck(id));
+    }
+
+    @GetMapping("/decks/{id}/cards")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<CardGetDTO> getDeck(@PathVariable long id){
+        List<CardGetDTO> returnList = new ArrayList<>();
+        for(var card : deckService.getCardsNotInDeck(id)){
+            returnList.add(CardDTOMapper.INSTANCE.convertEntityToCardGetDTO(card));
+        }
+        return returnList;
+    }
+
+    @GetMapping("/decks/{id}/delete")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity deleteDeck(@PathVariable long id, @RequestHeader("Authorization") String token){
+        deckService.remove(id, token);
+        return ResponseEntity.status(204).build();
     }
 
     @PostMapping("/decks")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public DeckGetDTO createNewDeck(@RequestBody DeckPostDTO deckPostDTO){
+    public DeckGetDTO createNewDeck(@RequestHeader("Authorization") String token, @RequestBody DeckPostDTO deckPostDTO){
         Deck newDeck = DeckMapper.INSTANCE.ConvertDeckPostDTOToEntity(deckPostDTO);
-        newDeck = deckService.createEmptyDeck(newDeck);
+        newDeck = deckService.createEmptyDeck(newDeck,token);
         return DeckMapper.INSTANCE.map(newDeck);
     }
 
@@ -113,6 +135,7 @@ public class DeckController {
     public CardGetDTO getCard(@PathVariable long id){
         return CardDTOMapper.INSTANCE.convertEntityToCardGetDTO(deckService.getCard(id));
     }
+
 
     @PostMapping("/cards")
     @ResponseStatus(HttpStatus.CREATED)
