@@ -139,6 +139,18 @@ public class GameController {
         return GameMapper.ConvertEntityToGamePostDTO(joinedGame);
     }
 
+    @PostMapping("/games/{id}/leave")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GamePostDTO leaveGame(@PathVariable long id, @RequestHeader("Authorization") String token) {
+        User leavingUser = userService.getUserByToken(token);
+        if(leavingUser == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Joining user could not be identified by token.");
+        }
+        GameLobby leavedGame = gameService.leaveGameLobby(leavingUser, id);
+        return GameMapper.ConvertEntityToGamePostDTO(leavedGame);
+    }
+
     @PutMapping("/games/{id}/kick")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
