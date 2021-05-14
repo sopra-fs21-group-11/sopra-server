@@ -205,7 +205,7 @@ public class DeckService {
             Deck defaultDeck = new Deck();
             defaultDeck.setName("Default Deck");
             defaultDeck.setDescription("This is a default deck with swiss location cards like the original game.");
-            defaultDeck = createEmptyDeck(defaultDeck);
+            defaultDeck = createEmptyDeck(defaultDeck, 0);
             List<Card> cardsToSave = new ArrayList<>();
             try (BufferedReader br = new BufferedReader(new FileReader("src/bunzendataset.csv"))) {
                 String line;
@@ -284,7 +284,8 @@ public class DeckService {
         }
         return optionalDeck.get();
     }
-    public Deck createEmptyDeck(Deck newDeck){
+    public Deck createEmptyDeck(Deck newDeck, long userId){
+        newDeck.setCreatedBy(userId);
         Deck returningDeck = deckRepository.save(newDeck);
         deckRepository.flush();
         return returningDeck;
@@ -304,6 +305,27 @@ public class DeckService {
         }
         return optionalCard.get();
     }
+    public List<Card> getCardsNotInDeck(long id){
+        Deck deckToReturnCards = getDeck(id);
+        List<Card> allCards = getAllCards();
+        for(Card card : deckToReturnCards.getCards()){
+            for(var cardToRemove  : allCards){
+                if(card.getId() == cardToRemove.getId()){
+                    allCards.remove(cardToRemove);
+                    break;
+                }
+            }
+        }
+        return allCards;
+    }
 
+    public void remove(long id, long userId) {
 
+        Deck deckToDelete = getDeck(id);
+        if(deckToDelete.getCreatedBy()!=userId){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You cannot delete a deck that you haven't created.");
+        }
+        deckRepository.delete(deckToDelete);
+        deckRepository.flush();
+    }
 }

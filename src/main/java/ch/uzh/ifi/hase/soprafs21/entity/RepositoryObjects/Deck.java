@@ -31,6 +31,9 @@ public class Deck implements Serializable{
     @Column
     private String description;
 
+    @Column
+    private Long createdBy;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "compareType_deck",
     joinColumns = @JoinColumn(name="compareType_id", referencedColumnName = "id"),
@@ -48,6 +51,14 @@ public class Deck implements Serializable{
     public void addCard(Card card){
         cards.add(card);
         size++;
+    }
+
+    public Long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
     }
 
     public boolean isReadyToPlay() {
