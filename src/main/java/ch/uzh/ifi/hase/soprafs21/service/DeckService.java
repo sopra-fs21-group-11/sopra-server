@@ -211,7 +211,7 @@ public class DeckService {
             Deck defaultDeck = new Deck();
             defaultDeck.setName("Default Deck");
             defaultDeck.setDescription("This is a default deck with swiss location cards like the original game.");
-            defaultDeck = createEmptyDeck(defaultDeck, "");
+            defaultDeck = createEmptyDeck(defaultDeck, "default");
             List<Card> cardsToSave = new ArrayList<>();
             try (BufferedReader br = new BufferedReader(new FileReader("src/bunzendataset.csv"))) {
                 String line;
@@ -291,8 +291,10 @@ public class DeckService {
         return optionalDeck.get();
     }
     public Deck createEmptyDeck(Deck newDeck, String token){
+        if(token != "default"){
+            newDeck.setCreatedBy(userService.getUserByToken(token).getId());
 
-        newDeck.setCreatedBy(userService.getUserByToken(token).getId());
+        }
         Deck returningDeck = deckRepository.save(newDeck);
         deckRepository.flush();
         return returningDeck;
