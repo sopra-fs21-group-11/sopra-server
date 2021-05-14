@@ -21,7 +21,7 @@ public class DeckController {
     private final DeckService deckService;
     private final UserService userService;
 
-    DeckController(DeckService deckService, UserService userService)
+    DeckController( UserService userService, DeckService deckService)
     {
         this.deckService = deckService;
         this.userService = userService;
