@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.CompareType;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
+import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.PopulationValueCategory;
@@ -34,17 +35,22 @@ public class DeckService {
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
     private final CompareTypeRepository compareTypeRepository;
+    private final UserService userService;
+
 
     private FetchingService fetchingService;
 
     @Autowired
     public DeckService(@Qualifier("deckRepository") DeckRepository deckRepository,
                        @Qualifier("cardRepository") CardRepository cardRepository,
-                       @Qualifier("compareTypeRepository") CompareTypeRepository compareTypeRepository, FetchingService fetchingService){
+                       @Qualifier("compareTypeRepository") CompareTypeRepository compareTypeRepository,
+                       FetchingService fetchingService,
+                       UserService userService){
         this.cardRepository = cardRepository;
         this.compareTypeRepository = compareTypeRepository;
         this.deckRepository = deckRepository;
         this.fetchingService = fetchingService;
+        this.userService = userService;
     }
 
     //basically a converter that converts the repository object to a Entity objects that we can play with.
@@ -205,7 +211,7 @@ public class DeckService {
             Deck defaultDeck = new Deck();
             defaultDeck.setName("Default Deck");
             defaultDeck.setDescription("This is a default deck with swiss location cards like the original game.");
-            defaultDeck = createEmptyDeck(defaultDeck, 0);
+            defaultDeck = createEmptyDeck(defaultDeck, "");
             List<Card> cardsToSave = new ArrayList<>();
             try (BufferedReader br = new BufferedReader(new FileReader("src/bunzendataset.csv"))) {
                 String line;
@@ -284,8 +290,9 @@ public class DeckService {
         }
         return optionalDeck.get();
     }
-    public Deck createEmptyDeck(Deck newDeck, long userId){
-        newDeck.setCreatedBy(userId);
+    public Deck createEmptyDeck(Deck newDeck, String token){
+
+        newDeck.setCreatedBy(userService.getUserByToken(token).getId());
         Deck returningDeck = deckRepository.save(newDeck);
         deckRepository.flush();
         return returningDeck;
@@ -319,10 +326,10 @@ public class DeckService {
         return allCards;
     }
 
-    public void remove(long id, long userId) {
+    public void remove(long id, String token) {
 
         Deck deckToDelete = getDeck(id);
-        if(deckToDelete.getCreatedBy()!=userId){
+        if(deckToDelete.getCreatedBy()!=userService.getUserByToken(token).getId()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You cannot delete a deck that you haven't created.");
         }
         deckRepository.delete(deckToDelete);

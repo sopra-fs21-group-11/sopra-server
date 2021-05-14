@@ -57,7 +57,7 @@ public class DeckServiceIntegrationTest {
         Deck newDeck = new Deck();
         newDeck.setName("testDeck");
         newDeck.setDescription("TestDescription");
-        Deck createdDeck = deckService.createEmptyDeck(newDeck, 1);
+        Deck createdDeck = deckService.createEmptyDeck(newDeck, "");
         assertNotNull(createdDeck.getId());
         assertEquals(createdDeck.getDescription(), newDeck.getDescription());
         assertEquals(createdDeck.getName(), newDeck.getName());

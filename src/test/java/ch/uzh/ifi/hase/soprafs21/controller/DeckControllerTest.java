@@ -89,7 +89,7 @@ public class DeckControllerTest {
         jsonObject.put("name", "TestDeck");
         jsonObject.put("description", "TestDescription");
 
-        given(deckService.createEmptyDeck(any(Deck.class), any(long.class))).willReturn(newDeck);
+        given(deckService.createEmptyDeck(any(Deck.class), any(String.class))).willReturn(newDeck);
         MockHttpServletRequestBuilder postRequest = post("/decks").contentType(MediaType.APPLICATION_JSON);
         postRequest.content(jsonObject.toString());
         postRequest.header("Authorization", "Bearer "+authToken);

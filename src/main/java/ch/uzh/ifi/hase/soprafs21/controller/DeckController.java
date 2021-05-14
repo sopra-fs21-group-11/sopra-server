@@ -19,12 +19,10 @@ import java.util.List;
 @RestController
 public class DeckController {
     private final DeckService deckService;
-    private final UserService userService;
 
-    DeckController( UserService userService, DeckService deckService)
+    DeckController( DeckService deckService)
     {
         this.deckService = deckService;
-        this.userService = userService;
     }
 
     @GetMapping("/decks/{id}/fetch")
@@ -107,8 +105,7 @@ public class DeckController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ResponseEntity deleteDeck(@PathVariable long id, @RequestHeader("Authorization") String token){
-        User deletingUser = userService.getUserByToken(token);
-        deckService.remove(id, deletingUser.getId());
+        deckService.remove(id, token);
         return ResponseEntity.status(204).build();
     }
 
@@ -116,9 +113,8 @@ public class DeckController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public DeckGetDTO createNewDeck(@RequestHeader("Authorization") String token, @RequestBody DeckPostDTO deckPostDTO){
-        User creatingUser = userService.getUserByToken(token);
         Deck newDeck = DeckMapper.INSTANCE.ConvertDeckPostDTOToEntity(deckPostDTO);
-        newDeck = deckService.createEmptyDeck(newDeck, creatingUser.getId());
+        newDeck = deckService.createEmptyDeck(newDeck,token);
         return DeckMapper.INSTANCE.map(newDeck);
     }
 
