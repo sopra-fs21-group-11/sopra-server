@@ -139,7 +139,7 @@ public class GameController {
         return GameMapper.ConvertEntityToGamePostDTO(joinedGame);
     }
 
-    @PostMapping("/games/{id}/leave")
+    @GetMapping("/games/{id}/leave")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GamePostDTO leaveGame(@PathVariable long id, @RequestHeader("Authorization") String token) {
