@@ -1,30 +1,37 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
+import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.rest.fetch.NominatimResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.StringReader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 @Transactional
@@ -72,7 +79,9 @@ public class FetchingService {
 
         querry = querry.replace("####", definitiveId);
         querry = querry.replace("&&&&", Long.toString(population));
-        String xmlResponse = "";
+
+
+        Flux<DataBuffer> xmlResponse = null;
         try {
             xmlResponse = builder
                     .defaultHeader(HttpHeaders.CONTENT_TYPE, String.valueOf(MediaType.APPLICATION_XML))
@@ -82,23 +91,27 @@ public class FetchingService {
                     .uri("http://overpass-api.de/api/interpreter")
                     .body(BodyInserters.fromValue(querry))
                     .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+                    .bodyToFlux(DataBuffer.class);
+
         }catch (Exception ex){
             if(ex.getMessage().contains("429")){
                 throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "overpass has too many requests. Please wait some minutes.");
             }
+            Application.logger.warn("Error in fetching: \n"+ex.getMessage());
         }
         //handle decimalFormat for xml coordinate parsing:
         DecimalFormat df = new DecimalFormat("0.00");
         df.setMaximumFractionDigits(2);
+        String test = "";
 
+        InputStream inStream = getInputStreamFromFluxDataBuffer(xmlResponse);
         //parse xml:
         Document doc = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = factory.newDocumentBuilder();
-            InputSource is = new InputSource(new StringReader(xmlResponse));
+            InputSource is = new InputSource( inStream);
+
             doc = docBuilder.parse(is);
         }catch (Exception ex){
         }
@@ -154,11 +167,15 @@ public class FetchingService {
                 }
             }
             //validate every card attribute and if not valid, we skip the card.
-            if(newCard.getPopulation()!=0 && newCard.getnCoordinate()!=0 && newCard.geteCoordinate()!=0 && newCard.getName()!="") {
+            if(newCard.getPopulation()!=0 && newCard.getnCoordinate()!=0 && newCard.geteCoordinate()!=0 && newCard.getName()!=null && newCard.getName().length()!=0) {
                 boolean flag = false;
                 for(Card existingCard : this.allCards){
-                    if(newCard.getName().equals(existingCard.getName())){
-                        flag = true;
+                    try {
+                        if (newCard.getName().equals(existingCard.getName())) {
+                            flag = true;
+                        }
+                    } catch (Exception ex){
+                        flag = true; //at exception, we skip
                     }
                 }
                 if(flag){
@@ -202,5 +219,26 @@ public class FetchingService {
             e.printStackTrace();
         }
         return querry;
+    }
+    private InputStream getInputStreamFromFluxDataBuffer(Flux<DataBuffer> data){
+        try {
+            PipedOutputStream osPipe = new PipedOutputStream();
+
+            PipedInputStream isPipe = new PipedInputStream(osPipe);
+
+            DataBufferUtils.write(data, osPipe)
+                    //.subscribeOn(Schedulers.elastic())
+                    .doOnComplete(() -> {
+                        try {
+                            osPipe.close();
+                        }
+                        catch (IOException ignored) {
+                        }
+                    })
+                    .subscribe(DataBufferUtils.releaseConsumer());
+            return isPipe;
+        } catch (Exception ex){
+            return null;
+        }
     }
 }
