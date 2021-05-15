@@ -60,12 +60,6 @@ public class Application {
                     .antMatchers(HttpMethod.POST, "/users").permitAll()
                     .antMatchers(HttpMethod.POST, "/users/login").permitAll()
                     .antMatchers("/gs-guide-websocket").permitAll()
-                    .antMatchers(HttpMethod.GET, "/decks/*").permitAll()
-                    .antMatchers(HttpMethod.GET, "/decks/**").permitAll()
-                    .antMatchers(HttpMethod.POST, "/decks/*").permitAll()
-                    .antMatchers(HttpMethod.PUT, "/decks/*").permitAll()
-                    .antMatchers(HttpMethod.GET, "/cards/*").permitAll()
-                    .antMatchers(HttpMethod.POST, "/cards/*").permitAll()
                     .requestMatchers(CorsUtils::isCorsRequest).permitAll()
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     .anyRequest().authenticated();
