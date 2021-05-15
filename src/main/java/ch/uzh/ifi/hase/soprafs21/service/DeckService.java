@@ -333,8 +333,11 @@ public class DeckService {
         Deck deckToDelete = getDeck(id);
         if(deckToDelete.getCreatedBy()!=userService.getUserByToken(token).getId()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You cannot delete a deck that you haven't created.");
+        }try {
+            deckRepository.deleteById(id);
+            deckRepository.flush();
+        } catch (Exception ex){
+            Application.logger.error(ex.getMessage());
         }
-        deckRepository.delete(deckToDelete);
-        deckRepository.flush();
     }
 }
