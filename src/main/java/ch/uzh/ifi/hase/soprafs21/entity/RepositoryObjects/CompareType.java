@@ -19,10 +19,7 @@ public class CompareType implements Serializable {
     @Column
     private String description;
 
-    @ManyToMany(mappedBy = "compareTypes")
-    private List<Deck> decks;
-
-    public CompareType() {
+        public CompareType() {
     }
 
     public long getId() {
@@ -49,11 +46,4 @@ public class CompareType implements Serializable {
         this.description = description;
     }
 
-    public List<Deck> getDecks() {
-        return decks;
-    }
-
-    public void setDecks(List<Deck> decks) {
-        this.decks = decks;
-    }
 }

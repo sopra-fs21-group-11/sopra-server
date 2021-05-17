@@ -46,6 +46,8 @@ public class Game implements PropertyChangeListener {
     private Evaluation evaluation;
     private int nrOfWrongCards;
 
+    private int breakDownCounter = 0;
+
     private List<Long> winnerIds = new ArrayList<>();
 
     private int cardsBeforeEvaluation = 3;
@@ -94,6 +96,10 @@ public class Game implements PropertyChangeListener {
 
     public void performTurn(long userid, Card cardToPlace, int placementIndex, String axis) {
         if (currentPlayer.getKey().getId() != userid) {
+            return;
+        }
+        if(!turnCountdown.isAlive()){
+            Application.logger.info("Perform turn rejected: Userid: "+Long.toString(userid));
             return;
         }
         Application.logger.info("Perform turn with nextCard: "+nextCard.getLocationName());
@@ -182,6 +188,11 @@ public class Game implements PropertyChangeListener {
         //start next turn
         if(senderProperty.equals("PlayerTurnCdEnded")) {
             Application.logger.info(Long.toString(id)+":\tPlayerTurnCdEnded");
+            if(breakDownCounter>5){
+                  gameService.gameEnded(id);
+                  return;
+            }
+            breakDownCounter++;
             //PlayerCountdown has ended -> next players turn.
             currentPlayer = players.remove();
             players.add(currentPlayer);
@@ -193,6 +204,7 @@ public class Game implements PropertyChangeListener {
         }
         if(senderProperty.equals("PlayerTurnCdStopped")) {//A player performed a turn -> goto doubtingPhase
             Application.logger.info(Long.toString(id)+":\tPlayerTurnCdStopped");
+            breakDownCounter=0; //setback BreakdownCounter
             this.activeState = GameState.DOUBTINGPHASE;
             gameService.sendGameStateToUsers(id);
             this.doubtCountdown = new DoubtCountdown(currentSettings.getDoubtCountdown(), this, currentPlayer.getKey());

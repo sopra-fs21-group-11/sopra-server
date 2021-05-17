@@ -21,15 +21,14 @@ public class Deck implements Serializable{
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "card_deck",
-    joinColumns = @JoinColumn(name="card_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name="deck_id",
-    referencedColumnName = "id"))
+    @ManyToMany
     private List<Card> cards;
 
     @Column
     private String description;
+
+    @Column
+    private Long createdBy;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "compareType_deck",
@@ -48,6 +47,14 @@ public class Deck implements Serializable{
     public void addCard(Card card){
         cards.add(card);
         size++;
+    }
+
+    public Long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
     }
 
     public boolean isReadyToPlay() {

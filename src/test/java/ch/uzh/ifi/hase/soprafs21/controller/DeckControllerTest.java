@@ -89,7 +89,7 @@ public class DeckControllerTest {
         jsonObject.put("name", "TestDeck");
         jsonObject.put("description", "TestDescription");
 
-        given(deckService.createEmptyDeck(any(Deck.class))).willReturn(newDeck);
+        given(deckService.createEmptyDeck(any(Deck.class), any(String.class))).willReturn(newDeck);
         MockHttpServletRequestBuilder postRequest = post("/decks").contentType(MediaType.APPLICATION_JSON);
         postRequest.content(jsonObject.toString());
         postRequest.header("Authorization", "Bearer "+authToken);
@@ -127,6 +127,7 @@ public class DeckControllerTest {
         cardToAdd.setPopulation(100L);
         cardToAdd.seteCoordinate(1.00F);
         cardToAdd.setnCoordinate(2.00F);
+        cardToAdd.setId(500L);
 
         //Initialize JSON Object:
         jsonObject = new JSONObject();
@@ -147,8 +148,8 @@ public class DeckControllerTest {
                 .andExpect(jsonPath("$.eCoordinate", equalTo((double)cardToAdd.geteCoordinate())));
 
         given(deckService.getCard(any(Long.class))).willReturn(cardToAdd);
-        getRequest = get("/cards/1");
-        postRequest.header("Authorization", "Bearer "+authToken);
+        getRequest = get("/cards/"+cardToAdd.getId());
+        getRequest.header("Authorization", "Bearer "+authToken);
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(cardToAdd.getName())))
