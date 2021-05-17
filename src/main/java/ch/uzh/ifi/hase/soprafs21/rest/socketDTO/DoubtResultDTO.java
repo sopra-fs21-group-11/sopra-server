@@ -1,7 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
-
 import java.util.ArrayList;
 import java.util.List;
 

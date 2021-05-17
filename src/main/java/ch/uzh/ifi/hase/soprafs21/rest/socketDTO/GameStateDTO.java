@@ -22,6 +22,8 @@ public class GameStateDTO {
     private String gamestate;
     private CardDTO nextCardOnStack;
 
+    private GameEndDTO gameEndDTO;
+
     public GameStateDTO() {
         left = new ArrayList<>();
         right = new ArrayList<>();
@@ -136,5 +138,13 @@ public class GameStateDTO {
 
     public void setBottom(List<CardDTO> bottom) {
         this.bottom = bottom;
+    }
+
+    public GameEndDTO getGameEndDTO() {
+        return gameEndDTO;
+    }
+
+    public void setGameEndDTO(GameEndDTO gameEndDTO) {
+        this.gameEndDTO = gameEndDTO;
     }
 }

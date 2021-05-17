@@ -186,12 +186,14 @@ public class GameService {
         gameToEnd.removeAllPropertyListener();//remove propertyChangeListeners
 
         GameEndDTO gameEndDTO = gameToEnd.createGameEndDTO();
+        GameStateDTO endGameStateDTO = gameToEnd.convertToDTO();
+        endGameStateDTO.setGameEndDTO(gameEndDTO);
 
         if(gameEndDTO.getGameTooShort()){
             //Game does not count towards statistic
             for(var user : gameToEnd.getPlayers()) {
                 // SendGameEndDTO (every user gets the same) but game does not count was too short!
-                this.template.convertAndSend("/topic/game/queue/specific-game-game" + user.getValue(), gameEndDTO);
+                this.template.convertAndSend("/topic/game/queue/specific-game-game" + user.getValue(), endGameStateDTO);
             }
         }
         else {
@@ -211,7 +213,7 @@ public class GameService {
                 userService.saveGameTime(user.getKey().getId(), gameEndDTO.getGameMinutes());
 
                 //sendGameEndDTO (every user gets the same)
-                this.template.convertAndSend("/topic/game/queue/specific-game-game"+user.getValue(),gameEndDTO);
+                this.template.convertAndSend("/topic/game/queue/specific-game-game"+user.getValue(),endGameStateDTO);
             }
         }
         gameToEnd.clearSessionIds();
