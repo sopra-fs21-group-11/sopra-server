@@ -292,7 +292,7 @@ public class Game implements PropertyChangeListener {
         long diffInMillis = Math.abs((new Date()).getTime() - startTime.getTime());
         long minutesPlayed = TimeUnit.MINUTES.convert(diffInMillis, TimeUnit.MILLISECONDS);
         gameEndDTO.setGameMinutes(minutesPlayed);
-        if(minutesPlayed<1){
+        if(minutesPlayed<1){ //TODO: set min of played minutes to count the won or lost tokens currently one minute
             gameEndDTO.setGameTooShort(true);
         }
         else{

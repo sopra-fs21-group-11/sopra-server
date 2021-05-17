@@ -6,7 +6,6 @@ import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
@@ -187,7 +186,17 @@ public class GameService {
 
         GameEndDTO gameEndDTO = gameToEnd.createGameEndDTO();
         GameStateDTO endGameStateDTO = gameToEnd.convertToDTO();
-        endGameStateDTO.setGameEndDTO(gameEndDTO);
+        endGameStateDTO.setGameEndScore(gameEndDTO);
+        //set everything to null because the game ended
+        endGameStateDTO.setLeft(null);
+        endGameStateDTO.setRight(null);
+        endGameStateDTO.setTop(null);
+        endGameStateDTO.setBottom(null);
+        endGameStateDTO.setStartingCard(null);
+        endGameStateDTO.setPlayertokens(0);
+        endGameStateDTO.setPlayersturn(null);
+        endGameStateDTO.setNextPlayer(null);
+        endGameStateDTO.setNextCardOnStack(null);
 
         if(gameEndDTO.getGameTooShort()){
             //Game does not count towards statistic
