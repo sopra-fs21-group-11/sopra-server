@@ -21,11 +21,7 @@ public class Deck implements Serializable{
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "card_deck",
-    joinColumns = @JoinColumn(name="card_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name="deck_id",
-    referencedColumnName = "id"))
+    @ManyToMany
     private List<Card> cards;
 
     @Column

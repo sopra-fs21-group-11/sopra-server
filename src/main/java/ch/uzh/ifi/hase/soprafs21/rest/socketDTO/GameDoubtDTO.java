@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
 
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 

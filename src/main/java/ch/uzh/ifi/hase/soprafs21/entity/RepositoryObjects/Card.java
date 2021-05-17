@@ -15,9 +15,8 @@ public class Card implements Serializable{
     @GeneratedValue
     private Long id;
 
-
-    @ManyToMany(mappedBy="cards")
-    private List<Deck> decks; //a card can be in multiple decks.
+    @ManyToMany(mappedBy = "cards")
+    private List<Deck> inDeck;
 
     @Column
     private float nCoordinate;
@@ -35,6 +34,13 @@ public class Card implements Serializable{
     public Card() {
     }
 
+    public List<Deck> getInDeck() {
+        return inDeck;
+    }
+
+    public void setInDeck(List<Deck> inDeck) {
+        this.inDeck = inDeck;
+    }
 
     public long getPopulation() {
         return population;
@@ -50,14 +56,6 @@ public class Card implements Serializable{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public List<Deck> getDecks() {
-        return decks;
-    }
-
-    public void setDeck(List<Deck> decks) {
-        this.decks = decks;
     }
 
     public String getName() {
