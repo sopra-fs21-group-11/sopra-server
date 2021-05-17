@@ -42,13 +42,11 @@ public class SocketController {
     @MessageMapping("/game/turn")
     public void performTurn(@Header("simpSessionId") String sessionId, GameTurnDTO gameTurnDTO) throws Exception {
         gameService.incomingTurn(gameTurnDTO.getGameId(), sessionId, gameTurnDTO.getPlacementIndex(), gameTurnDTO.getAxis());
-
     }
 
     @MessageMapping("/game/doubt")
     public void doubt(@Header("simpSessionId") String sessionId, DoubtDTO gameDoubtDTO) throws Exception {
         gameService.doubtAction(gameDoubtDTO.getGameId(), gameDoubtDTO.getPlacedCard(), gameDoubtDTO.getDoubtedCard(), sessionId);
-
     }
 
     @MessageMapping("/game/guess")
@@ -63,7 +61,4 @@ public class SocketController {
             gameService.gameEnded(gameEndDTO.getGameId());
         }
     }
-
-
-
 }

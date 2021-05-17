@@ -6,7 +6,6 @@ import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
@@ -186,12 +185,24 @@ public class GameService {
         gameToEnd.removeAllPropertyListener();//remove propertyChangeListeners
 
         GameEndDTO gameEndDTO = gameToEnd.createGameEndDTO();
+        GameStateDTO endGameStateDTO = gameToEnd.convertToDTO();
+        endGameStateDTO.setGameEndScore(gameEndDTO);
+        //set everything to null because the game ended
+        endGameStateDTO.setLeft(null);
+        endGameStateDTO.setRight(null);
+        endGameStateDTO.setTop(null);
+        endGameStateDTO.setBottom(null);
+        endGameStateDTO.setStartingCard(null);
+        endGameStateDTO.setPlayertokens(0);
+        endGameStateDTO.setPlayersturn(null);
+        endGameStateDTO.setNextPlayer(null);
+        endGameStateDTO.setNextCardOnStack(null);
 
         if(gameEndDTO.getGameTooShort()){
             //Game does not count towards statistic
             for(var user : gameToEnd.getPlayers()) {
                 // SendGameEndDTO (every user gets the same) but game does not count was too short!
-                this.template.convertAndSend("/topic/game/queue/specific-game-game" + user.getValue(), gameEndDTO);
+                this.template.convertAndSend("/topic/game/queue/specific-game-game" + user.getValue(), endGameStateDTO);
             }
         }
         else {
@@ -211,7 +222,7 @@ public class GameService {
                 userService.saveGameTime(user.getKey().getId(), gameEndDTO.getGameMinutes());
 
                 //sendGameEndDTO (every user gets the same)
-                this.template.convertAndSend("/topic/game/queue/specific-game-game"+user.getValue(),gameEndDTO);
+                this.template.convertAndSend("/topic/game/queue/specific-game-game"+user.getValue(),endGameStateDTO);
             }
         }
         gameToEnd.clearSessionIds();

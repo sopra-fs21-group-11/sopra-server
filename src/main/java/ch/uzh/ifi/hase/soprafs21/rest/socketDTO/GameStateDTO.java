@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
 
 import ch.uzh.ifi.hase.soprafs21.Application;
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 
 import java.util.ArrayList;
@@ -21,6 +20,8 @@ public class GameStateDTO {
     private UserGetDTO nextPlayer;
     private String gamestate;
     private CardDTO nextCardOnStack;
+
+    private GameEndDTO gameEndScore;
 
     public GameStateDTO() {
         left = new ArrayList<>();
@@ -136,5 +137,13 @@ public class GameStateDTO {
 
     public void setBottom(List<CardDTO> bottom) {
         this.bottom = bottom;
+    }
+
+    public GameEndDTO getGameEndScore() {
+        return gameEndScore;
+    }
+
+    public void setGameEndScore(GameEndDTO gameEndScore) {
+        this.gameEndScore = gameEndScore;
     }
 }

@@ -668,6 +668,52 @@ Result of Evaluation
     }
 	
 }
+
+-----Game End (Scoreboard)-----
+{
+    "left": null,
+    "right": null,
+    "top": null,
+    "bottom": null,
+    "startingCard": null,
+    "playertokens": 0,
+    "playersturn": null,
+    "nextPlayer": null,
+    "gamestate": "GAMEEND",
+    "nextCardOnStack": null,
+    "gameEndScore": {
+        "gameId": 1,
+        "scoreboard": [{
+                "id": 84,
+                "username": "host",
+                "totalWins": 0,
+                "totalDefeats": 0,
+                "creationDate": "2021-05-17T22:08:25.660+00:00",
+                "currentToken": 7,
+                "totalTokens": 0,
+                "playTime": 0,
+                "isPlaying": false,
+                "isOnline": true
+            }, {
+                "id": 83,
+                "username": "guest",
+                "totalWins": 0,
+                "totalDefeats": 0,
+                "creationDate": "2021-05-17T22:08:06.732+00:00",
+                "currentToken": 5,
+                "totalTokens": 0,
+                "playTime": 0,
+                "isPlaying": false,
+                "isOnline": true
+            }
+        ],
+        "winnerIds": null,
+        "gameMinutes": 3,
+        "gameTooShort": false
+    }
+}
+
+
 **********EndGame*************
 SocketMessage to /game/end (must be host player!)
 {	"gameId":1}
