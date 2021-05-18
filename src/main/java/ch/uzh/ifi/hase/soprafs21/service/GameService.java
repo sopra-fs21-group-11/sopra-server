@@ -188,15 +188,15 @@ public class GameService {
         GameStateDTO endGameStateDTO = gameToEnd.convertToDTO();
         endGameStateDTO.setGameEndScore(gameEndDTO);
         //set everything to null because the game ended
-        endGameStateDTO.setLeft(null);
-        endGameStateDTO.setRight(null);
-        endGameStateDTO.setTop(null);
-        endGameStateDTO.setBottom(null);
-        endGameStateDTO.setStartingCard(null);
+        //endGameStateDTO.setLeft(null);
+        //endGameStateDTO.setRight(null);
+        //endGameStateDTO.setTop(null);
+        //endGameStateDTO.setBottom(null);
+        //endGameStateDTO.setStartingCard(null);
         endGameStateDTO.setPlayertokens(0);
-        endGameStateDTO.setPlayersturn(null);
-        endGameStateDTO.setNextPlayer(null);
-        endGameStateDTO.setNextCardOnStack(null);
+        //endGameStateDTO.setPlayersturn(null);
+        //endGameStateDTO.setNextPlayer(null);
+        //endGameStateDTO.setNextCardOnStack(null);
 
         if(gameEndDTO.getGameTooShort()){
             //Game does not count towards statistic
