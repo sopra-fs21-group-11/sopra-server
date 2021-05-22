@@ -112,8 +112,6 @@ public class GameService {
         gameLobby.getSettings().setEvaluationCountdownVisible(gameSettingsToCheck.getEvaluationCountdownVisible());
         gameLobby.getSettings().setPlayerTurnCountdown(gameSettingsToCheck.getPlayerTurnCountdown());
         gameLobby.getSettings().setNrOfEvaluations(gameSettingsToCheck.getNrOfEvaluations());
-        //gameLobby.getSettings().setHorizontalValueCategory(gameSettingsToCheck.getHorizontalValueCategoryId());
-        //gameLobby.getSettings().setVerticalValueCategory(gameSettingsToCheck.getVerticalValueCategoryId());
         gameLobby.getSettings().setPlayersMax(gameSettingsToCheck.getPlayersMax());
         gameLobby.getSettings().setPlayersMin(gameSettingsToCheck.getPlayersMin());
         gameLobby.getSettings().setNrOfStartingTokens(gameSettingsToCheck.getNrOfStartingTokens());
