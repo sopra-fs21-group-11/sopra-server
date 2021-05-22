@@ -2,20 +2,15 @@ package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.CompareType;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.PopulationValueCategory;
 import ch.uzh.ifi.hase.soprafs21.repository.CardRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.CompareTypeRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.DeckRepository;
-import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.DeckPutDTO;
-import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -68,8 +63,6 @@ public class DeckService {
                 playingDeck.addValueCategory(new ECoordinateCategory());
             } else if (category.getId() == 2){
                 playingDeck.addValueCategory(new NCoordinateCategory());
-            }else if(category.getId() == 3){
-                playingDeck.addValueCategory(new PopulationValueCategory());
             }
         }
         return playingDeck;
