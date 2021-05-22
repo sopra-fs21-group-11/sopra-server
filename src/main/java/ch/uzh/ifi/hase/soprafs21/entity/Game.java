@@ -50,7 +50,7 @@ public class Game implements PropertyChangeListener {
 
     private List<Long> winnerIds = new ArrayList<>();
 
-    private int cardsBeforeEvaluation = 3;
+    private int cardsBeforeEvaluation;
 
     public Game(GameLobby lobby, Deck deckToPlay){
         //set up the game-object with all details of the lobby:
@@ -74,6 +74,7 @@ public class Game implements PropertyChangeListener {
             var playerToAdd = new AbstractMap.SimpleEntry<>(player, "");
             players.add(playerToAdd);
         }
+        cardsBeforeEvaluation = deckStack.size()/ currentSettings.getNrOfEvaluations();
     }
 
     public boolean joinGame(User user, String sessionId){
@@ -572,9 +573,6 @@ public class Game implements PropertyChangeListener {
         return hostPlayerId;
     }
 
-    public Date getStartTime() {
-        return startTime;
-    }
 
     public List<Long> getWinnerId() {
         return winnerIds;
@@ -584,13 +582,6 @@ public class Game implements PropertyChangeListener {
         return gameStarted;
     }
 
-    public void setEvaluation(Evaluation evaluation) {
-        this.evaluation = evaluation;
-    }
-
-    public void setWinnerId(List<Long> winnerIds) {
-        this.winnerIds = winnerIds;
-    }
 
     /**
      * Can be accessed only once (At the start of the game).

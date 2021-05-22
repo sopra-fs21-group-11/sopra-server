@@ -126,6 +126,7 @@ public class GameFlowTest {
         settings.setEvaluationCountdown(5);
 
 
+
         lobby.setSettings(settings);
 
     }
@@ -190,15 +191,53 @@ public class GameFlowTest {
         axis[1]="bottom";
         axis[2]="left";
         axis[3]="right";
+        boolean left=false, top=false, right= false, bottom = false;
         int j = 0;
+        int placementIndex = 0;
         while(!game.convertToDTO().getGamestate().equals("EVALUATION")){//place cards until evaluation starts
-            game.performTurn(game.getCurrentPlayer().getKey().getId(), game.getNextCard(), 0, axis[j]);
+            placementIndex=0;
+            switch (axis[j]) {
+                case ("top"):
+                    if(!top) {
+                        placementIndex = game.convertToDTO().getTop().size();
+                        if (placementIndex > 1) {
+                            top = true;
+                        }
+                    }
+                    break;
+                case("bottom"):
+                    if(!bottom) {
+                        placementIndex = game.convertToDTO().getBottom().size();
+                        if(placementIndex>1){
+                            bottom=true;
+                        }
+                    }
+                    break;
+                case("left"):
+                    if(!left) {
+                        placementIndex = game.convertToDTO().getLeft().size();
+                        if(placementIndex>1){
+                            left=true;
+                        }
+                    }
+                    break;
+                case("right"):
+                    if(!right) {
+                        placementIndex = game.convertToDTO().getRight().size();
+                        if(placementIndex>1){
+                            right=true;
+                        }
+                    }
+                    break;
+            }
+            game.performTurn(game.getCurrentPlayer().getKey().getId(), game.getNextCard(), placementIndex, axis[j]);
             Thread.sleep(1000);
             if(j==3){
                 j=0;
             }else{
                 j++;
             }
+
         }
         assertEquals(game.convertToDTO().getGamestate(), "EVALUATION");
         Thread.sleep(100);
