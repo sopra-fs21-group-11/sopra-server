@@ -13,19 +13,4 @@ public class SwissLocationCard extends Card{
         this.population = population;
     }
 
-    public float getArea() {
-        return area;
-    }
-
-    public void setArea(float area) {
-        this.area = area;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
 }
