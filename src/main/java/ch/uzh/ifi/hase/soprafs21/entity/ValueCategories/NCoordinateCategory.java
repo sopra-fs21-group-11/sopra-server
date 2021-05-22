@@ -13,10 +13,7 @@ public class NCoordinateCategory implements ValueCategory {
 
     //List defines the allowed cards.
     private List<Type> validTypes = new ArrayList<Type>(Arrays.asList(
-            MountainCard.class,
             NormalLocationCard.class,
-            RiverCard.class,
-            SightSeeingCard.class,
             SwissLocationCard.class
             //extendable with more types.
     ));
