@@ -112,8 +112,6 @@ public class GameService {
         gameLobby.getSettings().setEvaluationCountdownVisible(gameSettingsToCheck.getEvaluationCountdownVisible());
         gameLobby.getSettings().setPlayerTurnCountdown(gameSettingsToCheck.getPlayerTurnCountdown());
         gameLobby.getSettings().setNrOfEvaluations(gameSettingsToCheck.getNrOfEvaluations());
-        //gameLobby.getSettings().setHorizontalValueCategory(gameSettingsToCheck.getHorizontalValueCategoryId());
-        //gameLobby.getSettings().setVerticalValueCategory(gameSettingsToCheck.getVerticalValueCategoryId());
         gameLobby.getSettings().setPlayersMax(gameSettingsToCheck.getPlayersMax());
         gameLobby.getSettings().setPlayersMin(gameSettingsToCheck.getPlayersMin());
         gameLobby.getSettings().setNrOfStartingTokens(gameSettingsToCheck.getNrOfStartingTokens());
@@ -128,13 +126,11 @@ public class GameService {
         if(gameToJoin.getPlayers().size() >= gameToJoin.getSettings().getPlayersMax()){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. Game is full");
         }
-        if(gameToJoin.getPlayers().contains(user)){
             for(var player : gameToJoin.getPlayers()){
                 if(player.getId() == user.getId()){
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. User is already in the game");
                 }
             }
-        }
         gameToJoin.addPlayer(user);
         return gameToJoin;
 
@@ -188,15 +184,15 @@ public class GameService {
         GameStateDTO endGameStateDTO = gameToEnd.convertToDTO();
         endGameStateDTO.setGameEndScore(gameEndDTO);
         //set everything to null because the game ended
-        endGameStateDTO.setLeft(null);
-        endGameStateDTO.setRight(null);
-        endGameStateDTO.setTop(null);
-        endGameStateDTO.setBottom(null);
-        endGameStateDTO.setStartingCard(null);
+        //endGameStateDTO.setLeft(null);
+        //endGameStateDTO.setRight(null);
+        //endGameStateDTO.setTop(null);
+        //endGameStateDTO.setBottom(null);
+        //endGameStateDTO.setStartingCard(null);
         endGameStateDTO.setPlayertokens(0);
-        endGameStateDTO.setPlayersturn(null);
-        endGameStateDTO.setNextPlayer(null);
-        endGameStateDTO.setNextCardOnStack(null);
+        //endGameStateDTO.setPlayersturn(null);
+        //endGameStateDTO.setNextPlayer(null);
+        //endGameStateDTO.setNextCardOnStack(null);
 
         if(gameEndDTO.getGameTooShort()){
             //Game does not count towards statistic

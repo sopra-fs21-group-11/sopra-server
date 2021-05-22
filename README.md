@@ -1,13 +1,34 @@
-# SoPra RESTful Service Template FS21
+# SoPra FS21 - Group 11 - Usgrächnet Bünzen
 
-## Getting started with Spring Boot
+## Introduction - project aim
 
--   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
--   Guides: http://spring.io/guides  
-    -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
-    -   Building REST services with Spring: http://spring.io/guides/tutorials/bookmarks/
+Our project's aim is to implement the game *Usgrächnet Bünzen*. The original game allows users to test their
+knowledge of Swiss locations in a playful manner. Each player can place location cards on a board
+in relation to other locations based on their coordinates. All other players have the chance to doubt the 
+card placement if they believe it is wrong. Players that continuously place cards correctly and prove other 
+people's card placement to be wrong will be awarded tokens. The player with most tokens wins the game.
+For a more extensive explanation of the original game please check out this **[manual](public/Usgrachnet_Help.pdf)**.
 
-## Setup this Template with your IDE of choice
+
+In order to introduce more complexity we added the following features:
+* players can choose their **own game settings**
+* players can **customize** the card decks to play with
+* players can fetch international locations and create **new cards**
+
+
+## Technologies
+
+### Websocket
+
+### React-js
+
+### [Spring Boot](https://spring.io/)
+
+### 
+
+## High-level components
+
+## Launch & Deployment - for joining developers
 
 Download your IDE of choice: (e.g., [Eclipse](http://www.eclipse.org/downloads/), [IntelliJ](https://www.jetbrains.com/idea/download/)), [Visual Studio Code](https://code.visualstudio.com/) and make sure Java 15 is installed on your system (for Windows-users, please make sure your JAVA_HOME environment variable is set to the correct version of Java).
 
@@ -73,27 +94,25 @@ If you want to avoid running all tests with every change, use the following comm
 
 `./gradlew build --continuous -xtest`
 
-## API Endpoint Testing
+## Illustrations of Game
 
-### Postman
+## Roadmap
 
--   We highly recommend to use [Postman](https://www.getpostman.com) in order to test your API Endpoints.
+>
 
-## Debugging
+## Authors and acknowledgment
 
-If something is not working and/or you don't know what is going on. We highly recommend that you use a debugger and step
-through the process step-by-step.
+A special thanks goes to our TA Raffi and the sopra team FS21.
 
-To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you start with `./gradlew bootRun` command),
-do the following:
+### Authors
+- [Martin](https://github.com/tinu0816)
+- [Tobias](https://github.com/tobcode)
+- [Lukas](https://github.com/LukZeh)
+- [Tanzil](https://github.com/tanzilkm)
+- [Debby](https://github.com/theDebbister)
 
-1. Open Tab: **Run**/Edit Configurations
-2. Add a new Remote Configuration and name it properly
-3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
-4. Press `Shift + F9` or the use **Run**/Debug"Name of your task"
-5. Set breakpoints in the application where you need it
-6. Step through the process one step at a time
 
-## Testing
 
-Have a look here: https://www.baeldung.com/spring-boot-testing
+## License
+
+

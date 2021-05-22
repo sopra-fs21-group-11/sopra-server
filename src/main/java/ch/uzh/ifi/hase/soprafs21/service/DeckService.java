@@ -129,6 +129,10 @@ public class DeckService {
 
     public Deck editDeck(long id, DeckPutDTO deckPutDTO){
         Deck deckToEdit = getDeck(id);
+        //check if enough cards are in the deck.
+        if(deckPutDTO.getCards().size()<10 || deckPutDTO.getCards().size()>60){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There are either too less or too many cards in the deck to save it. Please send a correct deck.");
+        }
         if(deckPutDTO.getName()!=null){
             deckToEdit.setName(deckPutDTO.getName());
         }
@@ -153,6 +157,9 @@ public class DeckService {
         Deck deckToFetch = getDeck(id);
         deckToFetch.setCards(new ArrayList<>());//we empty our deck.
         List<Card> cardsToFetch = fetchingService.fetchCardsFromCountry(querry, population, this.getAllCards());
+        if(cardsToFetch.size()<10){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cards were created but the deck couldn't be stored since there are less than 10 cards.");
+        }
         int cardsAdded = 0;
         for(int i=0;  i<60 && i<cardsToFetch.size() ;i++){
             deckToFetch.addCard(createNewCard(cardsToFetch.get(i)));

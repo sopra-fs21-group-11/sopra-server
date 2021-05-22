@@ -285,14 +285,14 @@ public class Game implements PropertyChangeListener {
 
         //TODO: wer gewinnt bei spielabbruch durch host?
         if(winnerIds == null){
-            gameEndDTO.setWinnerIds(winnerIds);
+            gameEndDTO.setWinnerIds(winnerIds); //TODO: Bei Spielabbruch immer null
         }
 
         //set playtime:
         long diffInMillis = Math.abs((new Date()).getTime() - startTime.getTime());
         long minutesPlayed = TimeUnit.MINUTES.convert(diffInMillis, TimeUnit.MILLISECONDS);
         gameEndDTO.setGameMinutes(minutesPlayed);
-        if(minutesPlayed<1){ //TODO: set min of played minutes to count the won or lost tokens currently one minute
+        if(minutesPlayed<1){ //TODO: adjust the min of played minutes to count the won or lost tokens currently one minute
             gameEndDTO.setGameTooShort(true);
         }
         else{

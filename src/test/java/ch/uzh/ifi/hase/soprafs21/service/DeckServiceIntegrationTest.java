@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,13 +91,22 @@ public class DeckServiceIntegrationTest {
         cardsList.add(createdCard.getId());
         deckPutDTO.setCards(cardsList);
 
-        //edit deck:
-        Deck editedDeck = deckService.editDeck(createdDeck.getId(), deckPutDTO);
-        assertTrue(editedDeck.getCards().size()==3);
-        assertFalse(editedDeck.isReadyToPlay());
-        //assertTrue(editedDeck.getCompareTypes().size()==0);
+        //edit deck: //should throw an error since there are not that much cards.
+        assertThrows(ResponseStatusException.class, () -> {deckService.editDeck(createdDeck.getId(), deckPutDTO);});
+        //add some more :)
+        cardsList.add(createdCard.getId());
+        cardsList.add(createdCard.getId());
+        cardsList.add(createdCard.getId());
+        cardsList.add(createdCard.getId());
+        cardsList.add(createdCard.getId());
+        cardsList.add(createdCard.getId());
+        cardsList.add(createdCard.getId());
+        cardsList.add(createdCard.getId());
+        cardsList.add(createdCard.getId());
+        deckPutDTO.setCards(cardsList);
 
         //validate Deck:
+        Deck editedDeck = deckService.editDeck(createdDeck.getId(), deckPutDTO);
         Deck validatedDeck = deckService.validateDeck(editedDeck.getId());
         assertTrue(validatedDeck.isReadyToPlay());
         assertTrue(validatedDeck.getCompareTypes().size()!=0);
