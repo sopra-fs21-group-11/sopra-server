@@ -13,7 +13,15 @@ public class DeckGetDTO {
     private List<CompareTypeGetDTO> compareTypes;
     private int size;
     private boolean readyToPlay;
+    private long createdBy;
 
+    public long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(long createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public boolean isReadyToPlay() {
         return readyToPlay;

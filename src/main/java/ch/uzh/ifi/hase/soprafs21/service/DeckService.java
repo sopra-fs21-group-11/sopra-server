@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.CompareType;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
+import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.repository.CardRepository;
@@ -146,11 +147,23 @@ public class DeckService {
         deckRepository.flush();
         return deckToEdit;
     }
-    public Deck fetchDeck(long id, String querry, long population){
+    public Deck fetchDeck(long id, String querry, long population, String token){
+        User fetchingUser = userService.getUserByToken(token);
         Deck deckToFetch = getDeck(id);
+        if(token.equals("0")){
+            deckToFetch.setCreatedBy(0L);
+        }else {
+            deckToFetch.setCreatedBy(fetchingUser.getId());
+        }
         deckToFetch.setCards(new ArrayList<>());//we empty our deck.
         List<Card> cardsToFetch = fetchingService.fetchCardsFromCountry(querry, population, this.getAllCards());
         if(cardsToFetch.size()<10){
+            try{
+                deckRepository.deleteById(deckToFetch.getId());
+            }catch (Exception ex){
+            }
+            deckToFetch = deckRepository.save(deckToFetch);
+            deckRepository.flush();
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Cards were created but the deck couldn't be stored since there are less than 10 cards.");
         }
         int cardsAdded = 0;
@@ -326,6 +339,16 @@ public class DeckService {
             }
         }
         return allCards;
+    }
+
+    public void cleanupEmptyDecks(){
+        List<Deck> allDecks = getAllDecks();
+        for(Deck deck : allDecks){
+            if(deck.getCards().size()<10){
+                deckRepository.deleteById(deck.getId());
+            }
+        }
+        deckRepository.flush();
     }
 
     public void remove(long id, String token) {
