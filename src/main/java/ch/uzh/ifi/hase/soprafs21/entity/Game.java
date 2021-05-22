@@ -75,6 +75,7 @@ public class Game implements PropertyChangeListener {
             players.add(playerToAdd);
         }
         cardsBeforeEvaluation = deckStack.size()/ currentSettings.getNrOfEvaluations();
+        Collections.shuffle(deckStack);
     }
 
     public boolean joinGame(User user, String sessionId){
