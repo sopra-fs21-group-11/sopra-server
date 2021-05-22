@@ -28,8 +28,8 @@ public class DeckController {
     @GetMapping("/decks/{id}/fetch")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public DeckGetDTO fetchDeck(@PathVariable long id, @RequestParam String querry, @RequestParam long population){
-        Deck fetchedDeck = deckService.fetchDeck(id, querry, population);
+    public DeckGetDTO fetchDeck(@PathVariable long id, @RequestHeader("Authorization") String token, @RequestParam String querry, @RequestParam long population){
+        Deck fetchedDeck = deckService.fetchDeck(id, querry, population, token);
         return DeckMapper.INSTANCE.map(fetchedDeck);
     }
 
@@ -77,6 +77,7 @@ public class DeckController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<DeckGetDTO> getAllDecks(){
+        deckService.cleanupEmptyDecks();
         List<DeckGetDTO> decks = new ArrayList<>();
         for(Deck deck : deckService.getAllDecks()){
             decks.add(DeckMapper.INSTANCE.map(deck));

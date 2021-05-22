@@ -113,7 +113,7 @@ public class DeckServiceIntegrationTest {
 
         //fetch Deck:
         //fetch deck with switzerland and >= 100'000 population.
-        Deck fetchedDeck = deckService.fetchDeck(validatedDeck.getId(), "Italy", 500000);
+        Deck fetchedDeck = deckService.fetchDeck(validatedDeck.getId(), "Italy", 500000, "0");
         //if the population of the swiss cities dont change, the result should stay the same:
         //7 cards with bern on top.
         while(!deckService.fetchingAvailable().equals("true")){//wait for free slot
