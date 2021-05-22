@@ -128,13 +128,11 @@ public class GameService {
         if(gameToJoin.getPlayers().size() >= gameToJoin.getSettings().getPlayersMax()){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. Game is full");
         }
-        if(gameToJoin.getPlayers().contains(user)){
             for(var player : gameToJoin.getPlayers()){
                 if(player.getId() == user.getId()){
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "Unable to join. User is already in the game");
                 }
             }
-        }
         gameToJoin.addPlayer(user);
         return gameToJoin;
 
