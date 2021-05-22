@@ -24,6 +24,11 @@ public class Deck extends Stack implements Serializable {
         return cards.isEmpty();
     }
 
+    public void shuffleDeck(){
+        Collections.shuffle(this.cards);
+    }
+
+
     public void setCards(Stack<Card> cards) {
         this.cards = cards;
     }
