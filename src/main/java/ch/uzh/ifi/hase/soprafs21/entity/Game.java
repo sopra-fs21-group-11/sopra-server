@@ -328,11 +328,15 @@ public class Game implements PropertyChangeListener {
 
             //remove card:
             activeBoard.removeCard(cardToRemove);
-            doubtedUser.currentToken--;
+            if(doubtedUser.currentToken!=0) {
+                doubtedUser.currentToken--;
+            }
             doubtingUser.currentToken++;
         } else{//doubt is wrong
             doubtedUser.currentToken++;
-            doubtingUser.currentToken--;
+            if(doubtingUser.currentToken!=0) {
+                doubtingUser.currentToken--;
+            }
         }
         doubtCountdown.doStop();
 
