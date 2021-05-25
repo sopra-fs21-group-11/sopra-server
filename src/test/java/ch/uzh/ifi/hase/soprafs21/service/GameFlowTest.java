@@ -77,7 +77,9 @@ public class GameFlowTest {
         User host = userService.getUser(hostId);
         User guest = userService.getUser(guestId);
 
-        GameLobby lobby = gameService.createNewGameLobby(host);
+        GameSettings gameSettings = new GameSettings();
+
+        GameLobby lobby = gameService.createNewGameLobby(host, gameSettings);
         //hostassigning correct?
         assertTrue(lobby.getHostId() == host.getId());
         //lobby added to the gameServiceList?
