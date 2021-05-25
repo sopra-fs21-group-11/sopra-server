@@ -112,8 +112,22 @@ public class GameController {
         if(hostUser == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host user not found. Please reformat request.");
         }
+        //check if gameSettings are ok, create new gameSettings object
+        GameSettings gameSettings = new GameSettings();
+        gameSettings.setDeckId(gamePostDTO.getDeckId());
+        gameSettings.setPlayersMin(gamePostDTO.getPlayersMin());
+        gameSettings.setPlayersMax(gamePostDTO.getPlayersMax());
+        gameSettings.setNrOfEvaluations(gamePostDTO.getNrOfEvaluations());
+        gameSettings.setDoubtCountdown(gamePostDTO.getDoubtCountdown());
+        gameSettings.setVisibleAfterDoubtCountdown(gamePostDTO.getVisibleAfterDoubtCountdown());
+        gameSettings.setPlayerTurnCountdown(gamePostDTO.getPlayerTurnCountdown());
+        gameSettings.setEvaluationCountdown(gamePostDTO.getEvaluationCountdown());
+        gameSettings.setEvaluationCountdownVisible(gamePostDTO.getEvaluationCountdownVisible());
+        gameSettings.setTokenGainOnCorrectGuess(gamePostDTO.getTokenGainOnCorrectGuess());
+        gameSettings.setTokenGainOnNearestGuess(gamePostDTO.getTokenGainOnNearestGuess());
+        gameSettings.setNrOfStartingTokens(gamePostDTO.getNrOfStartingTokens());
 
-        GameLobby newGame = gameService.createNewGameLobby(hostUser);
+        GameLobby newGame = gameService.createNewGameLobby(hostUser, gameSettings);
         if(gamePostDTO.getName().equals("")){
             newGame.setName(Long.toString(newGame.getId()));
         }else {
@@ -162,7 +176,6 @@ public class GameController {
         }
         GameLobby kickedGame = gameService.kickPlayer(hostUser, userToKick, id);
         return GameMapper.ConvertEntityToGamePostDTO(kickedGame);
-
     }
 
     @GetMapping("/games/settings")
@@ -170,11 +183,10 @@ public class GameController {
     @ResponseBody
     public GameSettingsDTO getDefaultGameSettings() {
         GameSettings defaultGameSettings = new GameSettings();
-
         return GameMapper.ConvertEntityToGameSettingsDTO(defaultGameSettings);
     }
 
-    //TODO: check if ok
+    //TODO: after create game lobby is ok delete endpoint!
     @PutMapping("/games/settings/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

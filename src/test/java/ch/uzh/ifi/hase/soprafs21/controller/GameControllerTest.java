@@ -1,11 +1,8 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
+import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
-import ch.uzh.ifi.hase.soprafs21.entity.Deck;
-import ch.uzh.ifi.hase.soprafs21.entity.Game;
-import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
@@ -91,9 +88,11 @@ public class GameControllerTest {
         GameLobby lobby = new GameLobby(user);
         lobby.setId(1L);
 
+        GameSettings gameSettings = new GameSettings();
+
 
         given(userService.getUserByToken(any(String.class))).willReturn(user);
-        given(gameService.createNewGameLobby(any(User.class))).willReturn(lobby);
+        given(gameService.createNewGameLobby(any(User.class), gameSettings)).willReturn(lobby);
 
 
         MockHttpServletRequestBuilder postRequest = post("/games").contentType(MediaType.APPLICATION_JSON);
@@ -132,8 +131,10 @@ public class GameControllerTest {
         joiningUser.setPassword("blabla");
         joiningUser.setUsername("username2");
 
+        GameSettings gameSettings = new GameSettings();
+
         given(userService.getUserByToken(any(String.class))).willReturn(joiningUser);
-        given(gameService.createNewGameLobby(any(User.class))).willReturn(lobby);
+        given(gameService.createNewGameLobby(any(User.class), gameSettings)).willReturn(lobby);
         lobby.addPlayer(joiningUser);
 
         //There is only one game so we dont need to match arguments...
