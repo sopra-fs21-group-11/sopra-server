@@ -18,7 +18,6 @@ public class EvaluatedCardDTO {
 
     private boolean correct;
 
-
     public long getId() {
         return id;
     }

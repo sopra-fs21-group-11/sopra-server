@@ -92,8 +92,6 @@ public class UserController {
         return  ResponseEntity.status(200).body(location);
     }
 
-
-
     @PutMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody

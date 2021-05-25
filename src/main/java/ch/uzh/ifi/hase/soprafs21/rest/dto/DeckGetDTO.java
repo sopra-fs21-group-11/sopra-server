@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,6 @@ public class DeckGetDTO {
     private List<CompareTypeGetDTO> compareTypes;
     private int size;
     private boolean readyToPlay;
-
 
     public boolean isReadyToPlay() {
         return readyToPlay;
@@ -38,7 +36,6 @@ public class DeckGetDTO {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getName() {
         return name;

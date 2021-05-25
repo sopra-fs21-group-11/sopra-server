@@ -2,13 +2,10 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardDTOMapper;
-import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DeckMapper;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
-import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +29,6 @@ public class DeckController {
         Deck fetchedDeck = deckService.fetchDeck(id, querry, population);
         return DeckMapper.INSTANCE.map(fetchedDeck);
     }
-
 
     @PutMapping("/decks/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -60,6 +56,7 @@ public class DeckController {
         }
         return typeList;
     }
+
     @GetMapping("/decks/{id}/fetch/available")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -67,9 +64,6 @@ public class DeckController {
         String response = deckService.fetchingAvailable();
         return ResponseEntity.status(200).body(response);
     }
-
-
-
 
     //The following are the default GET & POST endpoints. These are rather simple...
 
@@ -83,6 +77,7 @@ public class DeckController {
         }
         return decks;
     }
+
     @GetMapping("/decks/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -129,13 +124,13 @@ public class DeckController {
         }
         return cards;
     }
+
     @GetMapping("/cards/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public CardGetDTO getCard(@PathVariable long id){
         return CardDTOMapper.INSTANCE.convertEntityToCardGetDTO(deckService.getCard(id));
     }
-
 
     @PostMapping("/cards")
     @ResponseStatus(HttpStatus.CREATED)

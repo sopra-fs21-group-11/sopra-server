@@ -37,6 +37,5 @@ public interface DTOMapper {
     @Mapping(source = "password", target = "password")
     @Mapping(source = "username", target = "username")
     User convertEntityToUserPutDTO(UserPutDTO userPutDTO);
-
 }
 

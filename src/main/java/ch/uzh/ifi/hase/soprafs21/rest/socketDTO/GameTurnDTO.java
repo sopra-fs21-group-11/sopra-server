@@ -6,8 +6,7 @@ public class GameTurnDTO {
     private int placementIndex;
     private String axis;
 
-    public GameTurnDTO() {
-    }
+    public GameTurnDTO() { }
 
     public long getGameId() {
         return gameId;

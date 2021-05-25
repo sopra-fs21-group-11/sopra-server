@@ -18,7 +18,6 @@ public class GameLobby {
         players.add(host);
         this.settings = new GameSettings();//Init game with default settings.
         this.name = "New Game";
-
     }
 
     public Game StartGame(Deck deck ){

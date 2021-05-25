@@ -112,5 +112,4 @@ public class Deck implements Serializable{
     public void setCompareTypes(List<CompareType> compareTypes) {
         this.compareTypes = compareTypes;
     }
-
 }

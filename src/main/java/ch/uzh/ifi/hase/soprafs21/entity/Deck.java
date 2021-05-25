@@ -7,7 +7,6 @@ import java.util.*;
 
 public class Deck extends Stack implements Serializable {
 
-
     //This is not the definitive implementation. I just add the cards of the csv to test functionalities.
     private Stack<Card> cards;
     private List<ValueCategory> possibleComparisonStrategies;

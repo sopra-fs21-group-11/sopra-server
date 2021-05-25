@@ -15,8 +15,7 @@ public class CardDTO {
     private String canton;
     private int position;
 
-    public CardDTO() {
-    }
+    public CardDTO() { }
 
     public long getId() {
         return id;

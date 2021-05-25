@@ -12,9 +12,9 @@ public class AreaValueCategory implements ValueCategory{
     private String name = "Area";
     private String description = "Compares the cards with their geographical area";
     private long id = 5L;
+
     //List defines the allowed cards.
     private List<Type> validTypes = new ArrayList<Type>(Arrays.asList(SwissLocationCard.class, NormalLocationCard.class));
-
 
     public boolean isCardValidInCategory(Card card) {
         if(validTypes.contains(card.getClass())){
@@ -23,7 +23,6 @@ public class AreaValueCategory implements ValueCategory{
             return false;
         }
     }
-
 
     public boolean isPlacementCorrect(Card referenceCard, Card cardInQuestion) throws Exception {
 

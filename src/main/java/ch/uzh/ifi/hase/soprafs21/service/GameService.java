@@ -81,6 +81,7 @@ public class GameService {
         gameLobby.getSettings().setEvaluationCountdownVisible(gameSettings.getEvaluationCountdownVisible());
         gameLobby.getSettings().setPlayerTurnCountdown(gameSettings.getPlayerTurnCountdown());
         gameLobby.getSettings().setNrOfEvaluations(gameSettings.getNrOfEvaluations());
+        //horizontal and vertical value category are always the same (option to extend the game)
         //gameLobby.getSettings().setHorizontalValueCategory(gameSettingsToCheck.getHorizontalValueCategoryId());
         //gameLobby.getSettings().setVerticalValueCategory(gameSettingsToCheck.getVerticalValueCategoryId());
         gameLobby.getSettings().setPlayersMax(gameSettings.getPlayersMax());
@@ -169,7 +170,6 @@ public class GameService {
         }
         gameToJoin.addPlayer(user);
         return gameToJoin;
-
     }
 
     public GameLobby leaveGameLobby(User leavingUser, long id) {
@@ -192,8 +192,6 @@ public class GameService {
         gameToJoin.joinGame(user, sessionId);
         return gameToJoin;
     }
-
-
 
     public boolean gameIsFull(long gameId) {
         Game FullGame = getRunningGameById(gameId);
@@ -419,6 +417,4 @@ public class GameService {
         }
         return retId;
     }
-
-
 }

@@ -19,7 +19,6 @@ public class CardMapper {
         //TODO: Needs Population/Area/Height Conversion
 
         return cardDTO;
-
     }
 
     public static EvaluatedCardDTO ConvertEntityToEvaluatedCardDTO(Card card, boolean correct){
@@ -37,8 +36,5 @@ public class CardMapper {
         //TODO: Needs Population/Area/Height Conversion
 
         return cardDTO;
-
     }
-
-
 }

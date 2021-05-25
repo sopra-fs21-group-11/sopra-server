@@ -21,7 +21,6 @@ public class HeightValueCategory implements ValueCategory {
             MountainCard.class
     ));
 
-
     public boolean isCardValidInCategory(Card card) {
         if(validTypes.contains(card.getClass())){
             return true;
@@ -96,6 +95,7 @@ public class HeightValueCategory implements ValueCategory {
         }
         throw new Exception("No valid compare request. (Two startingcards?)");
     }
+
     public String getDescription() {
         return description;
     }

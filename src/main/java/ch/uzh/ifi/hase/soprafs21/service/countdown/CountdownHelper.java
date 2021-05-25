@@ -2,8 +2,6 @@ package ch.uzh.ifi.hase.soprafs21.service.countdown;
 
 import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -24,6 +22,7 @@ public abstract class CountdownHelper extends Thread{
         this.game = callingGame;
         support = new PropertyChangeSupport(this);
     }
+
     public void addPropertyChangeListener(PropertyChangeListener pcl){
         support.addPropertyChangeListener(pcl);
     }
@@ -38,7 +37,6 @@ public abstract class CountdownHelper extends Thread{
 
     public synchronized void doStop(){
         this.doStop=true;
-
     }
 
     private synchronized boolean keepRunning() {
@@ -66,7 +64,5 @@ public abstract class CountdownHelper extends Thread{
         }
         onPropertyChange(true);//call observer and change property -> subclass implementation
         //startEvaluationAfterCdFinished();//we start the evaluation regardless if all guesses have came in.
-
-
     }
 }

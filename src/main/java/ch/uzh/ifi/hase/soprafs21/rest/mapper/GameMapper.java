@@ -38,7 +38,6 @@ public class GameMapper {
         gameGetDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
         gameGetDTO.setDeckId(settings.getDeckId());
 
-
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){
             playerList.add(user.getId());

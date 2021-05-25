@@ -13,13 +13,11 @@ public class PopulationValueCategory implements ValueCategory{
     private String description = "Compares the cards with their population.";
     private long id = 3L;
 
-
     //List defines the allowed cards.
     private List<Type> validTypes = new ArrayList<Type>(Arrays.asList(
             SwissLocationCard.class,
             NormalLocationCard.class
     ));
-
 
     public boolean isCardValidInCategory(Card card) {
         if(validTypes.contains(card.getClass())){
