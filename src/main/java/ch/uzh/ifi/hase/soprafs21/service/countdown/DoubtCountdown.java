@@ -29,5 +29,4 @@ public class DoubtCountdown extends CountdownHelper{
         super.support.firePropertyChange("DoubtCdEnded"+super.gameId, this.countdownEnd, true);
         countdownEnd = true;
     }
-
 }

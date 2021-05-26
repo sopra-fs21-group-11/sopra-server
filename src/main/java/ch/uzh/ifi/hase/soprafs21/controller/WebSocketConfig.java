@@ -25,7 +25,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         //config.enableSimpleBroker("/");
         //config.enableSimpleBroker("/game/queue/specific-game");
         config.setUserDestinationPrefix("/game");
-
     }
 
     @Override
@@ -35,7 +34,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                 .withSockJS();
                 //.setAllowedOrigins("*").withSockJS();
-
     }
 
     /*@Bean

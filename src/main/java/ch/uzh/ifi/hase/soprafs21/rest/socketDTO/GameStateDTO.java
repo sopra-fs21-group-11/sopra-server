@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameStateDTO {
-
     private List<CardDTO> left;
     private List<CardDTO> right;
     private List<CardDTO> top;

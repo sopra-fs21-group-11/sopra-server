@@ -24,6 +24,7 @@ public abstract class CountdownHelper extends Thread{
         this.game = callingGame;
         support = new PropertyChangeSupport(this);
     }
+
     public void addPropertyChangeListener(PropertyChangeListener pcl){
         support.addPropertyChangeListener(pcl);
     }
@@ -31,6 +32,7 @@ public abstract class CountdownHelper extends Thread{
     public void removePropertyChangeListener(PropertyChangeListener pcl){
         support.removePropertyChangeListener(pcl);
     }
+
     public void onPropertyChange(boolean ended){
         support.firePropertyChange("CDEnded"+gameId, this.ended, true);
         ended = true;
@@ -38,7 +40,6 @@ public abstract class CountdownHelper extends Thread{
 
     public synchronized void doStop(){
         this.doStop=true;
-
     }
 
     private synchronized boolean keepRunning() {
@@ -66,7 +67,5 @@ public abstract class CountdownHelper extends Thread{
         }
         onPropertyChange(true);//call observer and change property -> subclass implementation
         //startEvaluationAfterCdFinished();//we start the evaluation regardless if all guesses have came in.
-
-
     }
 }

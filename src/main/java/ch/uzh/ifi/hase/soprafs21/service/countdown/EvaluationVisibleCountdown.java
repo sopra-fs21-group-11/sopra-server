@@ -11,7 +11,6 @@ public class EvaluationVisibleCountdown extends CountdownHelper{
         super(time, callingGame);
     }
 
-
     @Override
     public void onPropertyChange(boolean countdownEnd){
         super.support.firePropertyChange("EvaluationVisibleCdEnded"+super.gameId, this.countdownEnd, true);

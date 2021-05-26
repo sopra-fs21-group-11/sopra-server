@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository("deckRepository")
 public interface DeckRepository extends JpaRepository<Deck, Long> {
-
-
 }
 
 

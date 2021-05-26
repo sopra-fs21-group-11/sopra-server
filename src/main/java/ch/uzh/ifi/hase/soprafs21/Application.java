@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 public class Application {
 
     public static final Logger logger = LoggerFactory.getLogger(Application.class);
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
@@ -65,5 +66,4 @@ public class Application {
                     .anyRequest().authenticated();
         }
     }
-
 }

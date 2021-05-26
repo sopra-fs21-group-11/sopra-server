@@ -33,7 +33,6 @@ public class DeckController {
         return DeckMapper.INSTANCE.map(fetchedDeck);
     }
 
-
     @PutMapping("/decks/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -60,6 +59,7 @@ public class DeckController {
         }
         return typeList;
     }
+
     @GetMapping("/decks/{id}/fetch/available")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -68,11 +68,7 @@ public class DeckController {
         return ResponseEntity.status(200).body(response);
     }
 
-
-
-
     //The following are the default GET & POST endpoints. These are rather simple...
-
     @GetMapping("/decks")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -84,6 +80,7 @@ public class DeckController {
         }
         return decks;
     }
+
     @GetMapping("/decks/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -119,7 +116,6 @@ public class DeckController {
         return DeckMapper.INSTANCE.map(newDeck);
     }
 
-
     @GetMapping("/cards")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -130,13 +126,13 @@ public class DeckController {
         }
         return cards;
     }
+
     @GetMapping("/cards/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public CardGetDTO getCard(@PathVariable long id){
         return CardDTOMapper.INSTANCE.convertEntityToCardGetDTO(deckService.getCard(id));
     }
-
 
     @PostMapping("/cards")
     @ResponseStatus(HttpStatus.CREATED)
@@ -146,5 +142,4 @@ public class DeckController {
         newCard = deckService.createNewCard(newCard);
         return CardDTOMapper.INSTANCE.convertEntityToCardGetDTO(newCard);
     }
-
 }

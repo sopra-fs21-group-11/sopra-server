@@ -30,9 +30,7 @@ public class Card implements Serializable{
     @Column(nullable = false)
     private String name;
 
-
-    public Card() {
-    }
+    public Card() { }
 
     public List<Deck> getInDeck() {
         return inDeck;

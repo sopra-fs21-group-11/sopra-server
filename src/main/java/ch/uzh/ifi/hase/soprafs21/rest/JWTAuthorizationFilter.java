@@ -65,7 +65,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
                 authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
         SecurityContextHolder.getContext().setAuthentication(auth);
-
     }
 
     private boolean checkJWTToken(HttpServletRequest request, HttpServletResponse res) {
@@ -74,5 +73,4 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             return false;
         return true;
     }
-
 }

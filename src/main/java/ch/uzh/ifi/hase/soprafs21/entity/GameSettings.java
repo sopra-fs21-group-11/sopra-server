@@ -163,20 +163,10 @@ public class GameSettings {
         this.tokenGainOnCorrectGuess = tokenGainOnCorrectGuess;
     }
 
+    public ValueCategory getVerticalValueCategory() { return verticalValueCategoryId; }
+
     public ValueCategory getHorizontalValueCategory() {
         return horizontalValueCategoryId;
-    }
-
-    public void setHorizontalValueCategory(ValueCategory horizontalValueCategoryId) {
-        this.horizontalValueCategoryId = horizontalValueCategoryId;
-    }
-
-    public ValueCategory getVerticalValueCategory() {
-        return verticalValueCategoryId;
-    }
-
-    public void setVerticalValueCategory(ValueCategory verticalValueCategoryId) {
-        this.verticalValueCategoryId = verticalValueCategoryId;
     }
 
     public int getEvaluationCountdown() {

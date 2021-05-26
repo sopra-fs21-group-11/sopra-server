@@ -11,8 +11,6 @@ public class Board {
     private LinkedList<Card> leftList;
     private LinkedList<Card> rightList;
     private Card startingCard;
-
-
     private int placedCard;
 
     public Board(Card startingCard){
@@ -23,6 +21,7 @@ public class Board {
         this.startingCard = startingCard;
         placedCard=0;
     }
+
     public void placeCard(Card cardToPlace, int index, String axis){
         placedCard++;
         Application.logger.info("Placing Card: "+ cardToPlace.getLocationName()+", "+index+", "+axis);

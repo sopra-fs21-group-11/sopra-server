@@ -35,7 +35,6 @@ public class Game implements PropertyChangeListener {
     private GameService gameService;
 
     private Date startTime;
-
     private CountdownHelper doubtCountdown;
     private CountdownHelper visibleCountdown;
     private CountdownHelper turnCountdown;
@@ -282,9 +281,8 @@ public class Game implements PropertyChangeListener {
         gameEndDTO.setScoreboard(scoreboardList);
         gameEndDTO.setGameId(id);
 
-        //TODO: wer gewinnt bei spielabbruch durch host?
         if(winnerIds == null){
-            gameEndDTO.setWinnerIds(winnerIds); //TODO: Bei Spielabbruch immer null
+            gameEndDTO.setWinnerIds(winnerIds);
         }
 
         //set playtime:

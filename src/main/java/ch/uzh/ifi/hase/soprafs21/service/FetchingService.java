@@ -36,11 +36,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Service
 @Transactional
 public class FetchingService {
-
     private  WebClient.Builder builder;
     private String overpassBuilder = "";
-
-
     private List<Card> allCards;
 
     public FetchingService(){
@@ -184,11 +181,9 @@ public class FetchingService {
                     cardList.add(newCard);
                 }
             }
-
         }
         return cardList;
     }
-
 
     /**
      * gets the top result from nominatim
@@ -220,6 +215,7 @@ public class FetchingService {
         }
         return querry;
     }
+
     private InputStream getInputStreamFromFluxDataBuffer(Flux<DataBuffer> data){
         try {
             PipedOutputStream osPipe = new PipedOutputStream();
