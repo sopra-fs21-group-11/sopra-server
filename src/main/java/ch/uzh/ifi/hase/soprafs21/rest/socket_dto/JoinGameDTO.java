@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
+package ch.uzh.ifi.hase.soprafs21.rest.socket_dto;
 
 public class JoinGameDTO {
     private String username;

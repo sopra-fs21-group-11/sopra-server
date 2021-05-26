@@ -10,7 +10,7 @@ public class Evaluation {
     private int tokensOnCorrectGuess;
     private boolean tokenShared = false;
 
-    public Evaluation(Queue<Map.Entry<User, String>> _players, int correct, int nearest) {
+    public Evaluation(Queue<Map.Entry<User, String>> _players, int correct, int nearest) { //Todo: _players smells..
         guesses = new ArrayList<>();
         this.players = _players; //Store all players in a local queue because we need to check them
         this.tokensOnCorrectGuess = correct;
@@ -42,7 +42,7 @@ public class Evaluation {
         return;}
         int distance = 99;
         List<Map.Entry<User, Integer>> nearestGuessList = new ArrayList<>();
-        if(!correct){//no correct guess present -> continue with nearest:
+        if(!correct){//no correct guess present -> continue with nearest: //Todo: correct always true! smells major..
             for(var guess : guesses){
                 int currentDistance = Math.abs(wrongCards -guess.getValue());
                 if(distance > currentDistance){

@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.CompareType;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.CompareType;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Deck;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.CardGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.CompareTypeGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.DeckGetDTO;

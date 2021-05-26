@@ -2,7 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
+import ch.uzh.ifi.hase.soprafs21.rest.socket_dto.*;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,8 @@ public class SocketController {
     private final UserService userService;
     private final GameService gameService;
 
-    private boolean run = false;
-    private SimpMessagingTemplate template;
+    private boolean run = false; //TODO: löschen?
+    private SimpMessagingTemplate template; //TODO: löschen?
 
     @Autowired
     public SocketController(SimpMessagingTemplate template, UserService userService, GameService gameService){
@@ -28,7 +28,7 @@ public class SocketController {
     }
 
     @MessageMapping("/game")
-    public void joinGame(@Header("simpSessionId") String sessionId, JoinGameDTO joinGameDTO) throws Exception {
+    public void joinGame(@Header("simpSessionId") String sessionId, JoinGameDTO joinGameDTO) throws Exception { //TODO: exception is never thrown, smells (more of them)
 
         User joiningUser = userService.getUser(joinGameDTO.getId());
         Game joinedGame = gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());

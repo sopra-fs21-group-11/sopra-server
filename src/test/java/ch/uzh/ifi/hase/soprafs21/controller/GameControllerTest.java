@@ -1,10 +1,10 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.*;
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.NormalLocationCard;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ECoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.NCoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;

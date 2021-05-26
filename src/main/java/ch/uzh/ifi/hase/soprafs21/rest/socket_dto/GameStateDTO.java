@@ -1,10 +1,11 @@
-package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
+package ch.uzh.ifi.hase.soprafs21.rest.socket_dto;
 
+import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameDoubtDTO { //Behaves like a gamestate with additional doubtdto in it.
+public class GameStateDTO {
     private List<CardDTO> left;
     private List<CardDTO> right;
     private List<CardDTO> top;
@@ -18,10 +19,9 @@ public class GameDoubtDTO { //Behaves like a gamestate with additional doubtdto 
     private String gamestate;
     private CardDTO nextCardOnStack;
 
-    private DoubtResultDTO doubtResultDTO;
+    private GameEndDTO gameEndScore;
 
-    public GameDoubtDTO() {
-
+    public GameStateDTO() {
         left = new ArrayList<>();
         right = new ArrayList<>();
         top = new ArrayList<>();
@@ -53,19 +53,32 @@ public class GameDoubtDTO { //Behaves like a gamestate with additional doubtdto 
     }
 
     public void addLeftCard(CardDTO card){
-        this.left.add(card);
+        try {
+            this.left.add(card);
+        } catch (Exception ex){
+            Application.logger.error(card.getName()+"\\n"+ ex.toString()); //Todo: löschen? smells..
+        }
     }
 
     public void addRightCard(CardDTO card){
-        this.right.add(card);
+        try{this.right.add(card);
+        } catch (Exception ex){
+            Application.logger.error(card.getName()+"\\n"+ ex.toString()); //Todo: löschen? smells..
+        }
     }
 
     public void addTopCard(CardDTO card){
-        this.top.add(card);
+        try{this.top.add(card);
+        } catch (Exception ex){
+            Application.logger.error(card.getName()+"\\n"+ ex.toString()); //Todo: löschen? smells..
+        }
     }
 
     public void addBottomCard(CardDTO card){
-        this.bottom.add(card);
+        try{this.bottom.add(card);
+        } catch (Exception ex){
+            Application.logger.error(card.getName()+"\\n"+ ex.toString()); //Todo: löschen? smells..
+        }
     }
 
     public int getPlayertokens() {
@@ -124,11 +137,11 @@ public class GameDoubtDTO { //Behaves like a gamestate with additional doubtdto 
         this.bottom = bottom;
     }
 
-    public DoubtResultDTO getDoubtResultDTO() {
-        return doubtResultDTO;
+    public GameEndDTO getGameEndScore() {
+        return gameEndScore;
     }
 
-    public void setDoubtResultDTO(DoubtResultDTO doubtResultDTO) {
-        this.doubtResultDTO = doubtResultDTO;
+    public void setGameEndScore(GameEndDTO gameEndScore) {
+        this.gameEndScore = gameEndScore;
     }
 }

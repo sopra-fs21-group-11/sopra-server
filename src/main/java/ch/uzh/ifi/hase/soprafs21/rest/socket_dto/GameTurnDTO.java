@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
+package ch.uzh.ifi.hase.soprafs21.rest.socket_dto;
 
 public class GameTurnDTO {
 
@@ -7,6 +7,7 @@ public class GameTurnDTO {
     private String axis;
 
     public GameTurnDTO() {
+        //empty constructor
     }
 
     public long getGameId() {

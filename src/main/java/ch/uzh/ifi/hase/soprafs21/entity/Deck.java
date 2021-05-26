@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ValueCategory;
 import java.io.Serializable;
 import java.util.*;
 

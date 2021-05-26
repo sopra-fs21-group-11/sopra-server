@@ -51,10 +51,8 @@ public class UserController {
         // get the user by userid
         User user = userService.getUser(userId);
 
-        // Convert user object type to DTO
-        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
-
-        return userGetDTO;
+        // Convert user object type to DTO and return
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
     }
 
     @PostMapping("/users")
@@ -67,8 +65,7 @@ public class UserController {
         // create user
         User createdUser = userService.createUser(userInput);
 
-        //String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdUser.getId()).toString();
-        Map<String, String> location = new HashMap<String, String>();
+        Map<String, String> location = new HashMap<>();
         location.put("id", Long.toString(createdUser.getId()) );
         location.put("token", createdUser.getToken());
         // convert internal representation of user back to API
@@ -83,8 +80,7 @@ public class UserController {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         User dbUser = userService.checkUserAuthentication(userInput);
         // create user
-        String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dbUser.getId()).toString();
-        Map<String, String> location = new HashMap<String, String>();
+        Map<String, String> location = new HashMap<>();
         location.put("id", Long.toString(dbUser.getId()) );
         location.put("token", dbUser.getToken());
         // convert internal representation of user back to API
@@ -112,9 +108,7 @@ public class UserController {
         // get the user by userid
         User user = userService.logoutUser(userId);
 
-        // Convert user object type to DTO
-        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
-
-        return userGetDTO;
+        // Convert user object type to DTO and return
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
     }
 }

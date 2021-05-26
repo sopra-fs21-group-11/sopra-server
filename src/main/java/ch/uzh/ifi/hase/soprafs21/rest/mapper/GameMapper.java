@@ -7,8 +7,8 @@ import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameSettingsDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameDoubtDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socket_dto.GameDoubtDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socket_dto.GameStateDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +40,6 @@ public class GameMapper {
         for(User user : gameLobby.getPlayers()){
             playerList.add(user.getId());
         }
-        //gameGetDTO.setPlayers(playerList);
-
         return gameGetDTO;
     }
 

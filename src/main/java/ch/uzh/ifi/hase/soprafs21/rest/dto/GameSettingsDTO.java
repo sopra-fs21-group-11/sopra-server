@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ValueCategory;
 
 public class GameSettingsDTO {
     private int playersMin;

@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs21.entity.Cards;
+package ch.uzh.ifi.hase.soprafs21.entity.cards;
 
 
 public class NormalLocationCard extends Card{

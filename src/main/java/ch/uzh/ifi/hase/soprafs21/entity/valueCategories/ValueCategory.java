@@ -1,6 +1,6 @@
-package ch.uzh.ifi.hase.soprafs21.entity.ValueCategories;
+package ch.uzh.ifi.hase.soprafs21.entity.valueCategories;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.Card;
 
 public interface ValueCategory {
     public boolean isCardValidInCategory(Card card);

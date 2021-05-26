@@ -1,8 +1,8 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ECoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.NCoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ValueCategory;
 
 public class GameSettings {
     private int playersMin;

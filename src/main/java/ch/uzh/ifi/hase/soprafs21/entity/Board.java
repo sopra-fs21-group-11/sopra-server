@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.Application;
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.Card;
 import java.util.LinkedList;
 import java.util.Locale;
 
@@ -24,7 +24,7 @@ public class Board {
 
     public void placeCard(Card cardToPlace, int index, String axis){
         placedCard++;
-        Application.logger.info("Placing Card: "+ cardToPlace.getLocationName()+", "+index+", "+axis);
+        Application.logger.info("Placing Card: "+ cardToPlace.getLocationName()+", "+index+", "+axis); //TODO: löschen? smells..
         if(axis.toLowerCase(Locale.ROOT).contains("top")){
             //lower neighbour is starting card
             if(index == 0){
@@ -133,12 +133,7 @@ public class Board {
     }
 
     public void removeCard(Card cardToRemove){
-        Card rightNeighbour = cardToRemove.getRightNeighbour();
-        Card leftNeighbour = cardToRemove.getLeftNeighbour();
-        Card higherNeighbour = cardToRemove.getHigherNeighbour();
-        Card lowerNeighbour = cardToRemove.getLowerNeighbour();
         //rearrange pointers:
-
         if(topList.contains(cardToRemove)){
             if(cardToRemove.getHigherNeighbour() != null){
                 cardToRemove.getHigherNeighbour().setLowerNeighbour(cardToRemove.getLowerNeighbour());

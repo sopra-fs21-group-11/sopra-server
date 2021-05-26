@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Deck;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DeckMapper;

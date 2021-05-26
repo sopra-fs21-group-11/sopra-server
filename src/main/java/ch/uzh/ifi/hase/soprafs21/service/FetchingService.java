@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.Application;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.rest.fetch.NominatimResponse;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -190,7 +190,7 @@ public class FetchingService {
                 .retrieve()
                 .bodyToMono(NominatimResponse[].class)
                 .block();
-        return responses[0].getOsm_id();
+        return responses[0].getOsm_id(); //Todo: nullPointerException could be thrown, smells and bug!
     }
 
     private String readOverpassFile(){
@@ -211,9 +211,9 @@ public class FetchingService {
 
     private InputStream getInputStreamFromFluxDataBuffer(Flux<DataBuffer> data){
         try {
-            PipedOutputStream osPipe = new PipedOutputStream();
+            PipedOutputStream osPipe = new PipedOutputStream(); //Todo: Bug?
 
-            PipedInputStream isPipe = new PipedInputStream(osPipe);
+            PipedInputStream isPipe = new PipedInputStream(osPipe); //Todo: Bug?
 
             DataBufferUtils.write(data, osPipe)
                     //.subscribeOn(Schedulers.elastic())

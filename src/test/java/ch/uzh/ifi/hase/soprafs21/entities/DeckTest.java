@@ -1,10 +1,10 @@
 package ch.uzh.ifi.hase.soprafs21.entities;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Deck;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ECoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.NCoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ValueCategory;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import org.junit.jupiter.api.Test;
