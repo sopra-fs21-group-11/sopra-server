@@ -1,6 +1,6 @@
-package ch.uzh.ifi.hase.soprafs21.entity.ValueCategories;
+package ch.uzh.ifi.hase.soprafs21.entity.valueCategories;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.*;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,18 +12,14 @@ public class NCoordinateCategory implements ValueCategory {
     private long id = 2L;
 
     //List defines the allowed cards.
-    private List<Type> validTypes = new ArrayList<Type>(Arrays.asList(
+    private List<Type> validTypes = new ArrayList<>(Arrays.asList(
             NormalLocationCard.class,
             SwissLocationCard.class
             //extendable with more types.
     ));
 
     public boolean isCardValidInCategory(Card card) {
-        if(validTypes.contains(card.getClass())){
-            return true;
-        }else{
-            return false;
-        }
+        return validTypes.contains(card.getClass());
     }
 
     public boolean isPlacementCorrect(Card referenceCard, Card cardInQuestion) throws Exception {

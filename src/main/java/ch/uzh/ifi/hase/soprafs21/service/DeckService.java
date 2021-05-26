@@ -1,13 +1,13 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.Application;
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.CompareType;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.NormalLocationCard;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.CompareType;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Deck;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ECoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.NCoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.repository.CardRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.CompareTypeRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.DeckRepository;
@@ -49,7 +49,7 @@ public class DeckService {
         Deck storedDeck = getDeck(id);
         ch.uzh.ifi.hase.soprafs21.entity.Deck playingDeck = new ch.uzh.ifi.hase.soprafs21.entity.Deck();
         //create stack:
-        Stack<ch.uzh.ifi.hase.soprafs21.entity.Cards.Card> stack = new Stack<>();
+        Stack<ch.uzh.ifi.hase.soprafs21.entity.cards.Card> stack = new Stack<>();
         for(Card card : storedDeck.getCards()){ //add every card to our new created stack.
             stack.add(this.makeCardReadyToPlay(card));
         }
@@ -65,7 +65,7 @@ public class DeckService {
     }
 
     //basically a converter that converts the repository object to a Entity objects that we can play with.
-    public ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard makeCardReadyToPlay(Card card){
+    public ch.uzh.ifi.hase.soprafs21.entity.cards.NormalLocationCard makeCardReadyToPlay(Card card){
         NormalLocationCard locationCard = new NormalLocationCard();
         locationCard.setPopulation(card.getPopulation());
         locationCard.setCardId(card.getId());
@@ -179,7 +179,7 @@ public class DeckService {
         }else{
             String[] lines = response.split("\n");
             for(String line : lines){
-                if(line.startsWith("Slot available after"));
+                if(line.startsWith("Slot available after")); //Todo: ?
                 if(line.length()<=49){
                     continue;
                 }

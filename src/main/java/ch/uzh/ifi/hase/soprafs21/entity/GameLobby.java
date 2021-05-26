@@ -18,9 +18,8 @@ public class GameLobby {
         this.name = "New Game";
     }
 
-    public Game StartGame(Deck deck ){
-        Game newGame = new Game(this, deck);
-        return newGame;
+    public Game startGame(Deck deck ){
+        return new Game(this, deck);
     }
 
     public GameLobby removePlayer(User player){

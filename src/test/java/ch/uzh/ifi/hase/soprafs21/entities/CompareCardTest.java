@@ -1,11 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.entities;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.NormalLocationCard;
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.SwissLocationCard;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.NormalLocationCard;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.SwissLocationCard;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ECoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.NCoordinateCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ValueCategory;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;

@@ -1,9 +1,9 @@
-package ch.uzh.ifi.hase.soprafs21.entity.Cards;
+package ch.uzh.ifi.hase.soprafs21.entity.cards;
 
 public class SwissLocationCard extends Card{
     private int population;
-    private float area;
-    private int height;
+    private float area; //Todo: löschen? smell..
+    private int height; //Todo: löschen? smell..
 
     public int getPopulation() {
         return population;

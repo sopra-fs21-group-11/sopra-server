@@ -1,13 +1,13 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
+import ch.uzh.ifi.hase.soprafs21.rest.socket_dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -44,7 +44,7 @@ public class GameService {
     }
 
     public Game startGame(GameLobby gameToStart){
-        Game startedGame = gameToStart.StartGame(deckService.makeDeckReadyToPlay(gameToStart.getSettings().getDeckId()));
+        Game startedGame = gameToStart.startGame(deckService.makeDeckReadyToPlay(gameToStart.getSettings().getDeckId()));
         startedGame.setGameService(this);
         runningGames.add(startedGame);
         openGames.remove(gameToStart);

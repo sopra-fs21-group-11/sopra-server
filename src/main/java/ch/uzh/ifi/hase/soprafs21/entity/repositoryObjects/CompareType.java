@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects;
+package ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects;
 
 import javax.persistence.*;
 import java.io.Serializable;

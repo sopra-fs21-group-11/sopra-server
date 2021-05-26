@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.CardGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.CardPostDTO;
 import org.mapstruct.Mapper;

@@ -1,8 +1,8 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.CompareType;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.CompareType;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Deck;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.DeckPutDTO;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import io.jsonwebtoken.Jwts;

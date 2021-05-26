@@ -34,7 +34,7 @@ public class GameController {
     @ResponseBody
     public List<GameGetDTO> getAllGames() {
         List<GameLobby> allGames = gameService.getAllOpenGames();
-        List<GameGetDTO> allGamesDTO = new ArrayList<GameGetDTO>();
+        List<GameGetDTO> allGamesDTO = new ArrayList<>();
         for(GameLobby lobby : allGames) {
             allGamesDTO.add(GameMapper.ConvertEntityToGameGetDTO(lobby));
         }
@@ -64,8 +64,7 @@ public class GameController {
         //start actual game
         Game startedGame = gameService.startGame(gameToStart);
 
-        //String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(startedGame.getId()).toString();
-        Map<String, String> location = new HashMap<String, String>();
+        Map<String, String> location = new HashMap<>();
         location.put("id", Long.toString(startedGame.getId()) );
 
         return ResponseEntity.status(200).body(location);
@@ -131,8 +130,7 @@ public class GameController {
             newGame.setName(gamePostDTO.getName());
         }
 
-        //String url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newGame.getId()).toString();
-        Map<String, String> location = new HashMap<String, String>();
+        Map<String, String> location = new HashMap<>();
         location.put("id", Long.toString(newGame.getId()) );
         // convert internal representation of user back to API
         return ResponseEntity.status(201).body(location);

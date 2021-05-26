@@ -2,12 +2,12 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.constant.GameState;
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
-import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.valueCategories.ValueCategory;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
+import ch.uzh.ifi.hase.soprafs21.rest.socket_dto.*;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.countdown.*;
 import java.beans.PropertyChangeEvent;
@@ -23,30 +23,23 @@ public class Game implements PropertyChangeListener {
     private GameState activeState;
     private Deck deckStack;
     private long hostPlayerId;
-    private List<User> waitingForPlayers;
+    private List<User> waitingForPlayers; //Todo: never used?? smell..
     private Card nextCard;
     private ValueCategory horizontalValueCategory;
     private ValueCategory verticalValueCategory;
     private boolean gameStarted;
-
     private final GameSettings currentSettings;
-
     private GameService gameService;
-
     private Date startTime;
     private CountdownHelper doubtCountdown;
     private CountdownHelper visibleCountdown;
     private CountdownHelper turnCountdown;
     private CountdownHelper evaluationCountdown;
     private CountdownHelper evaluationVisibleCountdown;
-
     private Evaluation evaluation;
     private int nrOfWrongCards;
-
     private int breakDownCounter = 0;
-
     private List<Long> winnerIds = new ArrayList<>();
-
     private int cardsBeforeEvaluation;
 
     public Game(GameLobby lobby, Deck deckToPlay){
@@ -99,7 +92,7 @@ public class Game implements PropertyChangeListener {
             Application.logger.info("Perform turn rejected: Userid: "+Long.toString(userid));
             return;
         }
-        Application.logger.info("Perform turn with nextCard: "+nextCard.getLocationName());
+        Application.logger.info("Perform turn with nextCard: "+nextCard.getLocationName()); //Todo: löschen? smell..
         activeBoard.placeCard(cardToPlace, placementIndex, axis);
         this.turnCountdown.doStop();
     }
@@ -136,9 +129,9 @@ public class Game implements PropertyChangeListener {
                 return;
             }
             else{
-                Application.logger.info("old nextCard: "+nextCard.getLocationName());
+                Application.logger.info("old nextCard: "+nextCard.getLocationName()); //Todo: löschen? smell..
                 nextCard = deckStack.pop();
-                Application.logger.info("new nextCard: "+nextCard.getLocationName());
+                Application.logger.info("new nextCard: "+nextCard.getLocationName()); //Todo: löschen? smell..
 
             }
 
@@ -163,7 +156,7 @@ public class Game implements PropertyChangeListener {
             }
         }
         if(senderProperty.equals("DoubtCdStopped")) {//Doubt incoming. we start visiblecd:
-            Application.logger.info(Long.toString(id)+":\tDoubtCdStopped");
+            Application.logger.info(Long.toString(id)+":\tDoubtCdStopped"); //Todo: löschen? smell..
 
             activeState=GameState.DOUBTVISIBLE;
             this.visibleCountdown = new DoubtVisibleCountdown(currentSettings.getVisibleAfterDoubtCountdown(), this);
@@ -174,7 +167,7 @@ public class Game implements PropertyChangeListener {
         //EvaluationCountdown ended. Evaluate even not all guesses are here & start visiblecd
         //the same goes for when the guesscd has stopped.
         if(senderProperty.equals("GuessCdEnded")|| senderProperty.equals("GuessCdStopped")) {
-            Application.logger.info(Long.toString(id)+":\tGuessCdStopped");
+            Application.logger.info(Long.toString(id)+":\tGuessCdStopped"); //Todo: löschen? smell..
             performEvaluationAfterGuessPresentOrCdEnded();
             activeState = GameState.EVALUATIONVISIBLE;
             gameService.sendEvaluatedGameStateToUsers(id);
@@ -184,7 +177,7 @@ public class Game implements PropertyChangeListener {
         }
         //start next turn
         if(senderProperty.equals("PlayerTurnCdEnded")) {
-            Application.logger.info(Long.toString(id)+":\tPlayerTurnCdEnded");
+            Application.logger.info(Long.toString(id)+":\tPlayerTurnCdEnded"); //Todo: löschen? smell..
             if(breakDownCounter>5){
                   gameService.gameEnded(id);
                   return;
@@ -200,7 +193,7 @@ public class Game implements PropertyChangeListener {
             turnCountdown.start();
         }
         if(senderProperty.equals("PlayerTurnCdStopped")) {//A player performed a turn -> goto doubtingPhase
-            Application.logger.info(Long.toString(id)+":\tPlayerTurnCdStopped");
+            Application.logger.info(Long.toString(id)+":\tPlayerTurnCdStopped"); //Todo: löschen? smell..
             breakDownCounter=0; //setback BreakdownCounter
             this.activeState = GameState.DOUBTINGPHASE;
             gameService.sendGameStateToUsers(id);
@@ -209,7 +202,7 @@ public class Game implements PropertyChangeListener {
             doubtCountdown.start();
         }
         if(senderProperty.equals("EvaluationVisibleCdEnded")) {
-            Application.logger.info(Long.toString(id)+":\tEvaluationVisibleCdEnded");
+            Application.logger.info(Long.toString(id)+":\tEvaluationVisibleCdEnded"); //Todo: löschen? smell..
             //check if deck is empty. if so, game is finished.
             if(deckStack.isEmpty()){
                 //game ended and we have a regular winner:
@@ -246,7 +239,6 @@ public class Game implements PropertyChangeListener {
     public void removeAllPropertyListener(){
         try {
             activeState = GameState.GAMEEND;
-            //gameService.sendGameStateToUsers(id);
             //first we remove any countdown eventListener. Not that we run into strange happenings...
             doubtCountdown.removePropertyChangeListener(this);
             visibleCountdown.removePropertyChangeListener(this);
@@ -434,7 +426,6 @@ public class Game implements PropertyChangeListener {
     public void performEvaluationAfterGuessPresentOrCdEnded(){
         //if this returns true, all guesses have came in. -> evaluate
         //evaluationCountdown.doStop();//no need to stop cd since this method only gets called when the cd has stopped anyway.
-        //evaluation.shareTokens(nrOfWrongCards);
         gameService.sendEvaluatedGameStateToUsers(id);
         activeBoard.setPlacedCard(0);
     }

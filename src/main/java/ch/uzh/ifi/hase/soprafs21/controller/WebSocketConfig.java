@@ -14,8 +14,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic", "/queue/specific-game");
         config.setApplicationDestinationPrefixes("/app");
-        //config.enableSimpleBroker("/");
-        //config.enableSimpleBroker("/game/queue/specific-game");
+        //config.enableSimpleBroker("/"); //TODO: löschen?
+        //config.enableSimpleBroker("/game/queue/specific-game"); //TODO: löschen?
         config.setUserDestinationPrefix("/game");
     }
 
@@ -28,7 +28,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 //.setAllowedOrigins("*").withSockJS();
     }
 
-    /*@Bean
+    /*@Bean //TODO: löschen?
     public FilterRegistrationBean corsFilter(){
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 

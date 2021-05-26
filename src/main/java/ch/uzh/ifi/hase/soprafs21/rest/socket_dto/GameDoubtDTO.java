@@ -1,11 +1,10 @@
-package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
+package ch.uzh.ifi.hase.soprafs21.rest.socket_dto;
 
-import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameStateDTO {
+public class GameDoubtDTO { //Behaves like a gamestate with additional doubtdto in it.
     private List<CardDTO> left;
     private List<CardDTO> right;
     private List<CardDTO> top;
@@ -19,9 +18,10 @@ public class GameStateDTO {
     private String gamestate;
     private CardDTO nextCardOnStack;
 
-    private GameEndDTO gameEndScore;
+    private DoubtResultDTO doubtResultDTO;
 
-    public GameStateDTO() {
+    public GameDoubtDTO() {
+
         left = new ArrayList<>();
         right = new ArrayList<>();
         top = new ArrayList<>();
@@ -53,32 +53,19 @@ public class GameStateDTO {
     }
 
     public void addLeftCard(CardDTO card){
-        try {
-            this.left.add(card);
-        } catch (Exception ex){
-            Application.logger.error(card.getName()+"\\n"+ ex.toString());
-        }
+        this.left.add(card);
     }
 
     public void addRightCard(CardDTO card){
-        try{this.right.add(card);
-        } catch (Exception ex){
-            Application.logger.error(card.getName()+"\\n"+ ex.toString());
-        }
+        this.right.add(card);
     }
 
     public void addTopCard(CardDTO card){
-        try{this.top.add(card);
-        } catch (Exception ex){
-            Application.logger.error(card.getName()+"\\n"+ ex.toString());
-        }
+        this.top.add(card);
     }
 
     public void addBottomCard(CardDTO card){
-        try{this.bottom.add(card);
-        } catch (Exception ex){
-            Application.logger.error(card.getName()+"\\n"+ ex.toString());
-        }
+        this.bottom.add(card);
     }
 
     public int getPlayertokens() {
@@ -137,11 +124,11 @@ public class GameStateDTO {
         this.bottom = bottom;
     }
 
-    public GameEndDTO getGameEndScore() {
-        return gameEndScore;
+    public DoubtResultDTO getDoubtResultDTO() {
+        return doubtResultDTO;
     }
 
-    public void setGameEndScore(GameEndDTO gameEndScore) {
-        this.gameEndScore = gameEndScore;
+    public void setDoubtResultDTO(DoubtResultDTO doubtResultDTO) {
+        this.doubtResultDTO = doubtResultDTO;
     }
 }

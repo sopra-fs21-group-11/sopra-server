@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
+package ch.uzh.ifi.hase.soprafs21.rest.socket_dto;
 
 import java.util.ArrayList;
 import java.util.List;

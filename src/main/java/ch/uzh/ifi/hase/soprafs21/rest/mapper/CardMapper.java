@@ -1,8 +1,8 @@
 package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.CardDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.EvaluatedCardDTO;
+import ch.uzh.ifi.hase.soprafs21.entity.cards.Card;
+import ch.uzh.ifi.hase.soprafs21.rest.socket_dto.CardDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.socket_dto.EvaluatedCardDTO;
 
 public class CardMapper {
     public static CardDTO ConvertEntityToCardDTO(Card card){

@@ -93,7 +93,7 @@ public class UserService {
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                 .commaSeparatedStringToAuthorityList("ROLE_USER");
 
-        String token = Jwts
+        return Jwts
                 .builder()
                 .setId("soprafs21")
                 .setSubject(username)
@@ -105,7 +105,6 @@ public class UserService {
                 .setExpiration(new Date(System.currentTimeMillis() + 600000000))
                 .signWith(SignatureAlgorithm.HS512,
                         secretKey.getBytes()).compact();
-        return token;
     }
 
     public User updateUser(Long userid,User requestUser) {

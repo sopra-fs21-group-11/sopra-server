@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Card;
+import ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects.Deck;
 import ch.uzh.ifi.hase.soprafs21.repository.CardRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.CompareTypeRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.DeckRepository;
