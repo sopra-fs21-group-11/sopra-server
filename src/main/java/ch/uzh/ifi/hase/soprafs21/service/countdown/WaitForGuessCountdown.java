@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.service.countdown;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
 
 public class WaitForGuessCountdown extends CountdownHelper{
 

@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameLobby {
-    //private String gamePassword;
     private String name;
     private long id;
-    //private boolean isPublic;
     private List<User> players;
     private User host;
     private GameSettings settings;
@@ -18,7 +16,6 @@ public class GameLobby {
         players.add(host);
         this.settings = new GameSettings();//Init game with default settings.
         this.name = "New Game";
-
     }
 
     public Game StartGame(Deck deck ){

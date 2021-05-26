@@ -17,9 +17,7 @@ public class CardMapper {
         cardDTO.setName(card.getLocationName());
 
         //TODO: Needs Population/Area/Height Conversion
-
         return cardDTO;
-
     }
 
     public static EvaluatedCardDTO ConvertEntityToEvaluatedCardDTO(Card card, boolean correct){
@@ -35,10 +33,6 @@ public class CardMapper {
         cardDTO.setCorrect(correct);
 
         //TODO: Needs Population/Area/Height Conversion
-
         return cardDTO;
-
     }
-
-
 }

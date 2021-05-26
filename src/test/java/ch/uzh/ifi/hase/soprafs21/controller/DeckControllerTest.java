@@ -3,13 +3,10 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.CompareType;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.CardPostDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.DeckPostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.DeckPutDTO;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.hibernate.collection.internal.PersistentList;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,27 +18,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(DeckController.class)
@@ -203,6 +189,7 @@ public class DeckControllerTest {
                 .andExpect(jsonPath("$.cards[0].name", is("testCard")))
                 .andExpect(jsonPath("$.cards[1].name", is("testCard")));
     }
+
     @Test
     public void getCompareTypes() throws Exception {
 

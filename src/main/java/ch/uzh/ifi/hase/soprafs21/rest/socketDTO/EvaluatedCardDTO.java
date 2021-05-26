@@ -15,9 +15,7 @@ public class EvaluatedCardDTO {
     private long height;
     private String canton;
     private int position;
-
     private boolean correct;
-
 
     public long getId() {
         return id;

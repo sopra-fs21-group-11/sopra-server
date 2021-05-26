@@ -9,7 +9,6 @@ import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameDoubtDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ public class GameMapper {
         gameGetDTO.setId(gameLobby.getId());
         gameGetDTO.setName(gameLobby.getName());
         gameGetDTO.setDoubtCountdown(settings.getDoubtCountdown());
-        //gameGetDTO.setHostId(gameLobby.getHostId());
         gameGetDTO.setPlayersMax(settings.getPlayersMax());
         gameGetDTO.setPlayersMin(settings.getPlayersMin());
         gameGetDTO.setHorizontalValueCategoryId(settings.getHorizontalValueCategory().getId());
@@ -37,7 +35,6 @@ public class GameMapper {
         gameGetDTO.setEvaluationCountdown(settings.getEvaluationCountdown());
         gameGetDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
         gameGetDTO.setDeckId(settings.getDeckId());
-
 
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){
@@ -92,7 +89,6 @@ public class GameMapper {
         gameGetDTO.setId(game.getId());
         gameGetDTO.setName("Running Game - No name");
         gameGetDTO.setDoubtCountdown(settings.getDoubtCountdown());
-        //gameGetDTO.setHostId(0);
         gameGetDTO.setPlayersMax(settings.getPlayersMax());
         gameGetDTO.setPlayersMin(settings.getPlayersMin());
         gameGetDTO.setHorizontalValueCategoryId(settings.getHorizontalValueCategory().getId());
@@ -112,7 +108,6 @@ public class GameMapper {
         for(Map.Entry<User, String>  user : game.getPlayers()){
             playerList.add(user.getKey().getId());
         }
-        //gameGetDTO.setPlayers(playerList);
         gameGetDTO.setGameStarted(true);
         return gameGetDTO;
     }
@@ -139,7 +134,6 @@ public class GameMapper {
         gamePostDTO.setEvaluationCountdownVisible(settings.getEvaluationCountdownVisible());
         gamePostDTO.setDeckId(settings.getDeckId());
 
-
         List<Long> playerList = new ArrayList<>();
         for(User user : gameLobby.getPlayers()){
             playerList.add(user.getId());
@@ -155,9 +149,7 @@ public class GameMapper {
         gameDoubtDTO.setRight(gameStateDTO.getRight());
         gameDoubtDTO.setTop(gameStateDTO.getTop());
         gameDoubtDTO.setBottom(gameStateDTO.getBottom());
-
         gameDoubtDTO.setStartingCard(gameStateDTO.getStartingCard());
-
         gameDoubtDTO.setPlayersturn(gameStateDTO.getPlayersturn());
         gameDoubtDTO.setNextPlayer(gameStateDTO.getNextPlayer());
         gameDoubtDTO.setGamestate(gameStateDTO.getGamestate());

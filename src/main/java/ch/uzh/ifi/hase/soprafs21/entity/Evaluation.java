@@ -42,7 +42,7 @@ public class Evaluation {
         return;}
         int distance = 99;
         List<Map.Entry<User, Integer>> nearestGuessList = new ArrayList<>();
-        if(!correct){//no correct guess present -> continue with nearest: //TODO: check? immer true?
+        if(!correct){//no correct guess present -> continue with nearest:
             for(var guess : guesses){
                 int currentDistance = Math.abs(wrongCards -guess.getValue());
                 if(distance > currentDistance){

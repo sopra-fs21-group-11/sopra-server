@@ -1,12 +1,10 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
-
 import ch.uzh.ifi.hase.soprafs21.entity.Cards.Card;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.GameLobby;
 import ch.uzh.ifi.hase.soprafs21.entity.GameSettings;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.CardMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
@@ -16,7 +14,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,8 +78,6 @@ public class GameService {
         gameLobby.getSettings().setEvaluationCountdownVisible(gameSettings.getEvaluationCountdownVisible());
         gameLobby.getSettings().setPlayerTurnCountdown(gameSettings.getPlayerTurnCountdown());
         gameLobby.getSettings().setNrOfEvaluations(gameSettings.getNrOfEvaluations());
-        //gameLobby.getSettings().setHorizontalValueCategory(gameSettingsToCheck.getHorizontalValueCategoryId());
-        //gameLobby.getSettings().setVerticalValueCategory(gameSettingsToCheck.getVerticalValueCategoryId());
         gameLobby.getSettings().setPlayersMax(gameSettings.getPlayersMax());
         gameLobby.getSettings().setPlayersMin(gameSettings.getPlayersMin());
         gameLobby.getSettings().setNrOfStartingTokens(gameSettings.getNrOfStartingTokens());
@@ -111,48 +106,6 @@ public class GameService {
         return game;
     }
 
-    //TODO: tb after settings and new gameLobby creation is checked delete function!
-    public GameLobby changeSettings(User host, long gameId, GameSettingsDTO gameSettingsDTO){
-        GameLobby gameLobby = this.getOpenGameById(gameId);
-        if(gameLobby == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find gameLobby with id: "+gameId);
-        }
-        if(gameLobby.getHost().getId() != host.getId()){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the host is allowed to change settings.");
-        }
-        GameSettings gameSettingsToCheck = GameMapper.ConvertGameSettingsDTOToEntity(gameSettingsDTO);
-        gameSettingsToCheck.validateSettings();
-
-        if(!gameSettingsToCheck.isSettingsValid()){
-            //settings are not valid! return conflict and do not change the lobby settings
-            throw new ResponseStatusException(HttpStatus.CONFLICT, gameSettingsToCheck.getRemark());
-        }
-        //check if deck is ready to play
-        if(!deckService.getDeck(gameSettingsToCheck.getDeckId()).isReadyToPlay()){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is not ready to play.");
-        }
-        //check if minimum cards per evaluation is ok
-        int numberOfCardsBeforeEvaluation = deckService.getDeck(gameSettingsToCheck.getDeckId()).getSize() / gameSettingsToCheck.getNrOfEvaluations();
-        if(numberOfCardsBeforeEvaluation<=5) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is too small to play with this settings");
-        }
-
-        gameLobby.getSettings().setDeckId(gameSettingsToCheck.getDeckId());
-        gameLobby.getSettings().setDoubtCountdown(gameSettingsToCheck.getDoubtCountdown());
-        gameLobby.getSettings().setVisibleAfterDoubtCountdown(gameSettingsToCheck.getVisibleAfterDoubtCountdown());
-        gameLobby.getSettings().setEvaluationCountdown(gameSettingsToCheck.getEvaluationCountdown());
-        gameLobby.getSettings().setEvaluationCountdownVisible(gameSettingsToCheck.getEvaluationCountdownVisible());
-        gameLobby.getSettings().setPlayerTurnCountdown(gameSettingsToCheck.getPlayerTurnCountdown());
-        gameLobby.getSettings().setNrOfEvaluations(gameSettingsToCheck.getNrOfEvaluations());
-        gameLobby.getSettings().setPlayersMax(gameSettingsToCheck.getPlayersMax());
-        gameLobby.getSettings().setPlayersMin(gameSettingsToCheck.getPlayersMin());
-        gameLobby.getSettings().setNrOfStartingTokens(gameSettingsToCheck.getNrOfStartingTokens());
-        gameLobby.getSettings().setTokenGainOnCorrectGuess(gameSettingsToCheck.getTokenGainOnCorrectGuess());
-        gameLobby.getSettings().setTokenGainOnNearestGuess(gameSettingsToCheck.getTokenGainOnNearestGuess());
-
-        return gameLobby;
-    }
-
     public GameLobby joinGameLobby(User user, long gameId){
         GameLobby gameToJoin = getOpenGameById(gameId);
         if(gameToJoin.getPlayers().size() >= gameToJoin.getSettings().getPlayersMax()){
@@ -165,7 +118,6 @@ public class GameService {
             }
         gameToJoin.addPlayer(user);
         return gameToJoin;
-
     }
 
     public GameLobby leaveGameLobby(User leavingUser, long id) {
@@ -188,8 +140,6 @@ public class GameService {
         gameToJoin.joinGame(user, sessionId);
         return gameToJoin;
     }
-
-
 
     public boolean gameIsFull(long gameId) {
         Game FullGame = getRunningGameById(gameId);
@@ -215,16 +165,7 @@ public class GameService {
         GameEndDTO gameEndDTO = gameToEnd.createGameEndDTO();
         GameStateDTO endGameStateDTO = gameToEnd.convertToDTO();
         endGameStateDTO.setGameEndScore(gameEndDTO);
-        //set everything to null because the game ended
-        //endGameStateDTO.setLeft(null);
-        //endGameStateDTO.setRight(null);
-        //endGameStateDTO.setTop(null);
-        //endGameStateDTO.setBottom(null);
-        //endGameStateDTO.setStartingCard(null);
         endGameStateDTO.setPlayertokens(0);
-        //endGameStateDTO.setPlayersturn(null);
-        //endGameStateDTO.setNextPlayer(null);
-        //endGameStateDTO.setNextCardOnStack(null);
 
         if(gameEndDTO.getGameTooShort()){
             //Game does not count towards statistic
@@ -415,6 +356,4 @@ public class GameService {
         }
         return retId;
     }
-
-
 }

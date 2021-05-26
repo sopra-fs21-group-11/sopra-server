@@ -1,10 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
-
 public class UserPostDTO {
-
     private String username;
-
     private String password;
 
     public String getUsername() {

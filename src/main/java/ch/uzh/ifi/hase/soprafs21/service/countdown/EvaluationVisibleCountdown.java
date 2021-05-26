@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.service.countdown;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
 
 public class EvaluationVisibleCountdown extends CountdownHelper{
 
@@ -10,7 +9,6 @@ public class EvaluationVisibleCountdown extends CountdownHelper{
     public EvaluationVisibleCountdown(int time, Game callingGame){
         super(time, callingGame);
     }
-
 
     @Override
     public void onPropertyChange(boolean countdownEnd){

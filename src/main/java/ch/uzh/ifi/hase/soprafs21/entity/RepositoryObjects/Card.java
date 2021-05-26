@@ -2,7 +2,6 @@ package ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,9 +29,7 @@ public class Card implements Serializable{
     @Column(nullable = false)
     private String name;
 
-
-    public Card() {
-    }
+    public Card() { }
 
     public List<Deck> getInDeck() {
         return inDeck;

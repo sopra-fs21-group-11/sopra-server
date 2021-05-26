@@ -8,6 +8,4 @@ public interface ValueCategory {
     public String getName();
     public String getDescription();
     public long getId();
-
-
 }

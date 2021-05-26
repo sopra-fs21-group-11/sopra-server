@@ -10,7 +10,6 @@ import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.*;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.countdown.*;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
@@ -32,11 +31,9 @@ public class Game implements PropertyChangeListener {
 
     private final GameSettings currentSettings;
 
-    //private SimpMessagingTemplate template;
     private GameService gameService;
 
     private Date startTime;
-
     private CountdownHelper doubtCountdown;
     private CountdownHelper visibleCountdown;
     private CountdownHelper turnCountdown;
@@ -62,12 +59,10 @@ public class Game implements PropertyChangeListener {
         this.verticalValueCategory = lobby.getSettings().getVerticalValueCategory();
         this.horizontalValueCategory = lobby.getSettings().getHorizontalValueCategory();
         this.gameStarted = false;
-        this.deckStack = deckToPlay;//new Deck(currentSettings.getCardsBeforeEvaluation()*currentSettings.getNrOfEvaluations()+currentSettings.getNrOfEvaluations());// Initializes the standard testing deck. (30 cards out of csv. All SwissLocationCard)
-
+        this.deckStack = deckToPlay;
         //We set the starting-card and the nextCard right away:
         this.activeBoard = new Board(deckStack.pop());
         this.nextCard = deckStack.pop();
-
         this.players = new LinkedList<>();
         //player List generation:
         for(var player : lobby.getPlayers()){
@@ -285,16 +280,15 @@ public class Game implements PropertyChangeListener {
         gameEndDTO.setScoreboard(scoreboardList);
         gameEndDTO.setGameId(id);
 
-        //TODO: wer gewinnt bei spielabbruch durch host?
         if(winnerIds == null){
-            gameEndDTO.setWinnerIds(winnerIds); //TODO: Bei Spielabbruch immer null
+            gameEndDTO.setWinnerIds(winnerIds);
         }
 
         //set playtime:
         long diffInMillis = Math.abs((new Date()).getTime() - startTime.getTime());
         long minutesPlayed = TimeUnit.MINUTES.convert(diffInMillis, TimeUnit.MILLISECONDS);
         gameEndDTO.setGameMinutes(minutesPlayed);
-        if(minutesPlayed<1){ //TODO: adjust the min of played minutes to count the won or lost tokens currently one minute
+        if(minutesPlayed<2){
             gameEndDTO.setGameTooShort(true);
         }
         else{
@@ -412,15 +406,12 @@ public class Game implements PropertyChangeListener {
         gameStateDTO.setPlayertokens(1);
         gameStateDTO.setNextCardOnStack(nextCard);
 
-
         gameStateDTO.setPlayersturn(DTOMapper.INSTANCE.convertEntityToUserGetDTO(this.currentPlayer.getKey()));
-
 
         Object[] obj = players.toArray();
         gameStateDTO.setNextPlayer(DTOMapper.INSTANCE.convertEntityToUserGetDTO(((Map.Entry<User, String>)obj[0]).getKey()));
 
         return gameStateDTO;
-
     }
 
     public void parseEvaluationGuess(String sessionId, GameGuessDTO guess){
@@ -455,8 +446,6 @@ public class Game implements PropertyChangeListener {
         List<EvaluatedCardDTO> evaluatedLeft = new ArrayList<>();
         List<EvaluatedCardDTO> evaluatedRight = new ArrayList<>();
         evaluationState.setStartingCard(CardMapper.ConvertEntityToCardDTO(activeBoard.getStartingCard()));
-
-
         ValueCategory verticalCategory = this.getCurrentSettings().getVerticalValueCategory();
         ValueCategory horizontalCategory = this.getCurrentSettings().getHorizontalValueCategory();
 
@@ -495,7 +484,6 @@ public class Game implements PropertyChangeListener {
             loopCard= loopCard.getLowerNeighbour();
         }
         loopCard = activeBoard.getStartingCard();//start with startingcard
-
 
         positionCounter = 1;
         //go left
@@ -578,7 +566,6 @@ public class Game implements PropertyChangeListener {
         return hostPlayerId;
     }
 
-
     public List<Long> getWinnerId() {
         return winnerIds;
     }
@@ -587,16 +574,12 @@ public class Game implements PropertyChangeListener {
         return gameStarted;
     }
 
-
     /**
      * Can be accessed only once (At the start of the game).
      * Needs to be called because Host would take his turn twice because the currentPlayer has been initialized and the queue has host at the top.
      * This is basically a turn without any action.
      */
     public void initializeGameWhenFull(){
-        //rearrangement of player queue
-        //players.add(currentPlayer);
-        //players.remove();
         //first cd handling:
         this.gameStarted = true;
         currentPlayer = players.remove();

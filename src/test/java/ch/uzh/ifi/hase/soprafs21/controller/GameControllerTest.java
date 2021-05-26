@@ -21,15 +21,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
-
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -76,7 +72,6 @@ public class GameControllerTest {
         authToken = token;
     }
 
-
     @Test
     public void getGameAfterCreateGame() throws Exception {
         // given
@@ -88,12 +83,8 @@ public class GameControllerTest {
         GameLobby lobby = new GameLobby(user);
         lobby.setId(1L);
 
-        GameSettings gameSettings = new GameSettings();
-
-
         given(userService.getUserByToken(any(String.class))).willReturn(user);
-        given(gameService.createNewGameLobby(any(User.class), gameSettings)).willReturn(lobby);
-
+        given(gameService.createNewGameLobby(any(User.class), any(GameSettings.class))).willReturn(lobby);
 
         MockHttpServletRequestBuilder postRequest = post("/games").contentType(MediaType.APPLICATION_JSON);
         postRequest.header("Authorization", "Bearer "+authToken);
@@ -112,7 +103,6 @@ public class GameControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is((int)lobby.getId())));
                 //.andExpect(jsonPath("$.hostId.id", is((int)lobby.getHostId())));
-
     }
 
     @Test
@@ -125,16 +115,13 @@ public class GameControllerTest {
         GameLobby lobby = new GameLobby(user);
         lobby.setId(1L);
 
-
         User joiningUser = new User();
         joiningUser.setId(3L);
         joiningUser.setPassword("blabla");
         joiningUser.setUsername("username2");
 
-        GameSettings gameSettings = new GameSettings();
-
         given(userService.getUserByToken(any(String.class))).willReturn(joiningUser);
-        given(gameService.createNewGameLobby(any(User.class), gameSettings)).willReturn(lobby);
+        given(gameService.createNewGameLobby(any(User.class), any(GameSettings.class))).willReturn(lobby);
         lobby.addPlayer(joiningUser);
 
         //There is only one game so we dont need to match arguments...
@@ -192,7 +179,6 @@ public class GameControllerTest {
         mockMvc.perform(postRequest)
                 .andExpect(status().isOk());
 
-
         //Game should now be started
         given(gameService.getOpenGameById(any(long.class))).willReturn(null); //Opengames has to return null
 
@@ -201,7 +187,5 @@ public class GameControllerTest {
         getRequest.header("Authorization", "Bearer "+authToken);
         mockMvc.perform(getRequest)
                 .andExpect((jsonPath("$.gameStarted", is(true))));
-
     }
-
 }

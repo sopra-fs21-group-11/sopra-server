@@ -3,7 +3,6 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ECoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
-import org.hibernate.mapping.Value;
 
 public class GameSettings {
     private int playersMin;
@@ -163,20 +162,10 @@ public class GameSettings {
         this.tokenGainOnCorrectGuess = tokenGainOnCorrectGuess;
     }
 
+    public ValueCategory getVerticalValueCategory() { return verticalValueCategoryId; }
+
     public ValueCategory getHorizontalValueCategory() {
         return horizontalValueCategoryId;
-    }
-
-    public void setHorizontalValueCategory(ValueCategory horizontalValueCategoryId) {
-        this.horizontalValueCategoryId = horizontalValueCategoryId;
-    }
-
-    public ValueCategory getVerticalValueCategory() {
-        return verticalValueCategoryId;
-    }
-
-    public void setVerticalValueCategory(ValueCategory verticalValueCategoryId) {
-        this.verticalValueCategoryId = verticalValueCategoryId;
     }
 
     public int getEvaluationCountdown() {

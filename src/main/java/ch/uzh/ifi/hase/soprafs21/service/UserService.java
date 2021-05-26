@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import io.jsonwebtoken.Jwts;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +50,7 @@ public class UserService {
         }
         return user.get() ;
     }
+
     public User logoutUser(Long userid) {
         Optional<User> user =this.userRepository.findById(userid);
         if (user.isPresent() ) {
@@ -85,7 +85,6 @@ public class UserService {
                 return user;
             }
         }
-
         return null;
     }
 
@@ -108,7 +107,6 @@ public class UserService {
                         secretKey.getBytes()).compact();
         return token;
     }
-
 
     public User updateUser(Long userid,User requestUser) {
         Optional<User> user =this.userRepository.findById(userid);
@@ -143,7 +141,6 @@ public class UserService {
         updateUser.setTotalWins(updateUser.getTotalWins()+winsToAdd);
         userRepository.save(updateUser);
         userRepository.flush();
-
     }
 
     public void saveDefeats(long userId, long defeatsToAdd){
@@ -177,7 +174,6 @@ public class UserService {
         updateUser.setTotalTokens(updateUser.getTotalTokens()+tokensToAdd);
         userRepository.save(updateUser);
         userRepository.flush();
-
     }
 
     /**
@@ -195,8 +191,8 @@ public class UserService {
         if (userByUsername != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage,userToBeCreated.getUsername()));
         }
-
     }
+
     public User checkUserAuthentication(User userToBeCreated) {
         User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
 

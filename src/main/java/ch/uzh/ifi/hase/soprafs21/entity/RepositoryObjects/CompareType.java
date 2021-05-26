@@ -2,13 +2,11 @@ package ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name = "COMPARETYPES")
 public class CompareType implements Serializable {
     private static final long serialVersionUID = 1L;
-
 
     @Id
     private long id;
@@ -19,8 +17,7 @@ public class CompareType implements Serializable {
     @Column
     private String description;
 
-        public CompareType() {
-    }
+    public CompareType() { }
 
     public long getId() {
         return id;
@@ -45,5 +42,4 @@ public class CompareType implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
 }

@@ -1,13 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.CompareType;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
 import ch.uzh.ifi.hase.soprafs21.repository.CardRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.CompareTypeRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.DeckRepository;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.DeckPutDTO;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -16,10 +14,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
@@ -122,7 +118,6 @@ public class DeckServiceIntegrationTest {
         assertTrue(fetchedDeck.getCards().size()==24);
         assertTrue(fetchedDeck.getCards().get(0).getName().equals("Milan"));
         assertTrue(fetchedDeck.isReadyToPlay());
-
     }
 
     @Test

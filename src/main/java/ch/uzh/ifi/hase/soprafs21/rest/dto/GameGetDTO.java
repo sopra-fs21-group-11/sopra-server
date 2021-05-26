@@ -15,7 +15,6 @@ public class GameGetDTO {
     private int tokenGainOnCorrectGuess;
     private int tokenGainOnNearestGuess;
     private int nrOfStartingTokens;
-
     private long horizontalValueCategoryId;
     private long verticalValueCategoryId;
     private String name;

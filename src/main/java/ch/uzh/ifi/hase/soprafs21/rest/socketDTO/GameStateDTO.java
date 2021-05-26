@@ -2,12 +2,10 @@ package ch.uzh.ifi.hase.soprafs21.rest.socketDTO;
 
 import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameStateDTO {
-
     private List<CardDTO> left;
     private List<CardDTO> right;
     private List<CardDTO> top;

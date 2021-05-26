@@ -7,8 +7,6 @@ public class DeckPutDTO {
     private String description;
     private List<Long> cards;
 
-
-
     public String getName() {
         return name;
     }

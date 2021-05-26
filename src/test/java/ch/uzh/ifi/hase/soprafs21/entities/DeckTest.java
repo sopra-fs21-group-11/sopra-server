@@ -7,12 +7,9 @@ import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.NCoordinateCategory;
 import ch.uzh.ifi.hase.soprafs21.entity.ValueCategories.ValueCategory;
 import ch.uzh.ifi.hase.soprafs21.service.DeckService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
-import org.hibernate.mapping.Value;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 
 public class DeckTest {
 
@@ -27,7 +24,6 @@ public class DeckTest {
         Deck deck = new Deck();
         ValueCategory nscat = new NCoordinateCategory();
         ValueCategory ewcat = new ECoordinateCategory();
-
 
         while(!deck.isEmpty()){
             Card card = deck.pop();

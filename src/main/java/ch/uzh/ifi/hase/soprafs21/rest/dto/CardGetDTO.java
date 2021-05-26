@@ -1,21 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Deck;
-
-
-
 public class CardGetDTO {
-
-
     private Long id;
-
     private String name;
-
     private float nCoordinate;
-
     private float eCoordinate;
     private long population;
-
 
     public Long getId() {
         return id;

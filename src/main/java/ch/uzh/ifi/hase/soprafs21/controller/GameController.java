@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,8 +70,6 @@ public class GameController {
 
         return ResponseEntity.status(200).body(location);
     }
-
-
 
     @GetMapping("/games/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -184,18 +181,5 @@ public class GameController {
     public GameSettingsDTO getDefaultGameSettings() {
         GameSettings defaultGameSettings = new GameSettings();
         return GameMapper.ConvertEntityToGameSettingsDTO(defaultGameSettings);
-    }
-
-    //TODO: after create game lobby is ok delete endpoint!
-    @PutMapping("/games/settings/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public GameSettingsDTO changeSettings(@PathVariable long id, @RequestHeader("Authorization") String token, @RequestBody GameSettingsDTO gameSettingsDTO) {
-        User hostUser = userService.getUserByToken(token);
-        if(hostUser == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Host could not be identified by token.");
-        }
-        GameLobby changedGameLobby = gameService.changeSettings(hostUser, id, gameSettingsDTO);
-        return GameMapper.ConvertEntityToGameSettingsDTO(changedGameLobby.getSettings());
     }
 }

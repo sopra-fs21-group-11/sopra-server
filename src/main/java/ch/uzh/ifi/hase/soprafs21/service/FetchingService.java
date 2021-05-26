@@ -3,7 +3,6 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.entity.RepositoryObjects.Card;
 import ch.uzh.ifi.hase.soprafs21.rest.fetch.NominatimResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
@@ -11,36 +10,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Schedulers;
-
 import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
-
 @Service
 @Transactional
 public class FetchingService {
-
     private  WebClient.Builder builder;
     private String overpassBuilder = "";
-
-
     private List<Card> allCards;
 
     public FetchingService(){
@@ -184,11 +174,9 @@ public class FetchingService {
                     cardList.add(newCard);
                 }
             }
-
         }
         return cardList;
     }
-
 
     /**
      * gets the top result from nominatim
@@ -220,6 +208,7 @@ public class FetchingService {
         }
         return querry;
     }
+
     private InputStream getInputStreamFromFluxDataBuffer(Flux<DataBuffer> data){
         try {
             PipedOutputStream osPipe = new PipedOutputStream();

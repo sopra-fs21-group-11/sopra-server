@@ -18,7 +18,6 @@ public class NCoordinateCategory implements ValueCategory {
             //extendable with more types.
     ));
 
-
     public boolean isCardValidInCategory(Card card) {
         if(validTypes.contains(card.getClass())){
             return true;

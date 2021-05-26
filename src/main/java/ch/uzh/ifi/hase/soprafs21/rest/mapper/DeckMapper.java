@@ -23,5 +23,4 @@ public interface DeckMapper {
     @Mapping(source="name", target="name")
     @Mapping(source="description", target="description")
     CompareTypeGetDTO ConvertEntityToCompareTypeGetDTO(CompareType type);
-
 }

@@ -4,7 +4,6 @@ public class DeckPostDTO {
     private String name;
     private String description;
 
-
     public String getName() {
         return name;
     }

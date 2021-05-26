@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
@@ -26,14 +25,10 @@ import java.util.*;
 @Service
 @Transactional
 public class DeckService {
-
-
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
     private final CompareTypeRepository compareTypeRepository;
     private final UserService userService;
-
-
     private FetchingService fetchingService;
 
     @Autowired
@@ -78,7 +73,6 @@ public class DeckService {
         locationCard.setEwCoordinates(card.geteCoordinate());
         locationCard.setNsCoordinates(card.getnCoordinate());
         return  locationCard;
-
     }
 
     public Deck validateDeck(long id){
@@ -120,7 +114,6 @@ public class DeckService {
         return deckToReturn;
     }
 
-
     public Deck editDeck(long id, DeckPutDTO deckPutDTO){
         Deck deckToEdit = getDeck(id);
         //check if enough cards are in the deck.
@@ -147,6 +140,7 @@ public class DeckService {
         deckRepository.flush();
         return deckToEdit;
     }
+
     public Deck fetchDeck(long id, String querry, long population, String token){
         User fetchingUser = userService.getUserByToken(token);
         Deck deckToFetch = getDeck(id);
@@ -177,6 +171,7 @@ public class DeckService {
         validateDeck(deckToFetch.getId());
         return deckToFetch;
     }
+
     public String fetchingAvailable(){
         String response = fetchingService.fetchingAvailable();
         if(response.contains("slots available now")){
@@ -276,7 +271,6 @@ public class DeckService {
             Application.logger.error("************************************");
             Application.logger.error(ex.toString());
         }
-
     }
 
     //these are the getMethods for CompareTypes:
@@ -291,11 +285,11 @@ public class DeckService {
         return compareTypeRepository.findAll();
     }
 
-
     //These are the rather simple creation and retrieval methods...
     public List<Deck> getAllDecks(){
         return this.deckRepository.findAll();
     }
+
     public Deck getDeck(long id){
         Optional<Deck> optionalDeck = deckRepository.findById(id);
         if(!optionalDeck.isPresent()){
@@ -303,6 +297,7 @@ public class DeckService {
         }
         return optionalDeck.get();
     }
+
     public Deck createEmptyDeck(Deck newDeck, String token){
         if(token != "default"){
             newDeck.setCreatedBy(userService.getUserByToken(token).getId());
@@ -312,14 +307,17 @@ public class DeckService {
         deckRepository.flush();
         return returningDeck;
     }
+
     public Card createNewCard(Card card){
         Card returningCard = cardRepository.save(card);
         cardRepository.flush();
         return returningCard;
     }
+
     public List<Card> getAllCards(){
         return this.cardRepository.findAll();
     }
+
     public Card getCard(long id){
         Optional<Card> optionalCard = cardRepository.findById(id);
         if(!optionalCard.isPresent()){
@@ -327,6 +325,7 @@ public class DeckService {
         }
         return optionalCard.get();
     }
+
     public List<Card> getCardsNotInDeck(long id){
         Deck deckToReturnCards = getDeck(id);
         List<Card> allCards = getAllCards();
