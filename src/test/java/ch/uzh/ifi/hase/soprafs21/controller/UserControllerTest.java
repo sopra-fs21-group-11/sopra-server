@@ -21,15 +21,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static org.junit.jupiter.api.Assertions.*;
-
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -78,7 +74,6 @@ public class UserControllerTest {
         authToken = token;
     }
 
-
     @BeforeEach
     @Test
     public void registerUserAndGetToken() throws Exception{
@@ -90,7 +85,6 @@ public class UserControllerTest {
         //Example bearer token
         //user.setToken("eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb3ByYWZzMjEiLCJzdWIiOiJtYXJ0aW4yIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTYxODA2NzAxMiwiZXhwIjoxNjE4NjY3MDEyfQ.rAYxnVk9Fwu4EJRpZ16zKw9_KkA2MwqwxNW6-qjMhONyrY8ss4xBWXf4b6LxJ-phx6gwi7HEUevKlETwVNZXQw");
         given(userService.createUser(any(User.class))).willReturn(user);
-
 
         MockHttpServletRequestBuilder postRequest = post("/users").contentType(MediaType.APPLICATION_JSON);
 
@@ -122,7 +116,6 @@ public class UserControllerTest {
 
         List<User> allUsers = Collections.singletonList(user);
 
-
         // this mocks the UserService -> we define above what the userService should return when getUsers() is called
         given(userService.getUsers()).willReturn(allUsers);
 
@@ -137,7 +130,6 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].username", is(user.getUsername())))
                 .andExpect(jsonPath("$[0].isOnline", is(user.getIsOnline())));
     }
-
 
     /**
      * Helper Method to convert userPostDTO into a JSON string such that the input can be processed

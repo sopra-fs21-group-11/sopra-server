@@ -1,11 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
 public class CompareTypeGetDTO {
-
     private long id;
     private String name;
     private String description;

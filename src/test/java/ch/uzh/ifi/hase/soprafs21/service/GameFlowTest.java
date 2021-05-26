@@ -13,11 +13,6 @@ import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 //@WebAppConfiguration
@@ -61,7 +56,6 @@ public class GameFlowTest {
         guest.setUsername("guest");
         guest.setPassword("password");
         guestId = userService.createUser(guest).getId();
-
 
         for(var deck : deckService.getAllDecks()){
             if(deck.getName().equals("Default Deck")){
@@ -127,10 +121,7 @@ public class GameFlowTest {
         settings.setEvaluationCountdownVisible(5);
         settings.setEvaluationCountdown(5);
 
-
-
         lobby.setSettings(settings);
-
     }
 
     @Test
@@ -239,7 +230,6 @@ public class GameFlowTest {
             }else{
                 j++;
             }
-
         }
         assertEquals(game.convertToDTO().getGamestate(), "EVALUATION");
         Thread.sleep(100);
@@ -270,5 +260,4 @@ public class GameFlowTest {
         assertEquals(game.convertToDTO().getGamestate(), "GAMEEND");
         assertTrue(gameService.getAllRunningGames().size()==0);
     }
-
 }

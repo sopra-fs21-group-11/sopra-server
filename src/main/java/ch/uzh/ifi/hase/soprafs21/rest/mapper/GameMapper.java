@@ -9,7 +9,6 @@ import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameDoubtDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.socketDTO.GameStateDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

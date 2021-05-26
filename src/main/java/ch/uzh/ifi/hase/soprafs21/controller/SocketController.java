@@ -34,7 +34,7 @@ public class SocketController {
         Game joinedGame = gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());
         if(!joinedGame.isGameStarted()) {
             if (gameService.gameIsFull(joinGameDTO.getGameId())) {
-                gameService.sendGameStateToUsers(joinedGame.getId()); //TODO: in Game is Full wird State geschickt und hier nochmal
+                gameService.sendGameStateToUsers(joinedGame.getId());
             }
         }
     }

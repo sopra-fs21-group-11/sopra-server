@@ -2,8 +2,6 @@ package ch.uzh.ifi.hase.soprafs21.service.countdown;
 
 import ch.uzh.ifi.hase.soprafs21.Application;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
