@@ -54,11 +54,43 @@ public class GameService {
         return startedGame;
     }
 
-    public GameLobby createNewGameLobby(User host){
-        GameLobby newGame = new GameLobby(host);
-        newGame.setId(getNextFreeId());
-        openGames.add(newGame);
-        return newGame;
+    public GameLobby createNewGameLobby(User host, GameSettings gameSettings){
+
+        if(!gameSettings.isSettingsValid()){
+            //settings are not valid! return conflict and do not create a gameLobby
+            throw new ResponseStatusException(HttpStatus.CONFLICT, gameSettings.getRemark());
+        }
+        //check if deck is ready to play
+        if(!deckService.getDeck(gameSettings.getDeckId()).isReadyToPlay()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is not ready to play.");
+        }
+        //check if minimum cards per evaluation is ok
+        int numberOfCardsBeforeEvaluation = deckService.getDeck(gameSettings.getDeckId()).getSize() / gameSettings.getNrOfEvaluations();
+        if(numberOfCardsBeforeEvaluation<=9) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is too small to play with this settings");
+        }
+
+        GameLobby gameLobby = new GameLobby(host);
+        gameLobby.setId(getNextFreeId());
+
+        //change default settings
+        gameLobby.getSettings().setDeckId(gameSettings.getDeckId());
+        gameLobby.getSettings().setDoubtCountdown(gameSettings.getDoubtCountdown());
+        gameLobby.getSettings().setVisibleAfterDoubtCountdown(gameSettings.getVisibleAfterDoubtCountdown());
+        gameLobby.getSettings().setEvaluationCountdown(gameSettings.getEvaluationCountdown());
+        gameLobby.getSettings().setEvaluationCountdownVisible(gameSettings.getEvaluationCountdownVisible());
+        gameLobby.getSettings().setPlayerTurnCountdown(gameSettings.getPlayerTurnCountdown());
+        gameLobby.getSettings().setNrOfEvaluations(gameSettings.getNrOfEvaluations());
+        //gameLobby.getSettings().setHorizontalValueCategory(gameSettingsToCheck.getHorizontalValueCategoryId());
+        //gameLobby.getSettings().setVerticalValueCategory(gameSettingsToCheck.getVerticalValueCategoryId());
+        gameLobby.getSettings().setPlayersMax(gameSettings.getPlayersMax());
+        gameLobby.getSettings().setPlayersMin(gameSettings.getPlayersMin());
+        gameLobby.getSettings().setNrOfStartingTokens(gameSettings.getNrOfStartingTokens());
+        gameLobby.getSettings().setTokenGainOnCorrectGuess(gameSettings.getTokenGainOnCorrectGuess());
+        gameLobby.getSettings().setTokenGainOnNearestGuess(gameSettings.getTokenGainOnNearestGuess());
+
+        openGames.add(gameLobby);
+        return gameLobby;
     }
 
     public Game doubtAction(long gameId, int placedCard, int doubtedCard, String sessionId){
@@ -79,7 +111,7 @@ public class GameService {
         return game;
     }
 
-    //TODO: tb under construction
+    //TODO: tb after settings and new gameLobby creation is checked delete function!
     public GameLobby changeSettings(User host, long gameId, GameSettingsDTO gameSettingsDTO){
         GameLobby gameLobby = this.getOpenGameById(gameId);
         if(gameLobby == null){
@@ -102,7 +134,7 @@ public class GameService {
         //check if minimum cards per evaluation is ok
         int numberOfCardsBeforeEvaluation = deckService.getDeck(gameSettingsToCheck.getDeckId()).getSize() / gameSettingsToCheck.getNrOfEvaluations();
         if(numberOfCardsBeforeEvaluation<=5) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is to small to play with this settings");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is too small to play with this settings");
         }
 
         gameLobby.getSettings().setDeckId(gameSettingsToCheck.getDeckId());
