@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
@@ -53,23 +55,23 @@ public class GameService {
 
     public GameLobby createNewGameLobby(User host, GameSettings gameSettings){
 
-        if(!gameSettings.isSettingsValid()){
-            //settings are not valid! return conflict and do not create a gameLobby
-            throw new ResponseStatusException(HttpStatus.CONFLICT, gameSettings.getRemark());
-        }
-        //check if deck is ready to play
-        if(!deckService.getDeck(gameSettings.getDeckId()).isReadyToPlay()){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is not ready to play.");
-        }
-        //check if minimum cards per evaluation is ok
-        int numberOfCardsBeforeEvaluation = deckService.getDeck(gameSettings.getDeckId()).getSize() / gameSettings.getNrOfEvaluations();
-        if(numberOfCardsBeforeEvaluation<=9) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Deck is too small to play with this settings");
-        }
-
         GameLobby gameLobby = new GameLobby(host);
         gameLobby.setId(getNextFreeId());
 
+        if(!gameSettings.isSettingsValid()){
+            //settings are not valid! return a gameLobby with default settings
+            gameLobby.setSettings(new GameSettings());
+            //throw new ResponseStatusException(HttpStatus.CONFLICT, gameSettings.getRemark());
+        }
+        //check if minimum cards per evaluation is ok
+        int numberOfCardsBeforeEvaluation = deckService.getDeck(gameSettings.getDeckId()).getSize() / gameSettings.getNrOfEvaluations();
+        if(numberOfCardsBeforeEvaluation<=4) {
+            //Deck is too small to play with this settings play with highest number of evaluations as possible
+            gameLobby.getSettings().setNrOfEvaluations(deckService.getDeck(gameSettings.getDeckId()).getSize() / 4);
+        }
+        else{
+            gameLobby.getSettings().setNrOfEvaluations(gameSettings.getNrOfEvaluations());
+        }
         //change default settings
         gameLobby.getSettings().setDeckId(gameSettings.getDeckId());
         gameLobby.getSettings().setDoubtCountdown(gameSettings.getDoubtCountdown());
@@ -77,7 +79,6 @@ public class GameService {
         gameLobby.getSettings().setEvaluationCountdown(gameSettings.getEvaluationCountdown());
         gameLobby.getSettings().setEvaluationCountdownVisible(gameSettings.getEvaluationCountdownVisible());
         gameLobby.getSettings().setPlayerTurnCountdown(gameSettings.getPlayerTurnCountdown());
-        gameLobby.getSettings().setNrOfEvaluations(gameSettings.getNrOfEvaluations());
         gameLobby.getSettings().setPlayersMax(gameSettings.getPlayersMax());
         gameLobby.getSettings().setPlayersMin(gameSettings.getPlayersMin());
         gameLobby.getSettings().setNrOfStartingTokens(gameSettings.getNrOfStartingTokens());
@@ -162,12 +163,37 @@ public class GameService {
         Game gameToEnd = getRunningGameById(gameId);
         gameToEnd.removeAllPropertyListener();//remove propertyChangeListeners
 
+        //get playtime
+        long diffInMillis = Math.abs((new Date()).getTime() - gameToEnd.getStartTime().getTime());
+        long minutesPlayed = TimeUnit.MINUTES.convert(diffInMillis, TimeUnit.MILLISECONDS);
+
+        //iterate over each player who played the game to set total won tokens, total wins and total time played
+        for(var user : gameToEnd.getPlayers()){
+            //set wins
+            if(gameToEnd.getWinnerId().contains(user.getKey().getId())) {
+                userService.saveWins(user.getKey().getId(), 1); //add 1 win
+            }
+            //set defeats
+            else{
+                userService.saveDefeats(user.getKey().getId(), 1);//add 1 defeat
+            }
+            //set tokens
+            userService.saveEarnedTokens(user.getKey().getId(), user.getKey().getCurrentToken());
+            //set playtime:
+            userService.saveGameTime(user.getKey().getId(), minutesPlayed);
+        }
+
         GameEndDTO gameEndDTO = gameToEnd.createGameEndDTO();
         GameStateDTO endGameStateDTO = gameToEnd.convertToDTO();
         endGameStateDTO.setGameEndScore(gameEndDTO);
         endGameStateDTO.setPlayertokens(0);
 
-        if(gameEndDTO.getGameTooShort()){
+        for(var user : gameToEnd.getPlayers()) {
+            // SendGameEndDTO (every user gets the same) but game does not count was too short!
+            this.template.convertAndSend("/topic/game/queue/specific-game-game" + user.getValue(), endGameStateDTO);
+        }
+
+        /*if(gameEndDTO.getGameTooShort()){
             //Game does not count towards statistic
             for(var user : gameToEnd.getPlayers()) {
                 // SendGameEndDTO (every user gets the same) but game does not count was too short!
@@ -193,7 +219,8 @@ public class GameService {
                 //sendGameEndDTO (every user gets the same)
                 this.template.convertAndSend("/topic/game/queue/specific-game-game"+user.getValue(),endGameStateDTO);
             }
-        }
+        }*/
+
         gameToEnd.clearSessionIds();
         //after saving values we have to remove the game from the list.
         runningGames.remove(gameToEnd);

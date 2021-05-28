@@ -565,6 +565,8 @@ public class Game implements PropertyChangeListener {
         return gameStarted;
     }
 
+    public Date getStartTime() { return startTime; }
+
     /**
      * Can be accessed only once (At the start of the game).
      * Needs to be called because Host would take his turn twice because the currentPlayer has been initialized and the queue has host at the top.
