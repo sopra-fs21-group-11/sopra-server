@@ -172,15 +172,22 @@ public class GameService {
             //set wins
             if(gameToEnd.getWinnerId().contains(user.getKey().getId())) {
                 userService.saveWins(user.getKey().getId(), 1); //add 1 win
+                user.getKey().setTotalWins(user.getKey().getTotalWins()+1);
             }
             //set defeats
             else{
+                Long test1 = userService.getUser(user.getKey().getId()).getTotalDefeats(); //delete
                 userService.saveDefeats(user.getKey().getId(), 1);//add 1 defeat
+                user.getKey().setTotalDefeats(user.getKey().getTotalDefeats()+1);
             }
             //set tokens
+            Long test2 = userService.getUser(user.getKey().getId()).getTotalTokens(); //delete
             userService.saveEarnedTokens(user.getKey().getId(), user.getKey().getCurrentToken());
+            user.getKey().setTotalTokens(user.getKey().getTotalTokens()+user.getKey().getCurrentToken());
             //set playtime:
+            Long test3 = userService.getUser(user.getKey().getId()).getPlayTime(); //delete
             userService.saveGameTime(user.getKey().getId(), minutesPlayed);
+            user.getKey().setPlayTime(user.getKey().getPlayTime()+minutesPlayed);
         }
 
         GameEndDTO gameEndDTO = gameToEnd.createGameEndDTO();
@@ -192,34 +199,6 @@ public class GameService {
             // SendGameEndDTO (every user gets the same) but game does not count was too short!
             this.template.convertAndSend("/topic/game/queue/specific-game-game" + user.getValue(), endGameStateDTO);
         }
-
-        /*if(gameEndDTO.getGameTooShort()){
-            //Game does not count towards statistic
-            for(var user : gameToEnd.getPlayers()) {
-                // SendGameEndDTO (every user gets the same) but game does not count was too short!
-                this.template.convertAndSend("/topic/game/queue/specific-game-game" + user.getValue(), endGameStateDTO);
-            }
-        }
-        else {
-            //iterate over each player who played the game
-            for(var user : gameToEnd.getPlayers()){
-                //set wins
-                if(gameToEnd.getWinnerId().contains(user.getKey().getId())) {
-                    userService.saveWins(user.getKey().getId(), 1); //add 1 win
-                }
-                //set defeats
-                else{
-                    userService.saveDefeats(user.getKey().getId(), 1);//add 1 defeat
-                }
-                //set tokens
-                userService.saveEarnedTokens(user.getKey().getId(), user.getKey().getCurrentToken());
-                //set playtime:
-                userService.saveGameTime(user.getKey().getId(), gameEndDTO.getGameMinutes());
-
-                //sendGameEndDTO (every user gets the same)
-                this.template.convertAndSend("/topic/game/queue/specific-game-game"+user.getValue(),endGameStateDTO);
-            }
-        }*/
 
         gameToEnd.clearSessionIds();
         //after saving values we have to remove the game from the list.
