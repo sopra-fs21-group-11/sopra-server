@@ -1,4 +1,4 @@
-<osm-script>
+<osm-script timeout="900">
   <query into="searchArea" type="area">
     <id-query type="area" ref="####" into="searchArea"/>
   </query>
