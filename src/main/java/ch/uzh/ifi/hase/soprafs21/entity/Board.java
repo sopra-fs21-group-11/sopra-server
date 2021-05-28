@@ -24,7 +24,7 @@ public class Board {
 
     public void placeCard(Card cardToPlace, int index, String axis){
         placedCard++;
-        Application.logger.info("Placing Card: "+ cardToPlace.getLocationName()+", "+index+", "+axis); //TODO: löschen? smells..
+        Application.logger.info("Placing Card: "+ cardToPlace.getLocationName()+", "+index+", "+axis);
         if(axis.toLowerCase(Locale.ROOT).contains("top")){
             //lower neighbour is starting card
             if(index == 0){

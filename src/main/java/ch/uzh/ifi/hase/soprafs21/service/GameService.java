@@ -205,6 +205,14 @@ public class GameService {
         runningGames.remove(gameToEnd);
     }
 
+    public void endInactiveGame(long gameId){
+        Game gameToEnd = getRunningGameById(gameId);
+        gameToEnd.removeAllPropertyListener();//remove propertyChangeListeners
+        gameToEnd.clearSessionIds();
+        //after saving values we have to remove the game from the list.
+        runningGames.remove(gameToEnd);
+    }
+
     public void incomingTurn(long gameId, String sessionId, int placementIndex, String axis){
         Game game = getRunningGameById(gameId);
         User turningUser = new User(); //need to assign. Else the condition turninguser.getid... doesnt work.

@@ -23,7 +23,6 @@ public class Game implements PropertyChangeListener {
     private GameState activeState;
     private Deck deckStack;
     private long hostPlayerId;
-    private List<User> waitingForPlayers; //Todo: never used?? smell..
     private Card nextCard;
     private ValueCategory horizontalValueCategory;
     private ValueCategory verticalValueCategory;
@@ -44,7 +43,6 @@ public class Game implements PropertyChangeListener {
 
     public Game(GameLobby lobby, Deck deckToPlay){
         //set up the game-object with all details of the lobby:
-        this.waitingForPlayers = lobby.getPlayers();
         this.currentSettings = lobby.getSettings();
         this.hostPlayerId = lobby.getHostId();
         this.activeState = GameState.CARDPLACEMENT;
@@ -92,7 +90,7 @@ public class Game implements PropertyChangeListener {
             Application.logger.info("Perform turn rejected: Userid: "+Long.toString(userid));
             return;
         }
-        Application.logger.info("Perform turn with nextCard: "+nextCard.getLocationName()); //Todo: löschen? smell..
+        Application.logger.info("Perform turn with nextCard: "+nextCard.getLocationName());
         activeBoard.placeCard(cardToPlace, placementIndex, axis);
         this.turnCountdown.doStop();
     }
@@ -129,10 +127,8 @@ public class Game implements PropertyChangeListener {
                 return;
             }
             else{
-                Application.logger.info("old nextCard: "+nextCard.getLocationName()); //Todo: löschen? smell..
                 nextCard = deckStack.pop();
-                Application.logger.info("new nextCard: "+nextCard.getLocationName()); //Todo: löschen? smell..
-
+                Application.logger.info("new nextCard: "+nextCard.getLocationName());
             }
 
             //Two cases: Either we start an evaluation if we have enough cards lying or we continue with next turn.
@@ -156,7 +152,7 @@ public class Game implements PropertyChangeListener {
             }
         }
         if(senderProperty.equals("DoubtCdStopped")) {//Doubt incoming. we start visiblecd:
-            Application.logger.info(Long.toString(id)+":\tDoubtCdStopped"); //Todo: löschen? smell..
+            Application.logger.info(Long.toString(id)+":\tDoubtCdStopped");
 
             activeState=GameState.DOUBTVISIBLE;
             this.visibleCountdown = new DoubtVisibleCountdown(currentSettings.getVisibleAfterDoubtCountdown(), this);
@@ -167,7 +163,7 @@ public class Game implements PropertyChangeListener {
         //EvaluationCountdown ended. Evaluate even not all guesses are here & start visiblecd
         //the same goes for when the guesscd has stopped.
         if(senderProperty.equals("GuessCdEnded")|| senderProperty.equals("GuessCdStopped")) {
-            Application.logger.info(Long.toString(id)+":\tGuessCdStopped"); //Todo: löschen? smell..
+            Application.logger.info(Long.toString(id)+":\tGuessCdStopped");
             performEvaluationAfterGuessPresentOrCdEnded();
             activeState = GameState.EVALUATIONVISIBLE;
             gameService.sendEvaluatedGameStateToUsers(id);
@@ -177,9 +173,9 @@ public class Game implements PropertyChangeListener {
         }
         //start next turn
         if(senderProperty.equals("PlayerTurnCdEnded")) {
-            Application.logger.info(Long.toString(id)+":\tPlayerTurnCdEnded"); //Todo: löschen? smell..
+            Application.logger.info(Long.toString(id)+":\tPlayerTurnCdEnded");
             if(breakDownCounter>5){
-                  gameService.gameEnded(id); //Todo: ok?
+                  gameService.endInactiveGame(id);
                   return;
             }
             breakDownCounter++;
@@ -193,7 +189,7 @@ public class Game implements PropertyChangeListener {
             turnCountdown.start();
         }
         if(senderProperty.equals("PlayerTurnCdStopped")) {//A player performed a turn -> goto doubtingPhase
-            Application.logger.info(Long.toString(id)+":\tPlayerTurnCdStopped"); //Todo: löschen? smell..
+            Application.logger.info(Long.toString(id)+":\tPlayerTurnCdStopped");
             breakDownCounter=0; //setback BreakdownCounter
             this.activeState = GameState.DOUBTINGPHASE;
             gameService.sendGameStateToUsers(id);
@@ -202,7 +198,7 @@ public class Game implements PropertyChangeListener {
             doubtCountdown.start();
         }
         if(senderProperty.equals("EvaluationVisibleCdEnded")) {
-            Application.logger.info(Long.toString(id)+":\tEvaluationVisibleCdEnded"); //Todo: löschen? smell..
+            Application.logger.info(Long.toString(id)+":\tEvaluationVisibleCdEnded");
             //check if deck is empty. if so, game is finished.
             if(deckStack.isEmpty()){
                 //game ended and we have a regular winner:

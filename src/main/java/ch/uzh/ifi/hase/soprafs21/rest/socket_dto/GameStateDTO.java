@@ -56,28 +56,28 @@ public class GameStateDTO {
         try {
             this.left.add(card);
         } catch (Exception ex){
-            Application.logger.error(card.getName()+"\\n"+ ex.toString()); //Todo: löschen? smells..
+            Application.logger.error(card.getName()+"\\n"+ ex.toString());
         }
     }
 
     public void addRightCard(CardDTO card){
         try{this.right.add(card);
         } catch (Exception ex){
-            Application.logger.error(card.getName()+"\\n"+ ex.toString()); //Todo: löschen? smells..
+            Application.logger.error(card.getName()+"\\n"+ ex.toString());
         }
     }
 
     public void addTopCard(CardDTO card){
         try{this.top.add(card);
         } catch (Exception ex){
-            Application.logger.error(card.getName()+"\\n"+ ex.toString()); //Todo: löschen? smells..
+            Application.logger.error(card.getName()+"\\n"+ ex.toString());
         }
     }
 
     public void addBottomCard(CardDTO card){
         try{this.bottom.add(card);
         } catch (Exception ex){
-            Application.logger.error(card.getName()+"\\n"+ ex.toString()); //Todo: löschen? smells..
+            Application.logger.error(card.getName()+"\\n"+ ex.toString());
         }
     }
 

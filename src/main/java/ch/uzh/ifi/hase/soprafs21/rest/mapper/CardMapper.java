@@ -16,7 +16,6 @@ public class CardMapper {
         cardDTO.setEcoord(card.getEwCoordinates());
         cardDTO.setName(card.getLocationName());
 
-        //TODO: Needs Population/Area/Height Conversion
         return cardDTO;
     }
 
@@ -32,7 +31,6 @@ public class CardMapper {
         cardDTO.setName(card.getLocationName());
         cardDTO.setCorrect(correct);
 
-        //TODO: Needs Population/Area/Height Conversion
         return cardDTO;
     }
 }

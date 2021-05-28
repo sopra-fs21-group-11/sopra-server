@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.rest.fetch;
 
-public class NominatimResponse { //TODO: code smells because of variable names.. xx_xx
+public class NominatimResponse {
     private long place_id;
     private long osm_id;
     private String display_name;
