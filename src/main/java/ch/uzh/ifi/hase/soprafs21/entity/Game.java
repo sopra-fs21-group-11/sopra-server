@@ -179,7 +179,7 @@ public class Game implements PropertyChangeListener {
         if(senderProperty.equals("PlayerTurnCdEnded")) {
             Application.logger.info(Long.toString(id)+":\tPlayerTurnCdEnded"); //Todo: löschen? smell..
             if(breakDownCounter>5){
-                  gameService.gameEnded(id);
+                  gameService.gameEnded(id); //Todo: ok?
                   return;
             }
             breakDownCounter++;
@@ -262,6 +262,7 @@ public class Game implements PropertyChangeListener {
     public GameEndDTO createGameEndDTO(){
         List<UserGetDTO> scoreboardList = new ArrayList<>();
         for(var player : players){
+
             scoreboardList.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(player.getKey()));
         }
         // sort the scoreboardList
@@ -564,6 +565,8 @@ public class Game implements PropertyChangeListener {
     public boolean isGameStarted() {
         return gameStarted;
     }
+
+    public Date getStartTime() { return startTime; }
 
     /**
      * Can be accessed only once (At the start of the game).
