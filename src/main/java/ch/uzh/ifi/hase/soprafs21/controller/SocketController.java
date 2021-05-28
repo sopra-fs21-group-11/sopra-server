@@ -17,18 +17,14 @@ public class SocketController {
     private final UserService userService;
     private final GameService gameService;
 
-    private boolean run = false; //TODO: löschen?
-    private SimpMessagingTemplate template; //TODO: löschen?
-
     @Autowired
-    public SocketController(SimpMessagingTemplate template, UserService userService, GameService gameService){
-        this.template = template;
+    public SocketController(UserService userService, GameService gameService){
         this.userService = userService;
         this.gameService = gameService;
     }
 
     @MessageMapping("/game")
-    public void joinGame(@Header("simpSessionId") String sessionId, JoinGameDTO joinGameDTO) throws Exception { //TODO: exception is never thrown, smells (more of them)
+    public void joinGame(@Header("simpSessionId") String sessionId, JoinGameDTO joinGameDTO) throws Exception {
 
         User joiningUser = userService.getUser(joinGameDTO.getId());
         Game joinedGame = gameService.joinRunningGame(joiningUser, sessionId,joinGameDTO.getGameId());

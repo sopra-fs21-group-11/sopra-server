@@ -14,8 +14,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic", "/queue/specific-game");
         config.setApplicationDestinationPrefixes("/app");
-        //config.enableSimpleBroker("/"); //TODO: löschen?
-        //config.enableSimpleBroker("/game/queue/specific-game"); //TODO: löschen?
+        //to debug cors: config.enableSimpleBroker("/")
+        //to debug cors: config.enableSimpleBroker("/game/queue/specific-game")
         config.setUserDestinationPrefix("/game");
     }
 
@@ -23,26 +23,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/gs-guide-websocket")
                 .setAllowedOrigins("https://sopra-fs21-group-11-client.herokuapp.com", "http://localhost:3000")
-
                 .withSockJS();
-                //.setAllowedOrigins("*").withSockJS();
     }
-
-    /*@Bean //TODO: löschen?
-    public FilterRegistrationBean corsFilter(){
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-        CorsConfiguration config = new CorsConfiguration();
-        //config.applyPermitDefaultValues();
-        config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedOrigin("https://sopra-fs21-group-11-client.herokuapp.com");
-        config.setAllowCredentials(true);
-        //config.addAllowedOrigin("*");
-        config.setAllowedMethods(Arrays.asList("POST", "OPTIONS", "GET", "DELETE", "PUT"));
-        //config.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
-        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return bean;
-    }*/
 }

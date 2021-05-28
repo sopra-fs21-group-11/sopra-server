@@ -176,15 +176,17 @@ public class DeckService {
         String response = fetchingService.fetchingAvailable();
         if(response.contains("slots available now")){
             return "true";
-        }else{
+        }
+        else{
             String[] lines = response.split("\n");
             for(String line : lines){
-                if(line.startsWith("Slot available after")); //Todo: ?
                 if(line.length()<=49){
                     continue;
                 }
-                response = line.substring(47,49);
+                if(line.startsWith("Slot available after"));{
+                response = line.substring(47,49).trim();
                 return response;
+                }
             }
         }
         return response;

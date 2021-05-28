@@ -190,7 +190,7 @@ public class FetchingService {
                 .retrieve()
                 .bodyToMono(NominatimResponse[].class)
                 .block();
-        return responses[0].getOsm_id(); //Todo: nullPointerException could be thrown, smells and bug!
+        return responses[0].getOsm_id();
     }
 
     private String readOverpassFile(){
@@ -211,9 +211,9 @@ public class FetchingService {
 
     private InputStream getInputStreamFromFluxDataBuffer(Flux<DataBuffer> data){
         try {
-            PipedOutputStream osPipe = new PipedOutputStream(); //Todo: Bug?
+            PipedOutputStream osPipe = new PipedOutputStream();
 
-            PipedInputStream isPipe = new PipedInputStream(osPipe); //Todo: Bug?
+            PipedInputStream isPipe = new PipedInputStream(osPipe);
 
             DataBufferUtils.write(data, osPipe)
                     //.subscribeOn(Schedulers.elastic())
