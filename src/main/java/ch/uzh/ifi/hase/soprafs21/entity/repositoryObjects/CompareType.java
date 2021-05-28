@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.entity.repositoryObjects;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "COMPARETYPES")
@@ -13,6 +14,9 @@ public class CompareType implements Serializable {
 
     @Column(nullable = false)
     private String name;
+
+    @ManyToMany(mappedBy = "compareTypes")
+    private List<Deck> inDeck;
 
     @Column
     private String description;

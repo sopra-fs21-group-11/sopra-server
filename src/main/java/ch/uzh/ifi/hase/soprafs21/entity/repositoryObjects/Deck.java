@@ -30,10 +30,7 @@ public class Deck implements Serializable{
     @Column
     private Long createdBy;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "compareType_deck",
-    joinColumns = @JoinColumn(name="compareType_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name="deck_id", referencedColumnName = "id"))
+    @ManyToMany
     private List<CompareType> compareTypes;
 
     @Column
