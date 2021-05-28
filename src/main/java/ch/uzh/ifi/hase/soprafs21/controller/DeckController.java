@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 @RestController
 public class DeckController {
@@ -24,12 +25,11 @@ public class DeckController {
     }
 
     @GetMapping("/decks/{id}/fetch")
-    @Transactional(timeout = 300)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public DeckGetDTO fetchDeck(@PathVariable long id, @RequestHeader("Authorization") String token, @RequestParam String querry, @RequestParam long population){
+    public Callable<DeckGetDTO> fetchDeck(@PathVariable long id, @RequestHeader("Authorization") String token, @RequestParam String querry, @RequestParam long population){
         Deck fetchedDeck = deckService.fetchDeck(id, querry, population, token);
-        return DeckMapper.INSTANCE.map(fetchedDeck);
+        return () -> DeckMapper.INSTANCE.map(fetchedDeck);
     }
 
     @PutMapping("/decks/{id}")

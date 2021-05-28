@@ -72,6 +72,16 @@ public class GameControllerTest {
         authToken = token;
     }
 
+
+    @Test
+    public void getDefaultSettings() throws Exception {
+        MockHttpServletRequestBuilder getRequest = get("/games/settings").contentType(MediaType.APPLICATION_JSON);
+        getRequest.header("Authorization", "Bearer "+authToken);
+        mockMvc.perform(getRequest)
+                .andExpect(jsonPath("$.playersMin", is(2)))
+                .andExpect(jsonPath("$.visibleAfterDoubtCountdown", is(5)));
+    }
+
     @Test
     public void getGameAfterCreateGame() throws Exception {
         // given
