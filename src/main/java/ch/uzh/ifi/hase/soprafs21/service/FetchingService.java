@@ -220,7 +220,6 @@ public class FetchingService {
                     .doOnComplete(() -> {
                         try {
                             osPipe.close();
-                            isPipe.close();
                         }
                         catch (IOException ignored) {
                         }
