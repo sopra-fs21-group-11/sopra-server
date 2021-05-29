@@ -1,3 +1,4 @@
+[![Deploy Project](https://github.com/sopra-fs21-group-11/sopra-server/actions/workflows/deploy.yml/badge.svg)](https://github.com/sopra-fs21-group-11/sopra-server/actions/workflows/deploy.yml)
 # SoPra FS21 - Group 11 - Usgrächnet Bünzen
 
 ## The Game
