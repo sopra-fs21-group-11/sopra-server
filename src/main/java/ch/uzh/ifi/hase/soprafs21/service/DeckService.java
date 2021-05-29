@@ -161,7 +161,16 @@ public class DeckService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Cards were created but the deck couldn't be stored since there are less than 10 cards.");
         }
         int cardsAdded = 0;
+        List<Card> allCards = getAllCards();
         for(int i=0;  i<60 && i<cardsToFetch.size() ;i++){
+            Card doCreateCard = cardsToFetch.get(i);
+            for(var card : allCards){
+                if(doCreateCard.getName().equals(card.getName())){
+                    cardsAdded++;
+                    deckToFetch.addCard(card);
+                    continue;
+                }
+            }
             deckToFetch.addCard(createNewCard(cardsToFetch.get(i)));
             cardsAdded++;
         }

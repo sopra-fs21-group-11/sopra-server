@@ -162,6 +162,7 @@ public class FetchingService {
                 for(Card existingCard : this.allCards){
                     try {
                         if (newCard.getName().equals(existingCard.getName())) {
+                            cardList.add(existingCard);
                             flag = true;
                         }
                     } catch (Exception ex){
