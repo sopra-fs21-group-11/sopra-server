@@ -176,8 +176,9 @@ public class Game implements PropertyChangeListener {
         if(senderProperty.equals("PlayerTurnCdEnded")) {
             Application.logger.info(Long.toString(id)+":\tPlayerTurnCdEnded");
             if(breakDownCounter>5){
-                  gameService.endInactiveGame(id);
-                  return;
+                activeState = GameState.GAMEEND;
+                gameService.endInactiveGame(id);
+                return;
             }
             breakDownCounter++;
             //PlayerCountdown has ended -> next players turn.
