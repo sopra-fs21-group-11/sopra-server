@@ -51,6 +51,7 @@ public class Game implements PropertyChangeListener {
         this.horizontalValueCategory = lobby.getSettings().getHorizontalValueCategory();
         this.gameStarted = false;
         this.deckStack = deckToPlay;
+        deckStack.shuffleDeck(); //shuffle deck right after assigning it.
         //We set the starting-card and the nextCard right away:
         this.activeBoard = new Board(deckStack.pop());
         this.nextCard = deckStack.pop();
@@ -61,7 +62,7 @@ public class Game implements PropertyChangeListener {
             players.add(playerToAdd);
         }
         cardsBeforeEvaluation = deckStack.size()/ currentSettings.getNrOfEvaluations();
-        deckStack.shuffleDeck();
+
     }
 
     public boolean joinGame(User user, String sessionId){
