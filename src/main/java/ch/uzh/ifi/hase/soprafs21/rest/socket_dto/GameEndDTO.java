@@ -9,6 +9,7 @@ public class GameEndDTO {
     private List<Long> winnerIds;
     private long gameMinutes;
     private Boolean gameTooShort;
+    private boolean unexpectedEnd;
 
     public long getGameId() {
         return gameId;
@@ -41,4 +42,12 @@ public class GameEndDTO {
     public Boolean getGameTooShort() { return gameTooShort; }
 
     public void setGameTooShort(Boolean gameTooShort) { this.gameTooShort = gameTooShort; }
+
+    public boolean isUnexpectedEnd() {
+        return unexpectedEnd;
+    }
+
+    public void setUnexpectedEnd(boolean unexpectedEnd) {
+        this.unexpectedEnd = unexpectedEnd;
+    }
 }

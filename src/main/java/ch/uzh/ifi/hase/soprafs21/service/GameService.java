@@ -191,6 +191,7 @@ public class GameService {
         }
 
         GameEndDTO gameEndDTO = gameToEnd.createGameEndDTO();
+        gameEndDTO.setUnexpectedEnd(false);
         GameStateDTO endGameStateDTO = gameToEnd.convertToDTO();
         endGameStateDTO.setGameEndScore(gameEndDTO);
         endGameStateDTO.setPlayertokens(0);
@@ -207,6 +208,17 @@ public class GameService {
 
     public void endInactiveGame(long gameId){
         Game gameToEnd = getRunningGameById(gameId);
+
+        GameEndDTO gameEndDTO = gameToEnd.createGameEndDTO();
+        gameEndDTO.setUnexpectedEnd(true);
+        GameStateDTO endGameStateDTO = gameToEnd.convertToDTO();
+        endGameStateDTO.setGameEndScore(gameEndDTO);
+        endGameStateDTO.setPlayertokens(0);
+        for(var user : gameToEnd.getPlayers()) {
+            // SendGameEndDTO (every user gets the same) but game does not count was too short!
+            this.template.convertAndSend("/topic/game/queue/specific-game-game" + user.getValue(), endGameStateDTO);
+        }
+
         gameToEnd.removeAllPropertyListener();//remove propertyChangeListeners
         gameToEnd.clearSessionIds();
         //after saving values we have to remove the game from the list.
