@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import reactor.core.publisher.Flux;
+
 import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,17 +30,17 @@ import java.util.Scanner;
 @Service
 @Transactional
 public class FetchingService {
-    private  WebClient.Builder builder;
+    private WebClient.Builder builder;
     private String overpassBuilder = "";
     private List<Card> allCards;
 
-    public FetchingService(){
+    public FetchingService() {
         builder = WebClient.builder();
     }
 
-    public String fetchingAvailable(){
+    public String fetchingAvailable() {
         String response = "";
-        try{
+        try {
             response = builder
                     .build()
                     .get()
@@ -47,25 +48,26 @@ public class FetchingService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-        }catch (Exception ex){
+        }
+        catch (Exception ex) {
 
         }
         return response;
     }
 
-    public List<Card> fetchCardsFromCountry(String country, long population, List<Card> allCards){
+    public List<Card> fetchCardsFromCountry(String country, long population, List<Card> allCards) {
         this.allCards = allCards;
-        if(overpassBuilder==""){
+        if (overpassBuilder == "") {
             this.overpassBuilder = readOverpassFile();
         }
         String querry = overpassBuilder;
         long osmId = getOSMId(country);
         String osmIdBuilder = Long.toString(osmId);
         String i = "";
-        while (("36"+i+osmIdBuilder).length()!=10){ //pad middle with "0"
-            i+="0";
+        while (("36" + i + osmIdBuilder).length() != 10) { //pad middle with "0"
+            i += "0";
         }
-        String definitiveId = "36"+i+osmIdBuilder;
+        String definitiveId = "36" + i + osmIdBuilder;
 
         querry = querry.replace("####", definitiveId);
         querry = querry.replace("&&&&", Long.toString(population));
@@ -83,11 +85,12 @@ public class FetchingService {
                     .retrieve()
                     .bodyToFlux(DataBuffer.class);
 
-        }catch (Exception ex){
-            if(ex.getMessage().contains("429")){
+        }
+        catch (Exception ex) {
+            if (ex.getMessage().contains("429")) {
                 throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "overpass has too many requests. Please wait some minutes.");
             }
-            Application.logger.warn("Error in fetching: \n"+ex.getMessage());
+            Application.logger.warn("Error in fetching: \n" + ex.getMessage());
         }
         //handle decimalFormat for xml coordinate parsing:
         DecimalFormat df = new DecimalFormat("0.00");
@@ -100,10 +103,11 @@ public class FetchingService {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = factory.newDocumentBuilder();
-            InputSource is = new InputSource( inStream);
+            InputSource is = new InputSource(inStream);
 
             doc = docBuilder.parse(is);
-        }catch (Exception ex){
+        }
+        catch (Exception ex) {
         }
         doc.getDocumentElement().normalize();
         Element rootElement = doc.getDocumentElement();
@@ -111,7 +115,7 @@ public class FetchingService {
 
         List<Card> cardList = new ArrayList<>();
 
-        for(int j = 0;j< nodeList.getLength();j++){
+        for (int j = 0; j < nodeList.getLength(); j++) {
             Node cardElement = nodeList.item(j);
             Card newCard = new Card();
             try {
@@ -128,50 +132,59 @@ public class FetchingService {
 
                 newCard.seteCoordinate(lon.floatValue());
                 newCard.setnCoordinate(lat.floatValue());
-            }catch (Exception ex){ //if coordinate couldnt be set, we dont have to handle the rest...
+            }
+            catch (Exception ex) { //if coordinate couldnt be set, we dont have to handle the rest...
                 continue;
             }
             NodeList childList = cardElement.getChildNodes();
-            for(int k = 0;k< childList.getLength();k++){
+            for (int k = 0; k < childList.getLength(); k++) {
                 Node tagElement = childList.item(k);
-                if(tagElement.hasAttributes()) {
+                if (tagElement.hasAttributes()) {
                     Node item = tagElement.getAttributes().getNamedItem("k");
-                    if(item.getNodeValue().equals("name:en")){
+                    if (item.getNodeValue().equals("name:en")) {
                         try {
                             newCard.setName(tagElement.getAttributes().getNamedItem("v").getNodeValue());
-                        }catch (Exception ex){continue;}
-                    }
-                    if(item.getNodeValue().equals("name")){
-                        try {
-                            newCard.setName(tagElement.getAttributes().getNamedItem("v").getNodeValue());
-                        }catch (Exception ex){
+                        }
+                        catch (Exception ex) {
                             continue;
                         }
                     }
-                    if(item.getNodeValue().equals("population")){
+                    if (item.getNodeValue().equals("name")) {
+                        try {
+                            newCard.setName(tagElement.getAttributes().getNamedItem("v").getNodeValue());
+                        }
+                        catch (Exception ex) {
+                            continue;
+                        }
+                    }
+                    if (item.getNodeValue().equals("population")) {
                         try {
                             newCard.setPopulation(Long.parseLong(tagElement.getAttributes().getNamedItem("v").getNodeValue()));
-                        }catch (Exception ex){
+                        }
+                        catch (Exception ex) {
                         }
                     }
                 }
             }
             //validate every card attribute and if not valid, we skip the card.
-            if(newCard.getPopulation()!=0 && newCard.getnCoordinate()!=0 && newCard.geteCoordinate()!=0 && newCard.getName()!=null && newCard.getName().length()!=0) {
+            if (newCard.getPopulation() != 0 && newCard.getnCoordinate() != 0 && newCard.geteCoordinate() != 0 && newCard.getName() != null && newCard.getName().length() != 0) {
                 boolean flag = false;
-                for(Card existingCard : this.allCards){
+                for (Card existingCard : this.allCards) {
                     try {
                         if (newCard.getName().equals(existingCard.getName())) {
                             cardList.add(existingCard);
-                            flag = true;
+                            flag=true;
+                            break;
                         }
-                    } catch (Exception ex){
+                    }
+                    catch (Exception ex) {
                         flag = true; //at exception, we skip
                     }
                 }
-                if(flag){
+                if (flag) {
                     continue;
-                }else {
+                }
+                else {
                     cardList.add(newCard);
                 }
             }
@@ -181,26 +194,27 @@ public class FetchingService {
 
     /**
      * gets the top result from nominatim
+     *
      * @param querry
      */
-    private long getOSMId(String querry){
+    private long getOSMId(String querry) {
 
         NominatimResponse[] responses = builder.build()
                 .get()
-                .uri("https://nominatim.openstreetmap.org/search?q="+querry+"&format=json")
+                .uri("https://nominatim.openstreetmap.org/search?q=" + querry + "&format=json")
                 .retrieve()
                 .bodyToMono(NominatimResponse[].class)
                 .block();
         return responses[0].getOsm_id();
     }
 
-    private String readOverpassFile(){
+    private String readOverpassFile() {
         String querry = "";
         try {
             File overpass = new File("overpassString.txt");
             Scanner scanner = new Scanner(overpass);
-            while(scanner.hasNextLine()){
-                querry+=scanner.nextLine();
+            while (scanner.hasNextLine()) {
+                querry += scanner.nextLine();
             }
             scanner.close();
         }
@@ -210,7 +224,7 @@ public class FetchingService {
         return querry;
     }
 
-    private InputStream getInputStreamFromFluxDataBuffer(Flux<DataBuffer> data){
+    private InputStream getInputStreamFromFluxDataBuffer(Flux<DataBuffer> data) {
         try {
             PipedOutputStream osPipe = new PipedOutputStream();
 
@@ -227,7 +241,8 @@ public class FetchingService {
                     })
                     .subscribe(DataBufferUtils.releaseConsumer());
             return isPipe;
-        } catch (Exception ex){
+        }
+        catch (Exception ex) {
             return null;
         }
     }

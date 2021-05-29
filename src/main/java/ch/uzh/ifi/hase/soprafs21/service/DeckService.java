@@ -164,15 +164,19 @@ public class DeckService {
         List<Card> allCards = getAllCards();
         for(int i=0;  i<60 && i<cardsToFetch.size() ;i++){
             Card doCreateCard = cardsToFetch.get(i);
+            boolean added = false;
             for(var card : allCards){
                 if(doCreateCard.getName().equals(card.getName())){
                     cardsAdded++;
                     deckToFetch.addCard(card);
-                    continue;
+                    added = true;
+                    break;
                 }
             }
-            deckToFetch.addCard(createNewCard(cardsToFetch.get(i)));
-            cardsAdded++;
+            if(!added) {
+                deckToFetch.addCard(createNewCard(cardsToFetch.get(i)));
+                cardsAdded++;
+            }
         }
         deckToFetch.setSize(cardsAdded);
         deckToFetch = deckRepository.save(deckToFetch);
