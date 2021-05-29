@@ -201,7 +201,7 @@ public class Game implements PropertyChangeListener {
         if(senderProperty.equals("EvaluationVisibleCdEnded")) {
             Application.logger.info(Long.toString(id)+":\tEvaluationVisibleCdEnded");
             //check if deck is empty. if so, game is finished.
-            if(deckStack.isEmpty()){
+            if(deckStack.isEmpty() || deckStack.size() <=3){
                 //game ended and we have a regular winner:
                 int winnerTokens = 0;
                 for(var player:players){
