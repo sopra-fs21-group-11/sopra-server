@@ -127,3 +127,6 @@ A special thanks goes to our TA Raffi and the sopra team FS21.
 
 The project is licensed under the Apache License 2.0. For more information check [this :page_with_curl:](https://github.com/sopra-fs21-group-11/sopra-client/blob/master/LICENSE) out.
 
+## Disclaimer on the extrnal API
+
+Given that heroku terminates all requests that take longer than 30s, we were not able to fully exploit the usage of our external API. Fetching really large sets of places can in some cases take longer than 30s. We are aware of this but under the given circumstances were not able to resolve it.
