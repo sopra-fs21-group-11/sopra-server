@@ -19,7 +19,7 @@ Check out this project's [:computer: client repo](https://github.com/sopra-fs21-
 
 ## Technologies 
 
-- **WebSocket** 🧦: Enables bidirectional communication between client and server. We used this to implement the game. 
+- **[WebSocket](https://stomp-js.github.io/stomp-websocket/)** 🧦: Enables bidirectional communication between client and server. We used this to implement the game. 
 
 - **[React-js](https://reactjs.org/)** :rocket:: React-js is a framwork for building JavaScript user interfaces in a component-based way. 
 
